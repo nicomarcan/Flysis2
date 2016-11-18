@@ -1,12 +1,17 @@
 package com.example.nmarcantonio.flysys2;
 
 import android.app.Activity;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.SearchView;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -17,6 +22,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
+
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -98,8 +104,30 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
-        return true;
+
+
+        MenuItem searchItem = menu.findItem(R.id.offer_search);
+        SearchView searchView =
+                (SearchView) MenuItemCompat.getActionView(searchItem);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener(){
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Toast.makeText(context,"HOLAA",Toast.LENGTH_LONG).show();
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
+        return super.onCreateOptionsMenu(menu);
     }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -113,8 +141,22 @@ public class MainActivity extends AppCompatActivity
             return true;
         }
         if(id == R.id.offer_search){
+            android.app.FragmentManager fragmentManager = getFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.content_frame,new OfferDateFragment()).commit();
+           /*
             Intent intent = new Intent(this, OfferSearch.class);
-            startActivity(intent);
+
+            PendingIntent pendingIntent =
+                    TaskStackBuilder.create(context)
+                            // add all of DetailsActivity's parents to the stack,
+                            // followed by DetailsActivity itself
+                            .addNextIntentWithParentStack(intent)
+                            .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+            builder.setContentIntent(pendingIntent);
+            startActivity(intent);*/
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
