@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_flights"
+            android:icon="@drawable/ic_local_airport_black_24dp"
+            android:title="Vuelos" />
+        <item
+            android:id="@+id/nav_offers"
+            android:icon="@drawable/ic_label_black_24dp"
+            android:title="Ofertas" />
+        <item
+            android:id="@+id/nav_airports"
+            android:icon="@drawable/ic_location_on_black_24dp"
+            android:title="Aeropuertos" />
+        <item
+            android:id="@+id/nav_conversor"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Conversor" />
+    </group>
+
+    <item android:title="Communicate">
+        <menu>
+            <item
+                android:id="@+id/nav_bin"
+                android:icon="@drawable/ic_delete_black_24dp"
+                android:title="Papelera" />
+            <item
+                android:id="@+id/nav_configuration"
+                android:icon="@drawable/ic_build_black_24dp"
+                android:title="Configuración" />
+            <item
+                android:id="@+id/nav_help"
+                android:icon="@drawable/ic_help_outline_black_24dp"
+                android:title="Ayuda" />
+        </menu>
+    </item>
+
+</menu>
