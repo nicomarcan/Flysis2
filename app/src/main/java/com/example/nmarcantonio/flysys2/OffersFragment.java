@@ -2,12 +2,16 @@ package com.example.nmarcantonio.flysys2;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.NotificationCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +40,7 @@ public class OffersFragment extends Fragment {
 
     View myView;
     final static String DEALS_NAME = "deals";
-    private Activity context;
+    private AppCompatActivity context;
 
 
     @Nullable
@@ -52,7 +56,10 @@ public class OffersFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        context = getActivity();
+        context = (AppCompatActivity)getActivity();
+        if(context.getSupportActionBar() != null) {
+            context.getSupportActionBar().setTitle("Ofertas");
+        }
 
         FloatingActionButton fab = (FloatingActionButton) myView.findViewById(R.id.map);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -61,7 +68,19 @@ public class OffersFragment extends Fragment {
                 /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
 
-                */Intent intent = new Intent(context, OffersMap.class);
+                */
+
+                Intent intent = new Intent(context, OffersMap.class);
+
+                PendingIntent pendingIntent =
+                        TaskStackBuilder.create(context)
+                                // add all of DetailsActivity's parents to the stack,
+                                // followed by DetailsActivity itself
+                                .addNextIntentWithParentStack(intent)
+                                .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+                builder.setContentIntent(pendingIntent);
                 startActivity(intent);
             }
         });
@@ -108,7 +127,7 @@ public class OffersFragment extends Fragment {
                     final Product[] values = new Product[dealList.size()];
 
                     for (int j = 0; j <dealList.size(); j++) {
-                        values[j] = new Product(j, dealList.get(j).getName(), new Double(dealList.get(j).getPrice() ) );
+                        values[j] = new Product(j, dealList.get(j).getName(), new Double(dealList.get(j).getPrice() ) ,dealList.get(j).getLatitude(),dealList.get(j).getLongitude());
                     }
 
                     ;

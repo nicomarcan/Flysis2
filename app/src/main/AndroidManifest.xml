@@ -22,7 +22,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".OffersMap" android:label="Mapita" android:theme="@style/AppTheme">
+        <activity android:name=".OffersMap"  android:theme="@style/AppTheme"
+            android:parentActivityName=".MainActivity">
 
         </activity>
 
@@ -41,6 +42,10 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value=".MainActivity" />
     </application>
 
 </manifest>

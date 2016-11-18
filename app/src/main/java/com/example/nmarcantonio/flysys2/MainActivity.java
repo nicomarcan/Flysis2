@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity
     TextView resultTextView;
     final static String DEALS_NAME = "deals";
     private Activity context;
+    private static int currentSect = R.id.nav_flights;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +50,25 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         context = this;
       //  resultTextView = (TextView) findViewById(R.id.result);
+
+
         android.app.FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.content_frame,new FlightsFragment()).commit();
+
+        if (currentSect == R.id.nav_flights) {
+           // Toast.makeText(this,"CABE",Toast.LENGTH_LONG).show();
+            fragmentManager.beginTransaction().replace(R.id.content_frame,new FlightsFragment()).commit();
+        } else if (currentSect == R.id.nav_offers) {
+            fragmentManager.beginTransaction().replace(R.id.content_frame,new OffersFragment()).commit();
+        } else if (currentSect == R.id.nav_airports) {
+
+        } else if (currentSect == R.id.nav_conversor) {
+
+        } else if (currentSect == R.id.nav_bin) {
+
+        } else if (currentSect == R.id.nav_configuration) {
+
+        }
+;
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -108,7 +126,7 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         android.app.FragmentManager fragmentManager = getFragmentManager();
-
+        currentSect = id;
         if (id == R.id.nav_flights) {
             fragmentManager.beginTransaction().replace(R.id.content_frame,new FlightsFragment()).commit();
         } else if (id == R.id.nav_offers) {

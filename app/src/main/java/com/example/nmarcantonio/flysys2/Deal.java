@@ -20,6 +20,14 @@ public class Deal {
         return Html.fromHtml(city.getName()).toString();
    }
 
+    public Double getLatitude(){
+        return city.getLatitude();
+    }
+
+    public Double getLongitude(){
+        return city.getLongitude();
+    }
+
     @Override
     public String toString() {
         return String.format("%s - %d", this.getName(), this.getPrice());

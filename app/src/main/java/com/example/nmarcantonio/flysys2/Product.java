@@ -4,11 +4,15 @@ public class Product {
     private int id;
     private String name;
     private Double price;
+    private Double latitude;
+    private Double longitude;
 
-    public Product(int id, String name, Double price) {
+    public Product(int id, String name, Double price,Double latitude, Double longitude) {
         this.id = id;
         this.name = name;
         this.price = price;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     public void setId(int id) {
@@ -33,5 +37,13 @@ public class Product {
 
     public Double getPrice() {
         return this.price;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
     }
 }
