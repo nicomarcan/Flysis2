@@ -2,8 +2,13 @@ package com.example.nmarcantonio.flysys2;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +34,26 @@ public class FlightsFragment extends Fragment {
         if(context.getSupportActionBar() != null) {
             context.getSupportActionBar().setTitle("Vuelos");
         }
+
+        FloatingActionButton fab = (FloatingActionButton) myView.findViewById(R.id.flight_button);
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, FlightActivity.class);
+
+                PendingIntent pendingIntent =
+                        TaskStackBuilder.create(context)
+                                // add all of DetailsActivity's parents to the stack,
+                                // followed by DetailsActivity itself
+                                .addNextIntentWithParentStack(intent)
+                                .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+                builder.setContentIntent(pendingIntent);
+                startActivity(intent);
+            }
+        });
     }
 }
 
