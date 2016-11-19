@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 /**
  * Created by nmarcantonio on 17/11/16.
@@ -24,6 +25,7 @@ public class FlightsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             myView = inflater.inflate(R.layout.flights_layout, container, false);
+        ((MainActivity)getActivity()).setCurrentSect(R.id.nav_flights);
             return myView;
         }
 
