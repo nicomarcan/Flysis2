@@ -52,7 +52,16 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.nmarcantonio.flysys2.MainActivity" />
         </activity>
-
+	
+	<activity
+            android:name=".FlightInfoDetailActivity"
+            android:label="@string/title_activity_flight"
+            android:parentActivityName=".FlightActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.nmarcantonio.flysys2.FlightInfoDetailActivity" />
+        </activity>
 
     </application>
 
