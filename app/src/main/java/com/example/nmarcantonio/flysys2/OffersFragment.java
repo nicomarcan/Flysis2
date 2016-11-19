@@ -15,7 +15,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -135,6 +140,16 @@ public class OffersFragment extends Fragment {
                     ProductArrayAdapter adapter = new ProductArrayAdapter(context  , values);
                     listView.setAdapter(adapter);
 
+
+                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+                    {
+                        @Override
+                        public void onItemClick(AdapterView<?> listView, View itemView, int position, long itemId)
+                        {
+                            CharSequence text = ((TextView)((RelativeLayout)itemView).getChildAt(1)).getText();
+                            Toast.makeText(context, text+" " + position, Toast.LENGTH_LONG).show();
+                        }
+                    });
 
 
                 }

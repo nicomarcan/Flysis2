@@ -18,9 +18,8 @@
         android:contentDescription="@string/menu_icon" />
     <TextView
         android:id="@+id/offer_info"
-        android:textColor="#FFFFFF"
         android:layout_width="wrap_content"
-        android:textSize="22sp"
+        android:textSize="10sp"
         android:layout_height="wrap_content"
         android:text="@string/offer_info"
         android:layout_below="@+id/offer_photo"
@@ -28,9 +27,8 @@
 
     <TextView
         android:id="@+id/offer_price"
-        android:textColor="#FFFFFF"
         android:layout_width="wrap_content"
-        android:textSize="22sp"
+        android:textSize="10sp"
         android:layout_height="wrap_content"
         android:text="@string/offer_price"
         android:layout_below="@+id/offer_info"

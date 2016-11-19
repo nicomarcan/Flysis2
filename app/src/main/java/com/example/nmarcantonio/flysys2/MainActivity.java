@@ -1,9 +1,13 @@
 package com.example.nmarcantonio.flysys2;
 
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.Fragment;
 import android.app.PendingIntent;
+import android.app.SearchManager;
 import android.app.TaskStackBuilder;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -11,7 +15,9 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -39,6 +45,7 @@ import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -47,6 +54,7 @@ public class MainActivity extends AppCompatActivity
     final static String DEALS_NAME = "deals";
     private Activity context;
     private static int currentSect = R.id.nav_flights;
+    private Menu mMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +64,6 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         context = this;
       //  resultTextView = (TextView) findViewById(R.id.result);
-
 
         android.app.FragmentManager fragmentManager = getFragmentManager();
 
@@ -104,29 +111,13 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
-
-
-        MenuItem searchItem = menu.findItem(R.id.offer_search);
-        SearchView searchView =
-                (SearchView) MenuItemCompat.getActionView(searchItem);
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener(){
-
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                Toast.makeText(context,"HOLAA",Toast.LENGTH_LONG).show();
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
-            }
-        });
-
+        mMenu = menu;
         return super.onCreateOptionsMenu(menu);
     }
 
+    public void setCurrentSect(int num){
+        currentSect = num;
+    }
 
 
     @Override
@@ -141,8 +132,67 @@ public class MainActivity extends AppCompatActivity
             return true;
         }
         if(id == R.id.offer_search){
-            android.app.FragmentManager fragmentManager = getFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.content_frame,new OfferDateFragment()).commit();
+            if(currentSect == R.id.nav_offers){
+
+                android.app.FragmentManager fragmentManager = getFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.content_frame,new OfferDateFragment()).commit();
+                MenuItem searchItem = mMenu.findItem(R.id.offer_search);
+                SearchView searchView =
+                        (SearchView) MenuItemCompat.getActionView(searchItem);
+
+                searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener(){
+
+                    @Override
+                    public boolean onQueryTextSubmit(String query) {
+                        Toast.makeText(context,"HOLAA",Toast.LENGTH_LONG).show();
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onQueryTextChange(String newText) {
+                        return false;
+                    }
+
+
+                });
+
+
+
+                searchView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+
+                    @Override
+                    public void onViewDetachedFromWindow(View arg0) {
+                        getFragmentManager().beginTransaction().replace(R.id.content_frame,new OffersFragment()).commit();
+                    }
+
+                    @Override
+                    public void onViewAttachedToWindow(View arg0) {
+                       // Toast.makeText(context,"JEJE",Toast.LENGTH_LONG).show();
+                    }
+                });
+
+
+
+            }else if(currentSect == R.id.nav_flights){
+                MenuItem searchItem = mMenu.findItem(R.id.offer_search);
+                SearchView searchView =
+                        (SearchView) MenuItemCompat.getActionView(searchItem);
+
+                searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener(){
+
+                    @Override
+                    public boolean onQueryTextSubmit(String query) {
+                        Toast.makeText(context,"HOA",Toast.LENGTH_LONG).show();
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onQueryTextChange(String newText) {
+                        return false;
+                    }
+                });
+            }
+
            /*
             Intent intent = new Intent(this, OfferSearch.class);
 
@@ -172,7 +222,7 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_flights) {
             fragmentManager.beginTransaction().replace(R.id.content_frame,new FlightsFragment()).commit();
         } else if (id == R.id.nav_offers) {
-            fragmentManager.beginTransaction().replace(R.id.content_frame,new OffersFragment()).commit();
+            fragmentManager.beginTransaction().replace(R.id.content_frame,new OffersFragment()).addToBackStack("HOLA").commit();
         } else if (id == R.id.nav_airports) {
 
         } else if (id == R.id.nav_conversor) {
