@@ -140,7 +140,10 @@ public class OffersMap extends AppCompatActivity  {
                             LatLng a =   new LatLng(p.getLatitude(),p.getLongitude());
                             markers.get(position).remove();
                             mMap.addMarker(new MarkerOptions().position(a).title(p.getName().split(",")[0]+'\n'+p.getPrice()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
-                            mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(p.getLatitude(),p.getLongitude())));
+
+                            float zoomLevel = (float)3.0; //This goes up to 21
+                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(p.getLatitude(),p.getLongitude()), zoomLevel));
+
 
                         }
 
@@ -194,7 +197,8 @@ public class OffersMap extends AppCompatActivity  {
             a =   new LatLng(p.getLatitude(),p.getLongitude());
                 markers.get(0).remove();
                 mMap.addMarker(new MarkerOptions().position(a).title(p.getName().split(",")[0]+'\n'+p.getPrice()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(p.getLatitude(),p.getLongitude())));
+            float zoomLevel = (float)3.0; //This goes up to 21
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(p.getLatitude(),p.getLongitude()), zoomLevel));
                 selected = 0;
 
 
