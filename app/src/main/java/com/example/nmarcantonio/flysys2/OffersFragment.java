@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
@@ -25,6 +26,9 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import org.json.JSONObject;
 
@@ -53,6 +57,9 @@ public class OffersFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         new HttpGetTask().execute();
         myView = inflater.inflate(R.layout.offers_layout, container, false);
+
+
+
 
         return myView;
     }
@@ -89,6 +96,7 @@ public class OffersFragment extends Fragment {
                 startActivity(intent);
             }
         });
+
     }
 
     private class HttpGetTask extends AsyncTask<Void, Void, String> {
@@ -150,6 +158,8 @@ public class OffersFragment extends Fragment {
                             Toast.makeText(context, text+" " + position, Toast.LENGTH_LONG).show();
                         }
                     });
+
+
 
 
                 }

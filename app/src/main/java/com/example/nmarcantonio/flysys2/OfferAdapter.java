@@ -12,6 +12,10 @@ import android.widget.TextView;
  * Created by nmarcantonio on 18/11/16.
  */
 
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+
 import java.util.List;
 
 public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.MyViewHolder> {
@@ -22,6 +26,7 @@ public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.MyViewHolder
         public ImageView imageView;
         public TextView nameTextView;
         public TextView priceTextView;
+
 
         public MyViewHolder(View view) {
             super(view);
@@ -47,8 +52,31 @@ public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.MyViewHolder
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         Product prod = offerList.get(position);
-        holder.nameTextView.setText(prod.getName());
+        String [] city = prod.getName().split(",");
+        if(city.length == 2)
+             holder.nameTextView.setText(prod.getName());
+        else
+            holder.nameTextView.setText(city[0]+","+city[2]);
         holder.priceTextView.setText(prod.getPrice().toString());
+
+
+
+
+        ImageView imageView = (ImageView)   holder.imageView;
+
+        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
+                .cacheOnDisk(true)
+                //.showImageOnLoading(R.drawable.ic_loading)
+                //.showImageOnFail(R.drawable.ic_error)     //bajar iconos
+                .build();
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(imageView.getContext())
+                .defaultDisplayImageOptions(defaultOptions)
+                .build();
+        ImageLoader imageLoader = ImageLoader.getInstance();
+        imageLoader.init(config);
+        imageLoader.displayImage("http://itba.edu.ar/sites/default/themes/itba/assets/images/back.jpg", imageView);
+        // Comentar la línea anterior y descomentar la siguiente para ver de que manera el framework muestra una imagen alternativa al no encontrar la solicitada.
+        //imageLoader.displayImage("http://itba.edu.ar/sites/default/themes/itba/assets/images/back2.jpg", imageView);
     }
 
     @Override

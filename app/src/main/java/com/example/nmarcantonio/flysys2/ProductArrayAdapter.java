@@ -8,6 +8,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+
 public class ProductArrayAdapter extends ArrayAdapter<Product> {
     public ProductArrayAdapter(Activity context, Product[] objects) {
         super(context, R.layout.list_view_item, objects);
@@ -28,7 +32,23 @@ public class ProductArrayAdapter extends ArrayAdapter<Product> {
         }
 
         Product product = getItem(position);
-        holder.imageView.setImageResource(R.drawable.ic_menu_white);
+
+        ImageView imageView = (ImageView) convertView.findViewById(R.id.offer_photo);
+
+        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
+                .cacheOnDisk(true)
+                //.showImageOnLoading(R.drawable.ic_loading)
+                //.showImageOnFail(R.drawable.ic_error)     //bajar iconos
+                .build();
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getContext())
+                .defaultDisplayImageOptions(defaultOptions)
+                .build();
+        ImageLoader imageLoader = ImageLoader.getInstance();
+        imageLoader.init(config);
+        imageLoader.displayImage("http://itba.edu.ar/sites/default/themes/itba/assets/images/back.jpg", imageView);
+        // Comentar la línea anterior y descomentar la siguiente para ver de que manera el framework muestra una imagen alternativa al no encontrar la solicitada.
+        //imageLoader.displayImage("http://itba.edu.ar/sites/default/themes/itba/assets/images/back2.jpg", imageView);
+       // holder.imageView.setImageResource(R.drawable.ic_menu_white);
         holder.nameTextView.setText(product.getName());
         Double price = product.getPrice();
         holder.priceTextView.setText(price.toString());
