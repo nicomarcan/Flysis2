@@ -122,7 +122,7 @@ public class OffersFragment extends Fragment {
         mLocationListener = new LocationListener() {
             @Override
             public void onLocationChanged(final Location location) {
-               // Toast.makeText(context,"HOLAA",Toast.LENGTH_LONG).show();
+                Toast.makeText(context,"HOLAA",Toast.LENGTH_LONG).show();
                 //Toast.makeText(context,location.getLatitude()+" "+location.getLongitude(),Toast.LENGTH_LONG).show();
             }
 
