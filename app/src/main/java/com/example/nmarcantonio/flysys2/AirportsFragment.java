@@ -1,7 +1,9 @@
 package com.example.nmarcantonio.flysys2;
 
+import android.Manifest;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -10,6 +12,7 @@ import android.os.Bundle;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
@@ -20,7 +23,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.InputDevice;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,6 +42,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import static android.content.Context.LOCATION_SERVICE;
+import static com.example.nmarcantonio.flysys2.R.id.map;
 
 /**
  * Created by saques on 19/11/16.
@@ -55,6 +62,8 @@ public class AirportsFragment extends Fragment  {
     private ArrayList<Airport> airportList;
     private AirportsFragment ap = this;
     private Integer selected;
+    private String searchRadius = "100";
+
 
     @Nullable
     @Override
@@ -104,20 +113,35 @@ public class AirportsFragment extends Fragment  {
 
         locmanager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
 
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(context,new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION},1);
+            return;
+        }
 
+        locmanager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, loclistener);
+        locmanager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, loclistener);
+        loc = locmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+        new HttpGetTask().execute();
+
+
+
+
+
+
+    }
+
+    public void afterLocationRequest(){
         try {
             locmanager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, loclistener);
             locmanager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, loclistener);
             loc = locmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            new HttpGetTask().execute();
 
         }catch (SecurityException e){
 
-
         }
-
-
-
+        new HttpGetTask().execute();
     }
 
 
@@ -129,7 +153,7 @@ public class AirportsFragment extends Fragment  {
 
             try {
                 URL url = new URL("http://hci.it.itba.edu.ar/v1/api/geo.groovy?method=getairportsbyposition&" + "" +
-                                  "latitude=" + loc.getLatitude() + "&longitude=" + loc.getLongitude() + "&radius=1000");
+                                  "latitude=" + loc.getLatitude() + "&longitude=" + loc.getLongitude() + "&radius=" + searchRadius);
                 urlConnection = (HttpURLConnection) url.openConnection();
                 InputStream in = new BufferedInputStream(urlConnection.getInputStream());
                 return readStream(in);
@@ -161,6 +185,8 @@ public class AirportsFragment extends Fragment  {
 
                 mapView.getMapAsync(this);
 
+
+
             } catch (Exception exception) {
 
             }
@@ -184,7 +210,7 @@ public class AirportsFragment extends Fragment  {
         @Override
         public void onMapReady(GoogleMap googleMap) {
             map = googleMap;
-            map.getUiSettings().setZoomControlsEnabled(false);
+            map.getUiSettings().setZoomControlsEnabled(true);
             map.getUiSettings().setMyLocationButtonEnabled(false);
 
 
@@ -206,17 +232,55 @@ public class AirportsFragment extends Fragment  {
             int i = 0;
             for(Airport  a : airportList){
                 lat =   new LatLng(a.getLatitude(),a.getLongitude());
-                markers.add(i,map.addMarker(new MarkerOptions().position(lat).title(a.getDescription()+'\n')));
+                String splitdesc[] = a.getDescription().split(", ");
+                markers.add(i,map.addMarker(new MarkerOptions().position(lat).title(splitdesc[0] + ", " + splitdesc[1]+'\n')));
                 map.moveCamera(CameraUpdateFactory.newLatLng(lat));
                 i++;
             }
-            Airport p = airportList.get(0);
-            lat =   new LatLng(p.getLatitude(),p.getLongitude());
-            markers.get(0).remove();
-            map.addMarker(new MarkerOptions().position(lat).title(p.getDescription()+'\n').icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
-            float zoomLevel = (float)3.0; //This goes up to 21
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(p.getLatitude(),p.getLongitude()), zoomLevel));
-            selected = 0;
+            lat =   new LatLng(loc.getLatitude(),loc.getLongitude());
+            float zoomLevel = (float)9.0; //This goes up to 21
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(lat, zoomLevel));
+
+
+            final RecyclerView view = (RecyclerView) myView.findViewById(R.id.airport_view);
+
+            if (view != null) {
+
+                AirportAdapter adapter = new AirportAdapter(airportList);
+                LinearLayoutManager mLayoutManager= new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL, false);
+                view.setLayoutManager(mLayoutManager);
+                view.setAdapter(adapter);
+
+
+                view.addOnItemTouchListener(new OfferListener(context, view, new ClickListener() {
+
+                    public void onClick(View view, int position) {
+                        if(selected!=null){
+                            Marker selectedMarker = markers.get(selected);
+                            map.addMarker(new MarkerOptions().position(selectedMarker.getPosition()).title(selectedMarker.getTitle()));
+                        }
+                        selected = position;
+                        Airport p = airportList.get(position);
+                        LatLng a =   new LatLng(p.getLatitude(),p.getLongitude());
+                        markers.get(position).remove();
+                        String splitdesc[] = p.getDescription().split(", ");
+                        map.addMarker(new MarkerOptions().position(a).title(splitdesc[0] + ", " + splitdesc[1]+'\n').icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+
+                        float zoomLevel = (float)11.0; //This goes up to 21
+                        map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(p.getLatitude(),p.getLongitude()), zoomLevel));
+
+
+                    }
+
+
+                    public void onLongClick(View view, int position) {
+
+                    }
+                }));
+
+
+
+            }
 
         }
     }
