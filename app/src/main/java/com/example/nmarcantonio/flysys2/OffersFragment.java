@@ -160,7 +160,8 @@ public class OffersFragment extends Fragment {
 
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mLocationListener);
         mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, mLocationListener);
-       loc = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+       loc = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
 
         new GetCityGPS().execute();
 
@@ -314,7 +315,8 @@ public class OffersFragment extends Fragment {
                 ArrayList<City> cityList = gson.fromJson(jsonFragment, listType);
                 if(cityList.size()>0){
                     currentCity = cityList.get(0);
-                  //  Toast.makeText(context,cityList.get(0).getName(),Toast.LENGTH_LONG).show();
+
+                //   Toast.makeText(context,cityList.get(0).getName(),Toast.LENGTH_LONG).show();
                     new HttpGetTask().execute();
                 }
 
@@ -389,12 +391,14 @@ public class OffersFragment extends Fragment {
 
                 String jsonFragment = obj.getString(OffersFragment.FLIGHTS_NAME);
 
-                //Toast.makeText(context,jsonFragment,Toast.LENGTH_LONG).show();
+                Toast.makeText(context,jsonFragment,Toast.LENGTH_LONG).show();
+
                 ArrayList<Flight> flightList = gson.fromJson(jsonFragment, listType);
-                if(flightList.size()==1){
+               if(flightList.size()==1){
                   //  currentCity = cityList.get(0);
                     //NOSE PORQUE NO ANDA
-                   // Toast.makeText(context,flightList.get(0).getNumber()+" HOL",Toast.LENGTH_LONG).show();
+                   Toast.makeText(context,flightList.get(0).adults,Toast.LENGTH_LONG).show();
+
                    // new HttpGetTask().execute();
                 }
 

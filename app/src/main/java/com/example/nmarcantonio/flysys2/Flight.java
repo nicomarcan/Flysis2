@@ -1,25 +1,27 @@
 package com.example.nmarcantonio.flysys2;
 
-import com.google.gson.annotations.Expose;
+
 
 /**
  * Created by Usuario on 19/11/2016.
  */
 //TODO agregarle variables en caso de necesitar
 public class Flight {
-    private int number;
+    private String number;
     private Airline airline;
+    public String adults;
 
-    public Flight(Airline airline,int number){
-        this.airline = airline;
-        this.number = number;
-    }
+   public Flight(String number,Airline airline,String adults){
+       this.number = number;
+       this.airline = airline;
+       this.adults = adults;
+   }
 
     public Airline getAirline() {
         return airline;
     }
 
-    public Integer getNumber() {
+    public String getNumber() {
         return number;
     }
 

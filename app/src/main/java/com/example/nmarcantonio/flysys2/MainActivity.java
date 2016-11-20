@@ -139,7 +139,20 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+
+            Intent intent = new Intent(this, SettingsActivity.class);
+
+            PendingIntent pendingIntent =
+                    TaskStackBuilder.create(this)
+                            // add all of DetailsActivity's parents to the stack,
+                            // followed by DetailsActivity itself
+                            .addNextIntentWithParentStack(intent)
+                            .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+            builder.setContentIntent(pendingIntent);
+            startActivity(intent);
+
         }
         if(id == R.id.offer_search){
             if(currentSect == R.id.nav_offers){
