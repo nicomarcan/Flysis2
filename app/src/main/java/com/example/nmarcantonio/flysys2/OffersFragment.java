@@ -251,7 +251,7 @@ public class OffersFragment extends Fragment {
             } catch (Exception exception) {
                 //  resultTextView.append(new Integer("10").toString());
             }
-            ;
+
         }
 
         private String readStream(InputStream inputStream) {
