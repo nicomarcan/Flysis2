@@ -45,7 +45,10 @@ import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
 
 import static android.content.Context.LOCATION_SERVICE;
 
@@ -58,11 +61,16 @@ public class OffersFragment extends Fragment {
     View myView;
     final static String DEALS_NAME = "deals";
     final static String CITIES_NAME = "cities";
+    final static String FLIGHTS_NAME ="flights";
     private AppCompatActivity context;
     private Location loc;
     private LocationListener mLocationListener;
     private LocationManager mLocationManager;
     private City currentCity;
+    private String destId;
+    private Double offerPrice;
+
+    private HashMap<String,String> cityToId = new HashMap<>();
 
 
     @Nullable
@@ -171,7 +179,7 @@ public class OffersFragment extends Fragment {
             try {
 
                 //URL url= new URL("hci.it.itba.edu.ar/v1/api/geo.groovy?method=getcitiesbyposition&latitude="+loc.getLatitude()+"&longitude="+loc.getLongitude()+"&radius=100");
-                URL url = new URL("http://hci.it.itba.edu.ar/v1/api/booking.groovy?method=getflightdeals&from="+currentCity.getId());
+                URL url = new URL("http://hci.it.itba.edu.ar/v1/api/booking.groovy?method=getlastminuteflightdeals&from="+currentCity.getId());
                 urlConnection = (HttpURLConnection) url.openConnection();
                 InputStream in = new BufferedInputStream(urlConnection.getInputStream());
                 return readStream(in);
@@ -208,6 +216,7 @@ public class OffersFragment extends Fragment {
 
                     for (int j = 0; j <dealList.size(); j++) {
                         values[j] = new Product(j, dealList.get(j).getName(), new Double(dealList.get(j).getPrice() ) ,dealList.get(j).getLatitude(),dealList.get(j).getLongitude());
+                        cityToId.put(dealList.get(j).getName(),dealList.get(j).getId());
                     }
 
                     ;
@@ -221,8 +230,14 @@ public class OffersFragment extends Fragment {
                         @Override
                         public void onItemClick(AdapterView<?> listView, View itemView, int position, long itemId)
                         {
-                            CharSequence text = ((TextView)((RelativeLayout)itemView).getChildAt(1)).getText();
-                            Toast.makeText(context, text+" " + position, Toast.LENGTH_LONG).show();
+                            CharSequence text = values[position].getName();
+
+
+                            destId = cityToId.get(text);
+                            offerPrice = values[position].getPrice();
+                            new getOfferIdAndNum().execute();
+                           // Toast.makeText(context,currentCity.getId() +" "+ cityToId.get(text), Toast.LENGTH_LONG).show();
+
                         }
                     });
 
@@ -236,7 +251,7 @@ public class OffersFragment extends Fragment {
             } catch (Exception exception) {
                 //  resultTextView.append(new Integer("10").toString());
             }
-            ;
+
         }
 
         private String readStream(InputStream inputStream) {
@@ -299,10 +314,89 @@ public class OffersFragment extends Fragment {
                 ArrayList<City> cityList = gson.fromJson(jsonFragment, listType);
                 if(cityList.size()>0){
                     currentCity = cityList.get(0);
-                    Toast.makeText(context,cityList.get(0).getName(),Toast.LENGTH_LONG).show();
+                  //  Toast.makeText(context,cityList.get(0).getName(),Toast.LENGTH_LONG).show();
                     new HttpGetTask().execute();
                 }
 
+
+
+            } catch (Exception exception) {
+                //  resultTextView.append(new Integer("10").toString());
+            }
+            ;
+        }
+
+        private String readStream(InputStream inputStream) {
+            try {
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                int i = inputStream.read();
+                while (i != -1) {
+                    outputStream.write(i);
+                    i = inputStream.read();
+                }
+                return outputStream.toString();
+
+            } catch (IOException e) {
+                return "";
+            }
+        }
+    }
+
+
+
+
+    private class getOfferIdAndNum extends AsyncTask<Void, Void, String> {
+        @Override
+        protected String doInBackground(Void... params) {
+
+            HttpURLConnection urlConnection = null;
+
+            Calendar c = Calendar.getInstance();
+            c.add(Calendar.DATE, 2);
+
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            String formattedDate = df.format(c.getTime());
+
+
+            try {
+
+                URL url= new URL("http://hci.it.itba.edu.ar/v1/api/booking.groovy?method=getonewayflights&from="+currentCity.getId()+"&to="+destId+"&dep_date="+formattedDate+"&adults=1&children=0&infants=0&min_price="+offerPrice+"&max_price="+offerPrice);
+                urlConnection = (HttpURLConnection) url.openConnection();
+                InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+                return readStream(in);
+            } catch (Exception exception) {
+                exception.printStackTrace();
+                return "Unexpected Error";
+            } finally {
+                if (urlConnection != null)
+                    urlConnection.disconnect();
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            try {
+                JSONObject obj = new JSONObject(result);
+
+
+                if (!obj.has(OffersFragment.FLIGHTS_NAME))
+                    return;
+
+
+                Gson gson = new Gson();
+                Type listType = new TypeToken<ArrayList<Flight>>() {
+                }.getType();
+
+                String jsonFragment = obj.getString(OffersFragment.FLIGHTS_NAME);
+
+                //Toast.makeText(context,jsonFragment,Toast.LENGTH_LONG).show();
+                ArrayList<Flight> flightList = gson.fromJson(jsonFragment, listType);
+                if(flightList.size()==1){
+                  //  currentCity = cityList.get(0);
+                    //NOSE PORQUE NO ANDA
+                   // Toast.makeText(context,flightList.get(0).getNumber()+" HOL",Toast.LENGTH_LONG).show();
+                   // new HttpGetTask().execute();
+                }
 
 
             } catch (Exception exception) {

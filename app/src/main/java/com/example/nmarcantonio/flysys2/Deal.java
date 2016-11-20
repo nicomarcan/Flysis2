@@ -20,6 +20,8 @@ public class Deal {
         return Html.fromHtml(city.getName()).toString();
    }
 
+    public String getId(){return city.getId();}
+
     public Double getLatitude(){
         return city.getLatitude();
     }

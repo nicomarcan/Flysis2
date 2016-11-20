@@ -1,5 +1,6 @@
 package com.example.nmarcantonio.flysys2;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Fragment;
@@ -7,11 +8,13 @@ import android.app.PendingIntent;
 import android.app.SearchManager;
 import android.app.TaskStackBuilder;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.MenuItemCompat;
@@ -94,6 +97,13 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION},1);
+            return;
+        }
     }
 
     @Override
@@ -224,7 +234,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_offers) {
             fragmentManager.beginTransaction().replace(R.id.content_frame,new OffersFragment()).addToBackStack("HOLA").commit();
         } else if (id == R.id.nav_airports) {
-
+            fragmentManager.beginTransaction().replace(R.id.content_frame,new AirportsFragment()).commit();
         } else if (id == R.id.nav_conversor) {
 
         } else if (id == R.id.nav_bin) {
