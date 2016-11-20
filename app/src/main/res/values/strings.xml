@@ -4,6 +4,9 @@
     <string name="joke">Fotito</string>
     <string name="offer_info">Info del vuelo</string>
     <string name="offer_price">Precio del vuelo</string>
+    <string name="airport_info">Aeropuerto</string>
+    <string name="airport_info_2">Ciudad</string>
+    <string name="airport_distance">Distancia</string>
     <string name="load_data">Data</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
