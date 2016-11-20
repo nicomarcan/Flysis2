@@ -39,6 +39,8 @@
             app:expandedTitleMarginStart="48dp"
             app:expandedTitleMarginEnd="64dp"
             android:fitsSystemWindows="true"
+            android:clickable="true"
+
             >
 
             <fragment
@@ -60,7 +62,8 @@
                 android:layout_height="?attr/actionBarSize"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                 app:layout_collapseMode="pin"
-                android:layout_marginTop="25dp"/>
+                android:layout_marginTop="25dp"
+                android:background="?attr/selectableItemBackground"/>
 
         </android.support.design.widget.CollapsingToolbarLayout>
 
