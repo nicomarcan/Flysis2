@@ -64,17 +64,7 @@ public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.MyViewHolder
 
         ImageView imageView = (ImageView)   holder.imageView;
 
-        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
-                .cacheOnDisk(true)
-                //.showImageOnLoading(R.drawable.ic_loading)
-                //.showImageOnFail(R.drawable.ic_error)     //bajar iconos
-                .build();
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(imageView.getContext())
-                .defaultDisplayImageOptions(defaultOptions)
-                .build();
-        ImageLoader imageLoader = ImageLoader.getInstance();
-        imageLoader.init(config);
-        imageLoader.displayImage("http://itba.edu.ar/sites/default/themes/itba/assets/images/back.jpg", imageView);
+        new GetFlickrPhotoTask(holder.imageView.getContext(),  imageView).execute(prod.getName().split(",")[0].replaceAll(" ",""));
         // Comentar la línea anterior y descomentar la siguiente para ver de que manera el framework muestra una imagen alternativa al no encontrar la solicitada.
         //imageLoader.displayImage("http://itba.edu.ar/sites/default/themes/itba/assets/images/back2.jpg", imageView);
     }

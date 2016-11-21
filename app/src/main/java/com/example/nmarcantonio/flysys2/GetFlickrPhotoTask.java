@@ -1,6 +1,7 @@
 package com.example.nmarcantonio.flysys2;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -36,11 +37,17 @@ import java.util.ArrayList;
 
 public class GetFlickrPhotoTask extends AsyncTask<String, Void, String> {
 
-    private View view;
 
-    public GetFlickrPhotoTask(View view) {
-        this.view = view;
+    private Context context;
+
+    public GetFlickrPhotoTask(Context context, ImageView imageView) {
+        this.context = context;
+        this.imageView = imageView;
     }
+
+    private ImageView imageView;
+
+
 
     @Override
     protected String doInBackground(String... strings) {
@@ -83,14 +90,14 @@ public class GetFlickrPhotoTask extends AsyncTask<String, Void, String> {
                  jsonFragment = obj.getString("photo");
 
                 ArrayList<FlickrImg> imgs = gson.fromJson(jsonFragment, listType);
-                ImageView imageView = (ImageView) view.findViewById(R.id.offer_photo);
+
 
                 DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
                         .cacheOnDisk(true)
                         //.showImageOnLoading(R.drawable.ic_loading)
                         //.showImageOnFail(R.drawable.ic_error)     //bajar iconos
                         .build();
-                ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(view.getContext())
+                ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context)
                         .defaultDisplayImageOptions(defaultOptions)
                         .build();
                 ImageLoader imageLoader = ImageLoader.getInstance();

@@ -36,7 +36,7 @@ public class ProductArrayAdapter extends ArrayAdapter<Product> {
 
         Product product = getItem(position);
 
-        new GetFlickrPhotoTask(convertView).execute(product.getName().split(",")[0].replaceAll(" ",""));
+        new GetFlickrPhotoTask(convertView.getContext(),  (ImageView)convertView.findViewById(R.id.offer_photo)).execute(product.getName().split(",")[0].replaceAll(" ",""));
         // Comentar la línea anterior y descomentar la siguiente para ver de que manera el framework muestra una imagen alternativa al no encontrar la solicitada.
         //imageLoader.displayImage("http://itba.edu.ar/sites/default/themes/itba/assets/images/back2.jpg", imageView);
        // holder.imageView.setImageResource(R.drawable.ic_menu_white);
