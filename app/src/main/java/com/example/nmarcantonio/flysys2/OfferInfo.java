@@ -11,13 +11,25 @@ public class OfferInfo {
     private String srcAir;
     private String dstAir;
     private String price;
+    private String depDate;
+    private String arrDate;
 
-    public OfferInfo(String id, String number, String srcAir, String dstAir, String price) {
+    public String getDepDate() {
+        return depDate;
+    }
+
+    public String getArrDate() {
+        return arrDate;
+    }
+
+    public OfferInfo(String id, String number, String srcAir, String dstAir, String price, String depDate, String arrDate) {
         this.id = id;
         this.number = number;
         this.srcAir = srcAir;
         this.dstAir = dstAir;
         this.price = price;
+        this.depDate = depDate;
+        this.arrDate = arrDate;
     }
 
 

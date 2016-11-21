@@ -12,4 +12,6 @@ public class OfferInfoViewHolder {
     public TextView srcAirView;
     public TextView dstAirView;
     public TextView priceView;
+    public TextView depDateView;
+    public TextView arrDateView;
 }

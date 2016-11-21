@@ -44,5 +44,13 @@ public class Flight {
         return outbound_routes;
     }
 
+    public String getDepDate(){
+        return outbound_routes[0].getSegments()[0].getDeparture().getDate();
+    }
+
+    public String getArrDate(){
+        return outbound_routes[0].getSegments()[0].getArrival().getDate();
+    }
+
 
 }

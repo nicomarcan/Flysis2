@@ -34,6 +34,7 @@ public class GetOfferInfo extends AsyncTask<Integer, Void, String> {
     private String currentCity;
     private String destId;
     private Double offerPrice;
+    private Integer days;
 
 
     public GetOfferInfo(Activity act, String currentCity, String destId, Double offerPrice) {
@@ -50,8 +51,8 @@ public class GetOfferInfo extends AsyncTask<Integer, Void, String> {
         HttpURLConnection urlConnection = null;
 
         Calendar c = Calendar.getInstance();
-
-        c.add(Calendar.DATE, params[0]);
+        days = params[0];
+        c.add(Calendar.DATE, days);
 
 
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
@@ -82,8 +83,9 @@ public class GetOfferInfo extends AsyncTask<Integer, Void, String> {
             JSONObject obj = new JSONObject(result);
 
 
-            if (!obj.has(OffersFragment.FLIGHTS_NAME)){
-                new GetOfferInfo(act,currentCity,destId,offerPrice).execute(3);
+            if (!obj.has(OffersFragment.FLIGHTS_NAME )){
+                if(days < 9)
+                    new GetOfferInfo(act,currentCity,destId,offerPrice).execute(days+1);
                 return;
             }
 
@@ -110,14 +112,15 @@ public class GetOfferInfo extends AsyncTask<Integer, Void, String> {
                 final ListView listView = (ListView) act.findViewById(R.id.offer_list_view);
                 Flight f = flightList.get(0);
 
-                values[0]=new OfferInfo(f.getId(),f.getNumber(),f.getsrcAir() ,f.getdstAir(),f.getPrice()   );
+                values[0]=new OfferInfo(f.getId(),f.getNumber(),f.getsrcAir() ,f.getdstAir(),f.getPrice() ,f.getDepDate(),f.getArrDate()  );
                 OfferInfoAdapter adapter = new OfferInfoAdapter(act  ,values);
                 listView.setAdapter(adapter);
 
 
             }else{
                 //Toast.makeText(context,"cabe",Toast.LENGTH_SHORT).show();
-                new GetOfferInfo(act,currentCity,destId,offerPrice).execute(3);
+                if(days < 9)
+                    new GetOfferInfo(act,currentCity,destId,offerPrice).execute(days+1);
             }
 
 

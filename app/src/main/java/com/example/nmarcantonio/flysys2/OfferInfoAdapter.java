@@ -32,6 +32,8 @@ public class OfferInfoAdapter extends ArrayAdapter<OfferInfo> {
             holder.srcAirView = (TextView) convertView.findViewById(R.id.offer_info_source_air);
             holder.dstAirView =(TextView) convertView.findViewById(R.id.offer_info_dest_air) ;
             holder.priceView = (TextView) convertView.findViewById(R.id.offer_info_price);
+            holder.depDateView =(TextView) convertView.findViewById(R.id.offer_info_dep_date) ;
+            holder.arrDateView = (TextView) convertView.findViewById(R.id.offer_info_arr_date);
 
 
             convertView.setTag(holder);
@@ -51,6 +53,10 @@ public class OfferInfoAdapter extends ArrayAdapter<OfferInfo> {
         holder.dstAirView.setText(info.getDstAir());
 
         holder.priceView.setText(info.getPrice());
+
+        holder.depDateView.setText(info.getDepDate());
+
+        holder.arrDateView.setText(info.getArrDate());
         return convertView;
     }
 }
