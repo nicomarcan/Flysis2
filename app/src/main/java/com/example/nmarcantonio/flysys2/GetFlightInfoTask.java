@@ -1,13 +1,18 @@
 package com.example.nmarcantonio.flysys2;
 
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.icu.util.DateInterval;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -65,9 +70,7 @@ public class GetFlightInfoTask extends AsyncTask<String, Void, String> implement
 
     GetFlightInfoTask(View flightView, MapFragment mapFragment, Context context) {
         super();
-        Log.d("hasdfasdf", "aasfdasdf");
         this.flightView = flightView;
-        this.map = map;
         mapFragment.getMapAsync(this);
         lock = new ReentrantLock();
         mapCond = lock.newCondition();
@@ -91,7 +94,6 @@ public class GetFlightInfoTask extends AsyncTask<String, Void, String> implement
     }
     @Override
     protected String doInBackground(String... params) {
-        Log.d("hasdfasdf2", "aasfdasdf");
         int count = params.length;
         if (count != 2) {
             return null;
@@ -109,15 +111,11 @@ public class GetFlightInfoTask extends AsyncTask<String, Void, String> implement
                     .appendQueryParameter("airline_id", params[0])
                     .appendQueryParameter("flight_number", params[1])
                     .build();
-            Log.d("uri", uri.toString());
             conn = (HttpURLConnection) new URL(uri.toString()).openConnection();
-            Log.d("uri2", conn.toString());
             InputStream in = new BufferedInputStream(conn.getInputStream());
-            Log.d("uri3", uri.toString());
             return readStream(in);
         } catch (Exception e) {
             e.printStackTrace();
-            Log.d("err", "fallo la conexion");
             return null;
         } finally {
             if (conn != null) {
@@ -128,12 +126,10 @@ public class GetFlightInfoTask extends AsyncTask<String, Void, String> implement
 
     @Override
     protected void onPostExecute(String result) {
-        lock.lock();
-        Log.d("caca", "onPostExecute: llego");
+
         try {
             JSONObject obj = new JSONObject(result);
             if (!obj.has("status")) {
-                Log.d("return", "error");
                 return;
             }
             else {
@@ -143,11 +139,9 @@ public class GetFlightInfoTask extends AsyncTask<String, Void, String> implement
 
                 String jsonFragment = obj.getString("status");
                 final FlightStatus fi = gson.fromJson(jsonFragment, listType);
-                Log.d("airline", fi.airline.name);
-                Log.d("number", String.valueOf(fi.number));
                 ((TextView)flightView.findViewById(R.id.flight_info_number)).setText("Vuelo " + fi.number);
-                ((TextView)flightView.findViewById(R.id.flight_origin_content)).setText(fi.departure.airport.city.getName().split(",")[0]);
-                ((TextView)flightView.findViewById(R.id.flight_destination_content_2)).setText(fi.arrival.airport.city.getName().split(",")[0]);
+                ((TextView)flightView.findViewById(R.id.flight_origin_content)).setText(fi.departure.airport.city.name.split(",")[0]);
+                ((TextView)flightView.findViewById(R.id.flight_destination_content_2)).setText(fi.arrival.airport.city.name.split(",")[0]);
                 String statusString;
                 String statusDescription = "";
                 int statusColor;
@@ -187,6 +181,43 @@ public class GetFlightInfoTask extends AsyncTask<String, Void, String> implement
                 ((TextView)flightView.findViewById(R.id.flight_info_status)).setText(statusString);
                 ((TextView)flightView.findViewById(R.id.flight_info_status_description)).setText(statusDescription);
 
+                View detailView = flightView.findViewById(R.id.flight_info_detail);
+                detailView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(context, FlightInfoDetailActivity.class);
+
+                        PendingIntent pendingIntent =
+                                TaskStackBuilder.create(context)
+                                        .addNextIntentWithParentStack(intent)
+                                        .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+                        builder.setContentIntent(pendingIntent);
+                        intent.putExtra("flight_info", fi);
+                        context.startActivity(intent);
+                    }
+                });
+
+                View commentView = flightView.findViewById(R.id.flight_comments);
+                commentView.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(context, FlightCommentsActivity.class);
+
+                        PendingIntent pendingIntent =
+                                TaskStackBuilder.create(context)
+                                        .addNextIntentWithParentStack(intent)
+                                        .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+                        builder.setContentIntent(pendingIntent);
+                        intent.putExtra("flight_info", fi);
+                        context.startActivity(intent);
+                    }
+                });
+                lock.lock();
                 while (!mapInit) {
                     try {
                         mapCond.await();
@@ -196,8 +227,9 @@ public class GetFlightInfoTask extends AsyncTask<String, Void, String> implement
                         return;
                     }
                 }
-                LatLng departure = new LatLng(fi.departure.airport.city.getLatitude(), fi.departure.airport.city.getLongitude());
-                LatLng arrival = new LatLng(fi.arrival.airport.city.getLatitude(), fi.arrival.airport.city.getLongitude());
+                lock.unlock();
+                LatLng departure = new LatLng(fi.departure.airport.city.latitude, fi.departure.airport.city.longitude);
+                LatLng arrival = new LatLng(fi.arrival.airport.city.latitude, fi.arrival.airport.city.longitude);
 
                 Drawable plane = context.getResources().getDrawable(R.drawable.ic_flight_black_24dp);
                 Drawable arrow = context.getResources().getDrawable(R.drawable.ic_keyboard_arrow_up_black_24dp);
@@ -227,10 +259,9 @@ public class GetFlightInfoTask extends AsyncTask<String, Void, String> implement
             Log.d("err", "fallo la conexion");
 
         }
-        lock.unlock();
+        ;
     }
     private String readStream(InputStream inputStream) {
-        Log.d("AAAA", "readStream: llego");
         try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             int i = inputStream.read();

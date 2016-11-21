@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/flight_comment_order_button"
+        android:icon="@drawable/ic_sort_white_24dp"
+        app:showAsAction="always"
+        android:title="Vuelo xxx"
+        android:orderInCategory="1"
+        >
+        <menu>
+            <item
+                android:id="@+id/orderDescending"
+                android:title="Ordenar de mayor a menor"
+                android:orderInCategory="1"
+                />
+            <item
+                android:id="@+id/orderAscending"
+                android:title="Ordenar de menor a mayor"
+                android:orderInCategory="2">
+            </item>
+        </menu>
+    </item>
+    <item
+        android:id="@+id/flight_comment_refresh_button"
+        android:icon="@drawable/ic_refresh_white_24dp"
+        app:showAsAction="always"
+        android:orderInCategory="0"/>
+</menu>

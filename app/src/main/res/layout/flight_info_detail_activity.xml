@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="20dp"
+                android:id="@+id/flight_detail_rl_1"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Estado"
+                        android:id="@+id/flight_info_status"
+                        android:textColor="@color/colorBlack"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@id/flight_info_status"
+                        android:id="@+id/flight_info_status_content"
+                        android:textColor="@color/colorGrey"
+                        android:gravity="end"
+                        android:layout_alignParentEnd="true"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Aerolinea"
+                        android:id="@+id/flight_info_airline"
+                        android:textColor="@color/colorBlack"
+                        android:gravity="start"
+                        android:layout_alignParentStart="true"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@id/flight_info_airline"
+                        android:id="@+id/flight_info__airline_content"
+                        android:textColor="@color/colorGrey"
+                        android:gravity="end"
+                        android:layout_alignParentEnd="true"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Origen"
+                        android:id="@+id/flight_info_origin"
+                        android:textColor="@color/colorBlack"
+                        android:layout_alignParentStart="true"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@id/flight_info_origin"
+                        android:id="@+id/flight_info_origin_content"
+                        android:textColor="@color/colorGrey"
+                        android:layout_alignParentEnd="true"
+                        android:gravity="end"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Aeropuerto de origen"
+                        android:id="@+id/flight_info_origin_airport"
+                        android:textColor="@color/colorBlack"
+                        android:layout_alignParentStart="true"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@id/flight_info_origin_airport"
+                        android:id="@+id/flight_info_origin_airport_content"
+                        android:textColor="@color/colorGrey"
+                        android:layout_alignParentEnd="true"
+                        android:gravity="end"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Destino"
+                        android:id="@+id/flight_info_destination"
+                        android:textColor="@color/colorBlack"
+                        android:gravity="start"
+                        android:layout_alignParentStart="true"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@id/flight_info_destination"
+                        android:id="@+id/flight_info_destination_content"
+                        android:textColor="@color/colorGrey"
+                        android:gravity="end"
+                        android:layout_alignParentEnd="true"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Aeropuerto de destino"
+                        android:id="@+id/flight_info_destination_airport"
+                        android:textColor="@color/colorBlack"
+                        android:gravity="start"
+                        android:layout_alignParentStart="true"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@id/flight_info_destination_airport"
+                        android:id="@+id/flight_info_destination_airport_content"
+                        android:textColor="@color/colorGrey"
+                        android:gravity="end"
+                        android:layout_alignParentEnd="true"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Terminal de salida"
+                        android:id="@+id/flight_info_departure_airport_terminal"
+                        android:textColor="@color/colorBlack"
+                        android:gravity="start"
+                        android:layout_alignParentStart="true"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@id/flight_info_departure_airport_terminal"
+                        android:id="@+id/flight_info_departure_airport_terminal_content"
+                        android:textColor="@color/colorGrey"
+                        android:text="3 B"
+                        android:gravity="end"
+                        android:layout_alignParentEnd="true"/>
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Terminal de llegada"
+                        android:id="@+id/flight_info_arrival_airport_terminal"
+                        android:textColor="@color/colorBlack"
+                        android:gravity="start"
+                        android:layout_alignParentStart="true"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@id/flight_info_arrival_airport_terminal"
+                        android:id="@+id/flight_info_arrival_airport_terminal_content"
+                        android:textColor="@color/colorGrey"
+                        android:gravity="end"
+                        android:layout_alignParentEnd="true"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Fecha de salida"
+                        android:id="@+id/flight_info_departure_date"
+                        android:textColor="@color/colorBlack"
+                        android:layout_alignParentStart="true"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@id/flight_info_departure_date"
+                        android:gravity="end"
+                        android:layout_alignParentEnd="true"
+                        android:id="@+id/flight_info_departure_date_content"
+                        android:textColor="@color/colorGrey"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Hora de abordaje"
+                        android:id="@+id/flight_info_boarding_time"
+                        android:textColor="@color/colorBlack"
+                        android:layout_alignParentStart="true"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@id/flight_info_boarding_time"
+                        android:gravity="end"
+                        android:layout_alignParentEnd="true"
+                        android:id="@+id/flight_info_boarding_time_content"
+                        android:textColor="@color/colorGrey"
+                        android:text="Buenos Aires"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Hora programada de abordaje"
+                        android:id="@+id/flight_info_scheduled_boarding_time"
+                        android:textColor="@color/colorBlack"
+                        android:layout_alignParentStart="true"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@id/flight_info_scheduled_boarding_time"
+                        android:gravity="end"
+                        android:layout_alignParentEnd="true"
+                        android:id="@+id/flight_info_scheduled_boarding_time_content"
+                        android:textColor="@color/colorGrey"
+                        android:text="Buenos Aires"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Hora de salida"
+                        android:id="@+id/flight_info_departure_time"
+                        android:textColor="@color/colorBlack"
+                        android:layout_alignParentStart="true"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@id/flight_info_departure_time"
+                        android:gravity="end"
+                        android:layout_alignParentEnd="true"
+                        android:id="@+id/flight_info_departure_time_content"
+                        android:textColor="@color/colorGrey"
+                        android:text="Buenos Aires"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Hora programada de salida"
+                        android:id="@+id/flight_info_scheduled_departure_time"
+                        android:textColor="@color/colorBlack"
+                        android:layout_alignParentStart="true"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@id/flight_info_scheduled_departure_time"
+                        android:gravity="end"
+                        android:layout_alignParentEnd="true"
+                        android:id="@+id/flight_info_scheduled_departure_time_content"
+                        android:textColor="@color/colorGrey"
+                        android:text="Buenos Aires"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Hora de llegada"
+                        android:id="@+id/flight_info_arrival_time"
+                        android:textColor="@color/colorBlack"
+                        android:gravity="start"
+                        android:layout_alignParentStart="true"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@id/flight_info_arrival_time"
+                        android:id="@+id/flight_info_arrival_time_content"
+                        android:textColor="@color/colorGrey"
+                        android:text="Miami"
+                        android:gravity="end"
+                        android:layout_alignParentEnd="true"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Hora programada de llegada"
+                        android:id="@+id/flight_info_scheduled_arrival_time"
+                        android:textColor="@color/colorBlack"
+                        android:gravity="start"
+                        android:layout_alignParentStart="true"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@id/flight_info_scheduled_arrival_time"
+                        android:id="@+id/flight_info_scheduled_arrival_time_content"
+                        android:textColor="@color/colorGrey"
+                        android:text="Miami"
+                        android:gravity="end"
+                        android:layout_alignParentEnd="true"/>
+                </RelativeLayout>
+
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+    </LinearLayout>
+</ScrollView>

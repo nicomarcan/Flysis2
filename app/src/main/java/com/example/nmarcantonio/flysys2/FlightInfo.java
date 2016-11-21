@@ -1,10 +1,12 @@
 package com.example.nmarcantonio.flysys2;
 
+import java.io.Serializable;
+
 /**
  * Created by traie_000 on 17/11/2016.
  */
 
-public class FlightInfo {
+public class FlightInfo implements Serializable{
     AirportInfo airport;
     String scheduled_time;
     String actual_time;
