@@ -127,6 +127,9 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    public Menu getmMenu(){
+        return mMenu;
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -174,21 +177,6 @@ public class MainActivity extends AppCompatActivity
                 SearchView searchView =
                         (SearchView) MenuItemCompat.getActionView(searchItem);
 
-                searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener(){
-
-                    @Override
-                    public boolean onQueryTextSubmit(String query) {
-                        Toast.makeText(context,"HOLAA",Toast.LENGTH_LONG).show();
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onQueryTextChange(String newText) {
-                        return false;
-                    }
-
-
-                });
 
 
 

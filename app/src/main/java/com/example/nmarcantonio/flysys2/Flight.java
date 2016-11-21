@@ -1,28 +1,28 @@
 package com.example.nmarcantonio.flysys2;
 
-
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by Usuario on 19/11/2016.
  */
-//TODO agregarle variables en caso de necesitar
 public class Flight {
-    private String number;
-    private Airline airline;
-    public String adults;
 
-   public Flight(String number,Airline airline,String adults){
-       this.number = number;
-       this.airline = airline;
-       this.adults = adults;
-   }
 
-    public Airline getAirline() {
-        return airline;
+    private OutBoundRoute outbound_routes[];
+
+
+    public Flight(OutBoundRoute outbound_routes[]) {
+        this.outbound_routes = outbound_routes;
     }
 
     public String getNumber() {
-        return number;
+        return outbound_routes[0].getSegments()[0].getNumber();
+
+    }
+
+    public String getId(){
+        return outbound_routes[0].getSegments()[0].getAirline().getId();
     }
 
 
