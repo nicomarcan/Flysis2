@@ -6,12 +6,14 @@ import android.app.Fragment;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -354,7 +356,7 @@ public class OffersFragment extends Fragment {
             HttpURLConnection urlConnection = null;
 
             Calendar c = Calendar.getInstance();
-            c.add(Calendar.DATE, 2);
+            c.add(Calendar.DATE, 3);
 
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
             String formattedDate = df.format(c.getTime());
@@ -391,13 +393,15 @@ public class OffersFragment extends Fragment {
 
                 String jsonFragment = obj.getString(OffersFragment.FLIGHTS_NAME);
 
-                Toast.makeText(context,jsonFragment,Toast.LENGTH_LONG).show();
+               // Toast.makeText(context,jsonFragment,Toast.LENGTH_LONG).show();
 
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+               Toast.makeText(context, prefs.getString("interval_list",""), Toast.LENGTH_LONG).show();
                 ArrayList<Flight> flightList = gson.fromJson(jsonFragment, listType);
                if(flightList.size()==1){
                   //  currentCity = cityList.get(0);
                     //NOSE PORQUE NO ANDA
-                   Toast.makeText(context,flightList.get(0).adults,Toast.LENGTH_LONG).show();
+                 //  Toast.makeText(context,flightList.get(0).adults,Toast.LENGTH_LONG).show();
 
                    // new HttpGetTask().execute();
                 }
