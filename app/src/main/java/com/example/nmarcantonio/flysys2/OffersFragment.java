@@ -1,43 +1,33 @@
 package com.example.nmarcantonio.flysys2;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import org.json.JSONObject;
 
@@ -48,9 +38,7 @@ import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 
 import static android.content.Context.LOCATION_SERVICE;
@@ -122,6 +110,45 @@ public class OffersFragment extends Fragment {
 
 
 
+        MenuItem searchItem = ((MainActivity)getActivity()).getmMenu().findItem(R.id.offer_search);
+        SearchView searchView =
+                (SearchView) MenuItemCompat.getActionView(searchItem);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener(){
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                destId = query;
+                offerPrice = null;
+
+
+                Intent intent = new Intent(context, OfferResults.class);
+
+                intent.putExtra("currentCity", currentCity.getId());
+                intent.putExtra("destCity", query);
+                PendingIntent pendingIntent =
+                        TaskStackBuilder.create(context)
+                                // add all of DetailsActivity's parents to the stack,
+                                // followed by DetailsActivity itself
+                                .addNextIntentWithParentStack(intent)
+                                .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+                builder.setContentIntent(pendingIntent);
+                startActivity(intent);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+
+
+        });
+
+
+
         mLocationListener = new LocationListener() {
             @Override
             public void onLocationChanged(final Location location) {
@@ -171,7 +198,7 @@ public class OffersFragment extends Fragment {
 
     }
     //LLena las fotos y ofertas
-    private class HttpGetTask extends AsyncTask<Void, Void, String> {
+    private class HttpGetOffersTask extends AsyncTask<Void, Void, String> {
         @Override
         protected String doInBackground(Void... params) {
 
@@ -239,7 +266,21 @@ public class OffersFragment extends Fragment {
 
                             destId = cityToId.get(text);
                             offerPrice = values[position].getPrice();
-                            new getOfferIdAndNum().execute(2);
+                            Intent intent = new Intent(context, OfferResults.class);
+
+                            intent.putExtra("currentCity", currentCity.getId());
+                            intent.putExtra("destCity", destId);
+                            intent.putExtra("offerPrice",offerPrice.toString());
+                            PendingIntent pendingIntent =
+                                    TaskStackBuilder.create(context)
+                                            // add all of DetailsActivity's parents to the stack,
+                                            // followed by DetailsActivity itself
+                                            .addNextIntentWithParentStack(intent)
+                                            .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                            NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+                            builder.setContentIntent(pendingIntent);
+                            startActivity(intent);
                            // Toast.makeText(context,currentCity.getId() +" "+ cityToId.get(text), Toast.LENGTH_LONG).show();
 
                         }
@@ -320,7 +361,7 @@ public class OffersFragment extends Fragment {
                     currentCity = cityList.get(0);
 
                 //   Toast.makeText(context,cityList.get(0).getName(),Toast.LENGTH_LONG).show();
-                    new HttpGetTask().execute();
+                    new HttpGetOffersTask().execute();
                 }
 
 
@@ -350,95 +391,6 @@ public class OffersFragment extends Fragment {
 
 
 
-    private class getOfferIdAndNum extends AsyncTask<Integer, Void, String> {
-        @Override
-        protected String doInBackground(Integer... params) {
 
-            HttpURLConnection urlConnection = null;
-
-            Calendar c = Calendar.getInstance();
-
-            c.add(Calendar.DATE, params[0]);
-
-
-            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-            String formattedDate = df.format(c.getTime());
-
-
-            try {
-
-                URL url= new URL("http://hci.it.itba.edu.ar/v1/api/booking.groovy?method=getonewayflights&from="+currentCity.getId()+"&to="+destId+"&dep_date="+formattedDate+"&adults=1&children=0&infants=0&min_price="+offerPrice+"&max_price="+offerPrice);
-                urlConnection = (HttpURLConnection) url.openConnection();
-                InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-                return readStream(in);
-            } catch (Exception exception) {
-                exception.printStackTrace();
-                return "Unexpected Error";
-            } finally {
-                if (urlConnection != null)
-                    urlConnection.disconnect();
-            }
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            try {
-                JSONObject obj = new JSONObject(result);
-
-
-                if (!obj.has(OffersFragment.FLIGHTS_NAME)){
-                    new getOfferIdAndNum().execute(3);
-                    return;
-                }
-
-              // Toast.makeText(context, result, Toast.LENGTH_SHORT).show();
-
-                Gson gson = new Gson();
-                Type listType = new TypeToken<ArrayList<Flight>>() {
-                }.getType();
-
-                String jsonFragment = obj.getString(OffersFragment.FLIGHTS_NAME);
-
-               //Toast.makeText(context,jsonFragment,Toast.LENGTH_LONG).show();
-
-                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-             // Toast.makeText(context, prefs.getString("interval_list",""), Toast.LENGTH_LONG).show();
-
-
-                    ArrayList<Flight> flightList = gson.fromJson(jsonFragment, listType);
-
-
-
-               if(flightList.size()==1){
-
-                   Toast.makeText(context,flightList.get(0).getId()+" "+flightList.get(0).getNumber(),Toast.LENGTH_SHORT).show();
-
-                }else{
-                   //Toast.makeText(context,"cabe",Toast.LENGTH_SHORT).show();
-                   new getOfferIdAndNum().execute(3);
-               }
-
-
-            } catch (Exception exception) {
-                //  resultTextView.append(new Integer("10").toString());
-            }
-            ;
-        }
-
-        private String readStream(InputStream inputStream) {
-            try {
-                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                int i = inputStream.read();
-                while (i != -1) {
-                    outputStream.write(i);
-                    i = inputStream.read();
-                }
-                return outputStream.toString();
-
-            } catch (IOException e) {
-                return "";
-            }
-        }
-    }
 
 }
