@@ -7,8 +7,10 @@ import android.os.AsyncTask;
 import android.text.Html;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -22,6 +24,7 @@ import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 /**
  * Created by traies on 20/11/16.
@@ -29,9 +32,9 @@ import java.net.URL;
 
 public class GetCommentsTask extends AsyncTask<String, Void, String> {
     View commentView;
-    Activity context;
+    FlightCommentsActivity context;
 
-    GetCommentsTask(View commentView, Activity context) {
+    GetCommentsTask(View commentView, FlightCommentsActivity context) {
         super();
         this.commentView = commentView;
         this.context = context;
@@ -40,8 +43,14 @@ public class GetCommentsTask extends AsyncTask<String, Void, String> {
     @Override
     protected String doInBackground(String... strings) {
         HttpURLConnection conn = null;
-        String ret = null;
+        String ret = null, order;
         try {
+            if (strings[3] == "0") {
+                order = "desc";
+            }
+            else {
+                order = "asc";
+            }
             Uri uri = new Uri.Builder()
                     .scheme("http")
                     .authority("hci.it.itba.edu.ar")
@@ -52,7 +61,8 @@ public class GetCommentsTask extends AsyncTask<String, Void, String> {
                     .appendQueryParameter("airline_id", strings[0])
                     .appendQueryParameter("flight_number", strings[1])
                     .appendQueryParameter("sort_key", "rating")
-                    .appendQueryParameter("sort_order", "desc")
+                    .appendQueryParameter("sort_order", order)
+                    .appendQueryParameter("page", strings[2])
                     .appendQueryParameter("page_size", "5")
                     .build();
             conn = (HttpURLConnection) new URL(uri.toString()).openConnection();
@@ -80,10 +90,10 @@ public class GetCommentsTask extends AsyncTask<String, Void, String> {
                 Gson gson = new Gson();
                 Type listType = new TypeToken<CommentInfo>() {}.getType();
                 CommentInfo ci = gson.fromJson(obj.toString(), listType);
-                Comment[] comments = new Comment[ci.page_size];
-                for (int i = 0; i < ci.page_size; i++) {
+                ArrayList<Comment> comments = new ArrayList<>();
+                for (int i = 0; i < ci.reviews.length; i++) {
                     CommentInfo.ReviewInfo ri = ci.reviews[i];
-                    comments[i] = new Comment(
+                    comments.add(new Comment(
                             Html.fromHtml(Uri.decode(ri.comments)).toString(),
                             ri.yes_recommend,
                             ri.rating.overall,
@@ -93,11 +103,28 @@ public class GetCommentsTask extends AsyncTask<String, Void, String> {
                             ri.rating.mileage_program,
                             ri.rating.comfort,
                             ri.rating.quality_price
-                    );
+                    ));
                 }
-                CommentArrayAdapter adapter = new CommentArrayAdapter(context, comments);
                 final ListView listView = (ListView) commentView.findViewById(R.id.flight_comments_list_view);
-                listView.setAdapter(adapter);
+                if (context.getComments() == null) {
+                    CommentArrayAdapter adapter = context.getAdapter();
+                    if (adapter == null) {
+                        adapter = new CommentArrayAdapter(context, comments);
+                        context.setAdapter(adapter);
+                        listView.setAdapter(adapter);
+                    }
+                    else {
+                        adapter.clear();
+                        adapter.notifyDataSetChanged();
+                        adapter.addAll(comments);
+                    }
+                    context.setComments(comments);
+                }
+                else {
+                    context.getComments().addAll(comments);
+                    context.getAdapter().addAll(comments);
+                    context.getAdapter().notifyDataSetChanged();
+                }
             }
         }
         catch (Exception e) {

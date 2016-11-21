@@ -10,16 +10,18 @@ import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import java.util.List;
+
 /**
  * Created by traies on 20/11/16.
  */
 
 public class CommentArrayAdapter extends ArrayAdapter<Comment>{
 
-    public CommentArrayAdapter(Activity context, Comment[] objects) {
-        super(context, R.layout.flight_comment_view_item, objects);
-    }
 
+    public CommentArrayAdapter(Activity context, List<Comment> list) {
+        super(context, R.layout.flight_comment_view_item, list);
+    }
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         CommentItemHolder holder;
