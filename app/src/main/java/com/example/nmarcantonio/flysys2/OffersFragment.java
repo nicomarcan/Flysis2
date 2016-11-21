@@ -33,6 +33,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -238,7 +239,7 @@ public class OffersFragment extends Fragment {
 
                             destId = cityToId.get(text);
                             offerPrice = values[position].getPrice();
-                            new getOfferIdAndNum().execute();
+                            new getOfferIdAndNum().execute(2);
                            // Toast.makeText(context,currentCity.getId() +" "+ cityToId.get(text), Toast.LENGTH_LONG).show();
 
                         }
@@ -349,14 +350,16 @@ public class OffersFragment extends Fragment {
 
 
 
-    private class getOfferIdAndNum extends AsyncTask<Void, Void, String> {
+    private class getOfferIdAndNum extends AsyncTask<Integer, Void, String> {
         @Override
-        protected String doInBackground(Void... params) {
+        protected String doInBackground(Integer... params) {
 
             HttpURLConnection urlConnection = null;
 
             Calendar c = Calendar.getInstance();
-            c.add(Calendar.DATE, 3);
+
+            c.add(Calendar.DATE, params[0]);
+
 
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
             String formattedDate = df.format(c.getTime());
@@ -383,9 +386,12 @@ public class OffersFragment extends Fragment {
                 JSONObject obj = new JSONObject(result);
 
 
-                if (!obj.has(OffersFragment.FLIGHTS_NAME))
+                if (!obj.has(OffersFragment.FLIGHTS_NAME)){
+                    new getOfferIdAndNum().execute(3);
                     return;
+                }
 
+              // Toast.makeText(context, result, Toast.LENGTH_SHORT).show();
 
                 Gson gson = new Gson();
                 Type listType = new TypeToken<ArrayList<Flight>>() {
@@ -393,18 +399,24 @@ public class OffersFragment extends Fragment {
 
                 String jsonFragment = obj.getString(OffersFragment.FLIGHTS_NAME);
 
-               // Toast.makeText(context,jsonFragment,Toast.LENGTH_LONG).show();
+               //Toast.makeText(context,jsonFragment,Toast.LENGTH_LONG).show();
 
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-               Toast.makeText(context, prefs.getString("interval_list",""), Toast.LENGTH_LONG).show();
-                ArrayList<Flight> flightList = gson.fromJson(jsonFragment, listType);
-               if(flightList.size()==1){
-                  //  currentCity = cityList.get(0);
-                    //NOSE PORQUE NO ANDA
-                 //  Toast.makeText(context,flightList.get(0).adults,Toast.LENGTH_LONG).show();
+             // Toast.makeText(context, prefs.getString("interval_list",""), Toast.LENGTH_LONG).show();
 
-                   // new HttpGetTask().execute();
-                }
+
+                    ArrayList<Flight> flightList = gson.fromJson(jsonFragment, listType);
+
+
+
+               if(flightList.size()==1){
+
+                   Toast.makeText(context,flightList.get(0).getId()+" "+flightList.get(0).getNumber(),Toast.LENGTH_SHORT).show();
+
+                }else{
+                   //Toast.makeText(context,"cabe",Toast.LENGTH_SHORT).show();
+                   new getOfferIdAndNum().execute(3);
+               }
 
 
             } catch (Exception exception) {
