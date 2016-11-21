@@ -29,6 +29,10 @@ public class OfferInfoAdapter extends ArrayAdapter<OfferInfo> {
             holder = new OfferInfoViewHolder();
             holder.numberView = (TextView) convertView.findViewById(R.id.offer_info_num);
             holder.idView =(TextView) convertView.findViewById(R.id.offer_info_airline_id) ;
+            holder.srcAirView = (TextView) convertView.findViewById(R.id.offer_info_source_air);
+            holder.dstAirView =(TextView) convertView.findViewById(R.id.offer_info_dest_air) ;
+            holder.priceView = (TextView) convertView.findViewById(R.id.offer_info_price);
+
 
             convertView.setTag(holder);
         } else {
@@ -41,6 +45,12 @@ public class OfferInfoAdapter extends ArrayAdapter<OfferInfo> {
         holder.numberView.setText(info.getNumber());
 
         holder.idView.setText(info.getId());
+
+        holder.srcAirView.setText(info.getSrcAir());
+
+        holder.dstAirView.setText(info.getDstAir());
+
+        holder.priceView.setText(info.getPrice());
         return convertView;
     }
 }

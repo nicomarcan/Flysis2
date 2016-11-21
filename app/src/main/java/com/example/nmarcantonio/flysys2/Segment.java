@@ -9,12 +9,17 @@ public class Segment {
     private String number;
     private Airline airline;
     private String duration;
+    private Arrival arrival;
+    private Departure departure;
 
-    public Segment(String number,Airline airline,String duration){
+    public Segment(String number, Airline airline, String duration, Arrival arrival, Departure departure) {
+        this.number = number;
         this.airline = airline;
-        this.number=number;
-        this.duration=duration;
+        this.duration = duration;
+        this.arrival = arrival;
+        this.departure = departure;
     }
+
 
     public String getNumber() {
         return number;
@@ -26,5 +31,13 @@ public class Segment {
 
     public Airline getAirline() {
         return airline;
+    }
+
+    public Arrival getArrival() {
+        return arrival;
+    }
+
+    public Departure getDeparture() {
+        return departure;
     }
 }

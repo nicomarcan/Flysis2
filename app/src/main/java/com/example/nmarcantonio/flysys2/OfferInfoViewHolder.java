@@ -9,4 +9,7 @@ import android.widget.TextView;
 public class OfferInfoViewHolder {
     public TextView idView;
     public TextView numberView;
+    public TextView srcAirView;
+    public TextView dstAirView;
+    public TextView priceView;
 }

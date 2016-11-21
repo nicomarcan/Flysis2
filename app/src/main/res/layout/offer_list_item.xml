@@ -8,19 +8,62 @@
         android:layout_centerVertical="true"
         android:layout_height="80dp">
 
-
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
         <TextView
-            android:id="@+id/offer_info_num"
+            android:id="@+id/offer_info_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Numero de Vuelo"/>
+            android:text="1503.36"
+            android:layout_marginTop="12dp"
+            android:layout_marginLeft="135dp" />
 
-        <TextView
-            android:id="@+id/offer_info_airline_id"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Aerolinea"
-            android:layout_marginTop="20dp" />
+            <TextView
+                android:id="@+id/offer_info_dest_air"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="AEP"
+                android:textSize="20sp"
+                android:layout_marginTop="48dp"
+                android:layout_marginLeft="270dp" />
+
+            <TextView
+                android:id="@+id/offer_info_source_air"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SCL"
+                android:textSize="20sp"
+                android:layout_marginTop="48dp"
+                android:layout_marginLeft="15dp" />
+
+            <TextView
+                android:id="@+id/offer_info_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="5260"
+                android:textSize="10sp"
+                android:layout_marginTop="54dp"
+                android:layout_marginLeft="170dp" />
+
+            <TextView
+                android:id="@+id/offer_info_airline_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="10sp"
+                android:text="AA"
+                android:layout_marginTop="54dp"
+                android:layout_marginLeft="140dp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@android:color/darker_gray"
+
+                android:layout_marginTop="39dp" />
+
+
+        </RelativeLayout>
 
 
     </android.support.v7.widget.CardView>

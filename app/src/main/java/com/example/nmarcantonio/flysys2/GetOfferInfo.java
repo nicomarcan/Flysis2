@@ -108,7 +108,9 @@ public class GetOfferInfo extends AsyncTask<Integer, Void, String> {
             OfferInfo[] values = new OfferInfo[1];
             if(flightList.size()>0){
                 final ListView listView = (ListView) act.findViewById(R.id.offer_list_view);
-                values[0]=new OfferInfo(flightList.get(0).getId(),flightList.get(0).getNumber());
+                Flight f = flightList.get(0);
+
+                values[0]=new OfferInfo(f.getId(),f.getNumber(),f.getsrcAir() ,f.getdstAir(),f.getPrice()   );
                 OfferInfoAdapter adapter = new OfferInfoAdapter(act  ,values);
                 listView.setAdapter(adapter);
 
