@@ -246,8 +246,8 @@ public class AirportsFragment extends Fragment  {
 
             if (view != null) {
 
-                AirportAdapter adapter = new AirportAdapter(airportList);
-                LinearLayoutManager mLayoutManager= new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL, false);
+                AirportAdapter adapter = new AirportAdapter(airportList,loc);
+                LinearLayoutManager mLayoutManager= new LinearLayoutManager(context,LinearLayoutManager.VERTICAL, false);
                 view.setLayoutManager(mLayoutManager);
                 view.setAdapter(adapter);
 
