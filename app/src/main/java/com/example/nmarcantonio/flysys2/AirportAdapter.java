@@ -1,5 +1,6 @@
 package com.example.nmarcantonio.flysys2;
 
+import android.content.Context;
 import android.location.Location;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -24,24 +25,24 @@ public class AirportAdapter extends RecyclerView.Adapter<AirportAdapter.AirportV
 
     private List<Airport> airportList;
     private Location loc;
+    private Context c;
 
     public class AirportViewHolder extends RecyclerView.ViewHolder {
-        public TextView nameTextView;
-        public TextView cityTextView;
-        public TextView distanceTextView;
+        public TextView name;
+        public TextView distance;
 
         public AirportViewHolder(View view) {
             super(view);
-            nameTextView = (TextView) view.findViewById(R.id.airport_info);
-            cityTextView = (TextView) view.findViewById(R.id.airport_info_2);
-            distanceTextView = (TextView) view.findViewById(R.id.airport_distance);
+            name = (TextView) view.findViewById(R.id.airport_info);
+            distance = (TextView) view.findViewById(R.id.airport_distance_info);
         }
     }
 
 
-    public AirportAdapter(List<Airport> airportList,Location loc) {
+    public AirportAdapter(List<Airport> airportList, Location loc, Context c) {
         this.airportList = airportList;
         this.loc = loc;
+        this.c = c;
     }
 
     @Override
@@ -60,11 +61,11 @@ public class AirportAdapter extends RecyclerView.Adapter<AirportAdapter.AirportV
         locB.setLongitude(airport.getLongitude());
         double distance = loc.distanceTo(locB);
 
-        String [] splitdescr = airport.getDescription().split(",");
+        String [] splitdescr = airport.getDescription().split(", ");
 
-        holder.nameTextView.setText(splitdescr[0]);
-        holder.cityTextView.setText(splitdescr[1] + ", " + splitdescr[2]);
-        holder.cityTextView.setText("@id@+id/airport_distance" + ": " + distance);
+        holder.distance.setText((int)(distance/1000) + " km" );
+        holder.name.setText(splitdescr[0] + '\n' +
+                                    splitdescr[1] + ", " + splitdescr[2] + '\n');
 
     }
 
