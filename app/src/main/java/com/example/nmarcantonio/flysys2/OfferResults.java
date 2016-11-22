@@ -25,9 +25,9 @@ public class OfferResults  extends AppCompatActivity{
         setContentView(R.layout.offer_results);
 
         if(getIntent().getStringExtra("offerPrice")==null)
-            new GetOffersToDestTask(this).execute(getIntent().getStringExtra("currentCity"),getIntent().getStringExtra("destCity"));
+            new GetOffersToDestTask(this,new Integer(getIntent().getStringExtra("filter"))).execute(getIntent().getStringExtra("currentCity"),getIntent().getStringExtra("destCity"));
         else
-            new GetOfferInfo(this,getIntent().getStringExtra("currentCity"),getIntent().getStringExtra("destCity"),new Double(getIntent().getStringExtra("offerPrice"))).execute(2);
+            new GetOfferInfo(this,getIntent().getStringExtra("currentCity"),getIntent().getStringExtra("destCity"),new Double(getIntent().getStringExtra("offerPrice"))).execute(2,9);
     }
 
 

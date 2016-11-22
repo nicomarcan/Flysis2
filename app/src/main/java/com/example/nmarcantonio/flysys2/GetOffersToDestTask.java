@@ -26,9 +26,11 @@ public class GetOffersToDestTask extends AsyncTask<String,Void, String> {
     private String destCity;
     private Activity act;
     private String currentCity;
+    private Integer filter;
 
-    public GetOffersToDestTask(Activity act) {
+    public GetOffersToDestTask(Activity act,Integer filter) {
         this.act = act;
+        this.filter=filter;
     }
 
     @Override
@@ -77,7 +79,7 @@ public class GetOffersToDestTask extends AsyncTask<String,Void, String> {
             ArrayList<Deal> dealList = gson.fromJson(jsonFragment, listType);
             for(Deal d : dealList){
                 if(d.getId().equals(destCity)){
-                    new GetOfferInfo(act,currentCity,destCity,new Double(d.getPrice())).execute(2);
+                    new GetOfferInfo(act,currentCity,destCity,new Double(d.getPrice())).execute(2+filter*30,9+(filter*30));
                 }
             }
 

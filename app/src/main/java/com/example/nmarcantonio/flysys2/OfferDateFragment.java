@@ -30,6 +30,7 @@ public class OfferDateFragment extends Fragment {
 
     private City currentCity;
     private String destId;
+    public static  Integer filter = 0;
 
     private HashMap<String,String> nameToId = new HashMap<>();
 
@@ -41,8 +42,10 @@ public class OfferDateFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         myView = inflater.inflate(R.layout.offer_search_date, container, false);
          //currentCity = (City)(getArguments().getSerializable("currentCity"));
-       // destId = getArguments().getString("destId");
-        //nameToId = (HashMap<String,String>)(getArguments().getSerializable("nameToId"));
+
+       // nameToId = (HashMap<String,String>)(getArguments().getSerializable("nameToId"));
+        Bundle b = getArguments();
+       // Toast.makeText(getActivity(), currentCity.getName(), Toast.LENGTH_SHORT).show();
 
         return myView;
     }
@@ -65,6 +68,17 @@ public class OfferDateFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     CharSequence text = ((TextView)(((TableRow)v).getChildAt(1))).getText();
+                    if(text.toString().equals("Dentro de 1 mes")){
+                        OffersFragment.filter = 1;
+                    }else if(text.toString().equals("Dentro de 3 meses")){
+                        OffersFragment.filter = 3;
+                    }else if(text.toString().equals("Dentro de 6 meses")){
+                        OffersFragment.filter = 6;
+                    }else if(text.toString().equals("Dentro de 1 año")){
+                        OffersFragment.filter = 12;
+                    }else if(text.toString().equals("Después de 1 año")){
+                        OffersFragment.filter = 13;
+                    }
                     Bundle bundle = new Bundle();
                     bundle.putString("Text",text.toString());
                     Fragment frag = new OfferFilterFragment();
@@ -80,5 +94,9 @@ public class OfferDateFragment extends Fragment {
 
 
 
+    }
+
+    public static Integer  getFilter(){
+        return filter;
     }
 }

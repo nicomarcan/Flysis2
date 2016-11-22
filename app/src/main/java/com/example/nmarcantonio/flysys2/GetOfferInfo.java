@@ -35,6 +35,7 @@ public class GetOfferInfo extends AsyncTask<Integer, Void, String> {
     private String destId;
     private Double offerPrice;
     private Integer days;
+    private Integer maxDays;
 
 
     public GetOfferInfo(Activity act, String currentCity, String destId, Double offerPrice) {
@@ -52,6 +53,7 @@ public class GetOfferInfo extends AsyncTask<Integer, Void, String> {
 
         Calendar c = Calendar.getInstance();
         days = params[0];
+        maxDays = params[1];
         c.add(Calendar.DATE, days);
 
 
@@ -84,8 +86,8 @@ public class GetOfferInfo extends AsyncTask<Integer, Void, String> {
 
 
             if (!obj.has(OffersFragment.FLIGHTS_NAME )){
-                if(days < 9)
-                    new GetOfferInfo(act,currentCity,destId,offerPrice).execute(days+1);
+                if(days < maxDays)
+                    new GetOfferInfo(act,currentCity,destId,offerPrice).execute(days+1,maxDays);
                 return;
             }
 
@@ -119,8 +121,8 @@ public class GetOfferInfo extends AsyncTask<Integer, Void, String> {
 
             }else{
                 //Toast.makeText(context,"cabe",Toast.LENGTH_SHORT).show();
-                if(days < 9)
-                    new GetOfferInfo(act,currentCity,destId,offerPrice).execute(days+1);
+                if(days < maxDays)
+                    new GetOfferInfo(act,currentCity,destId,offerPrice).execute(days+1,maxDays);
             }
 
 
