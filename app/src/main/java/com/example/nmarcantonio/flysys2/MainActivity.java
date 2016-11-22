@@ -184,7 +184,7 @@ public class MainActivity extends AppCompatActivity
 
                     @Override
                     public void onViewDetachedFromWindow(View arg0) {
-                        getFragmentManager().beginTransaction().replace(R.id.content_frame,new OffersFragment()).commit();
+                        onBackPressed();
                     }
 
                     @Override
