@@ -147,6 +147,7 @@ public class OffersFragment extends Fragment {
 
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
                 builder.setContentIntent(pendingIntent);
+                filter = 0;
                 startActivity(intent);
                 return false;
             }
