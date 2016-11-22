@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent" android:layout_height="match_parent"  tools:context=".OffersMap" android:id="@+id/offer_map" >
+    android:layout_width="match_parent" android:layout_height="match_parent"  tools:context=".OffersMap" android:id="@+id/offer_map"
+    android:gravity="bottom">
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:map="http://schemas.android.com/apk/res-auto"
@@ -9,7 +10,7 @@
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.MapFragment"
         android:layout_width="match_parent"
-        android:layout_height="370dp"
+        android:layout_height="325dp"
          />
     <android.support.v7.widget.RecyclerView
         android:id="@+id/offer_view"
