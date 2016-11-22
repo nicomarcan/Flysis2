@@ -34,6 +34,7 @@ public class OfferFilterFragment extends Fragment {
         cross.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                OffersFragment.filter = 0;
                 getActivity().onBackPressed();
             }
         });
