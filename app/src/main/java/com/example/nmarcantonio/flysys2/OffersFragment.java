@@ -120,7 +120,7 @@ public class OffersFragment extends Fragment {
         });
 
 
-
+        filter = 0;
 
         MenuItem searchItem = ((MainActivity)getActivity()).getmMenu().findItem(R.id.offer_search);
         SearchView searchView =
@@ -147,7 +147,7 @@ public class OffersFragment extends Fragment {
 
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
                 builder.setContentIntent(pendingIntent);
-                filter = 0;
+
                 startActivity(intent);
                 return false;
             }
