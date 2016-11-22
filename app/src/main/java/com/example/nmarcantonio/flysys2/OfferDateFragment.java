@@ -18,6 +18,8 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.HashMap;
+
 /**
  * Created by nmarcantonio on 18/11/16.
  */
@@ -26,11 +28,21 @@ public class OfferDateFragment extends Fragment {
     View myView;
     private AppCompatActivity context;
 
+    private City currentCity;
+    private String destId;
+
+    private HashMap<String,String> nameToId = new HashMap<>();
+
+
+
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         myView = inflater.inflate(R.layout.offer_search_date, container, false);
+         //currentCity = (City)(getArguments().getSerializable("currentCity"));
+       // destId = getArguments().getString("destId");
+        //nameToId = (HashMap<String,String>)(getArguments().getSerializable("nameToId"));
 
         return myView;
     }
@@ -53,7 +65,11 @@ public class OfferDateFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     CharSequence text = ((TextView)(((TableRow)v).getChildAt(1))).getText();
-                    Toast.makeText(context,text,Toast.LENGTH_LONG).show();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("Text",text.toString());
+                    Fragment frag = new OfferFilterFragment();
+                    frag.setArguments(bundle);
+                    getFragmentManager().beginTransaction().replace(R.id.content_frame,frag).addToBackStack("JEJE").commit();
                     // TODO: do your logic here
 
                 }

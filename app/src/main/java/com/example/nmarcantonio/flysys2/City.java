@@ -2,7 +2,9 @@ package com.example.nmarcantonio.flysys2;
 
 import android.text.Html;
 
-public class City {
+import java.io.Serializable;
+
+public class City implements Serializable {
 
     private String id;
     private String name;

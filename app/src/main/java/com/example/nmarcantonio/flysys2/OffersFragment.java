@@ -208,6 +208,52 @@ public class OffersFragment extends Fragment {
 
 
     }
+
+
+
+
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        int id = item.getItemId();
+
+        if(id == R.id.offer_search) {
+
+
+            android.app.FragmentManager fragmentManager = getFragmentManager();
+
+            Bundle bun = new Bundle();
+            bun.putString("destId", destId);
+            bun.putSerializable("currentCity", currentCity);
+            bun.putSerializable("nameToId", nameToId);
+            Fragment fm = new OfferDateFragment();
+            fm.setArguments(bun);
+            fragmentManager.beginTransaction().replace(R.id.content_frame, fm).commit();
+            MenuItem searchItem = ((MainActivity)getActivity()).getmMenu().findItem(R.id.offer_search);
+            SearchView searchView =
+                    (SearchView) MenuItemCompat.getActionView(searchItem);
+
+
+            searchView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+
+                @Override
+                public void onViewDetachedFromWindow(View arg0) {
+                    getFragmentManager().beginTransaction().replace(R.id.content_frame, new OffersFragment()).commit();
+                }
+
+                @Override
+                public void onViewAttachedToWindow(View arg0) {
+                    // Toast.makeText(context,"JEJE",Toast.LENGTH_LONG).show();
+                }
+            });
+
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
     //LLena las fotos y ofertas
     private class HttpGetOffersTask extends AsyncTask<Void, Void, String> {
         @Override

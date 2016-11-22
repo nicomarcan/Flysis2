@@ -172,7 +172,7 @@ public class MainActivity extends AppCompatActivity
             if(currentSect == R.id.nav_offers){
 
                 android.app.FragmentManager fragmentManager = getFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.content_frame,new OfferDateFragment()).commit();
+                fragmentManager.beginTransaction().replace(R.id.content_frame,new OfferDateFragment()).addToBackStack("HOLA").commit();
                 MenuItem searchItem = mMenu.findItem(R.id.offer_search);
                 SearchView searchView =
                         (SearchView) MenuItemCompat.getActionView(searchItem);
