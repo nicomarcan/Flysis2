@@ -3,9 +3,12 @@ package com.example.nmarcantonio.flysys2;
 import android.Manifest;
 import android.app.Fragment;
 import android.app.PendingIntent;
+import android.app.SearchManager;
 import android.app.TaskStackBuilder;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -18,11 +21,13 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -40,6 +45,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
+import java.util.TreeSet;
 
 import static android.content.Context.LOCATION_SERVICE;
 
@@ -61,7 +68,10 @@ public class OffersFragment extends Fragment {
     private String destId;
     private Double offerPrice;
 
-    private HashMap<String,String> cityToId = new HashMap<>();
+    private HashMap<String,String> nameToId = new HashMap<>();
+
+    private ArrayList<String> autoCompStrings = new ArrayList<String>();
+
 
 
     @Nullable
@@ -118,14 +128,14 @@ public class OffersFragment extends Fragment {
 
             @Override
             public boolean onQueryTextSubmit(String query) {
-                destId = query;
+                destId = nameToId.get(query.toLowerCase());
                 offerPrice = null;
 
 
                 Intent intent = new Intent(context, OfferResults.class);
 
                 intent.putExtra("currentCity", currentCity.getId());
-                intent.putExtra("destCity", query);
+                intent.putExtra("destCity", destId);
                 PendingIntent pendingIntent =
                         TaskStackBuilder.create(context)
                                 // add all of DetailsActivity's parents to the stack,
@@ -194,6 +204,7 @@ public class OffersFragment extends Fragment {
 
 
         new GetCityGPS().execute();
+        new GetAirpAndCitiesTask(context,searchView).execute();
 
 
     }
@@ -247,7 +258,7 @@ public class OffersFragment extends Fragment {
 
                     for (int j = 0; j <dealList.size(); j++) {
                         values[j] = new Product(j, dealList.get(j).getName(), new Double(dealList.get(j).getPrice() ) ,dealList.get(j).getLatitude(),dealList.get(j).getLongitude());
-                        cityToId.put(dealList.get(j).getName(),dealList.get(j).getId());
+                        nameToId.put(dealList.get(j).getName().toLowerCase(),dealList.get(j).getId());
                     }
 
                     ;
@@ -264,7 +275,7 @@ public class OffersFragment extends Fragment {
                             CharSequence text = values[position].getName();
 
 
-                            destId = cityToId.get(text);
+                            destId = nameToId.get(text.toString().toLowerCase());
                             offerPrice = values[position].getPrice();
                             Intent intent = new Intent(context, OfferResults.class);
 
@@ -281,7 +292,7 @@ public class OffersFragment extends Fragment {
                             NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
                             builder.setContentIntent(pendingIntent);
                             startActivity(intent);
-                           // Toast.makeText(context,currentCity.getId() +" "+ cityToId.get(text), Toast.LENGTH_LONG).show();
+                           // Toast.makeText(context,currentCity.getId() +" "+ nameToId.get(text), Toast.LENGTH_LONG).show();
 
                         }
                     });
@@ -391,6 +402,124 @@ public class OffersFragment extends Fragment {
 
 
 
+    private class GetAirpAndCitiesTask extends AsyncTask<String, Void, String> {
+
+
+        private Context context;
+
+
+
+        private SearchView searchView;
+
+        public GetAirpAndCitiesTask(Context context, SearchView searchView) {
+            this.context = context;
+            this.searchView = searchView;
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            HttpURLConnection conn = null;
+            String ret = null, order;
+            try {
+
+                URL url = new URL("http://hci.it.itba.edu.ar/v1/api/geo.groovy?method=getairports");
+                conn = (HttpURLConnection) new URL(url.toString()).openConnection();
+
+                InputStream in = new BufferedInputStream(conn.getInputStream());
+                ret = readStream(in);
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                if (conn != null) {
+                    conn.disconnect();
+                }
+            }
+            return ret;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            try {
+
+                JSONObject obj = new JSONObject(result);
+                if (!obj.has("airports")) {
+
+                    return;
+                }
+                else {
+                    Gson gson = new Gson();
+                    Type listType = new TypeToken<ArrayList<Airport>>() {
+                    }.getType();
+
+                    String jsonFragment = obj.getString("airports");
+
+
+                    ArrayList<Airport> airports = gson.fromJson(jsonFragment, listType);
+
+                    for(Airport a : airports){
+                        autoCompStrings.add(a.getDescription());
+                        nameToId.put(a.getDescription().toLowerCase(),a.getId());
+                        String city = a.getDescription().split(",")[1]+","+a.getDescription().split(",")[2];
+                        autoCompStrings.add(city);
+                        nameToId.put(city.toLowerCase(),a.getCity().getId());
+                    }
+
+                    Set<String> set = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+                    set.addAll(autoCompStrings);
+                    autoCompStrings = new ArrayList<String>(set);
+
+
+
+
+                    final SearchView.SearchAutoComplete searchAutoComplete = (SearchView.SearchAutoComplete)     searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+                    searchAutoComplete.setTextColor(Color.WHITE);
+                    final ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
+                            R.layout.autocomplete_layout, autoCompStrings);
+                    searchAutoComplete.setAdapter(adapter);
+
+                    SearchManager searchManager =
+                            (SearchManager) getActivity().getSystemService(getActivity().SEARCH_SERVICE);
+                    searchView.setSearchableInfo(
+                            searchManager.getSearchableInfo(getActivity().getComponentName()));
+
+                    searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
+                        @Override
+                        public boolean onSuggestionSelect(int position) {
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onSuggestionClick(int position) {
+                            searchView.setQuery(adapter.getItem(position), false);
+                            return true;
+                        }
+                    });
+
+
+                }
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        private String readStream(InputStream inputStream) {
+            try {
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                int i = inputStream.read();
+                while(i != -1 ) {
+                    outputStream.write(i);
+                    i = inputStream.read();
+                }
+                return outputStream.toString();
+            } catch(IOException e) {
+                e.printStackTrace();
+                Log.d("err", "fallo la conexion");
+                return null;
+            }
+        }
+
+
+    }
 
 
 }

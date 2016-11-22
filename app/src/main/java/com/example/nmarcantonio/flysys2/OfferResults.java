@@ -30,12 +30,19 @@ public class OfferResults  extends AppCompatActivity{
             new GetOfferInfo(this,getIntent().getStringExtra("currentCity"),getIntent().getStringExtra("destCity"),new Double(getIntent().getStringExtra("offerPrice"))).execute(2);
     }
 
+
+
+
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(final MenuItem item) {
+
         switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 }
