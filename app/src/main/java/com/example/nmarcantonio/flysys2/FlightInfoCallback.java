@@ -96,30 +96,29 @@ public class FlightInfoCallback implements TaskCallback, OnMapReadyCallback {
                 String statusString;
                 String statusDescription = "";
                 int statusColor;
-                Date arrivalTime;
+                Date arrivalTime = null;
                 Date currentTime = new Date();
-                switch (fi.status) {
-                    case "L":
-                        arrivalTime = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss", Locale.UK).parse(fi.arrival.actual_time);
-                        statusString = "Aterrizado";
-                        statusColor = flightView.getResources().getColor(R.color.colorGreen);
-                        statusDescription = "Hace" + CustomDateInterval.longInterval(arrivalTime, currentTime);
-                        break;
-                    case "S":
-                        arrivalTime = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss", Locale.UK).parse(fi.arrival.scheduled_time);
+                String stringHeader = null;
+                fi.setDescription();
+                FlightStatusDescription fd = fi.flightStatusDescription;
+                switch (fd.state) {
+                    case SCHEDULED:
                         statusString = "Programado";
                         statusColor = flightView.getResources().getColor(R.color.colorGreen);
-                        statusDescription = "Despega dentro de" + CustomDateInterval.longInterval(arrivalTime, currentTime);
                         break;
-                    case "A":
+                    case BOARDING:
+                        statusString = "Aterrizado";
+                        statusColor = flightView.getResources().getColor(R.color.colorGreen);
+                        break;
+                    case FLYING:
                         statusString = "En vuelo";
                         statusColor = flightView.getResources().getColor(R.color.colorGreen);
                         break;
-                    case "D":
+                    case DIVERT:
                         statusString = "Desviado";
                         statusColor = flightView.getResources().getColor(R.color.colorRed);
                         break;
-                    case "C":
+                    case CANCELLED:
                         statusString = "Cancelado";
                         statusColor = flightView.getResources().getColor(R.color.colorRed);
                         break;
@@ -128,9 +127,13 @@ public class FlightInfoCallback implements TaskCallback, OnMapReadyCallback {
                         statusColor = flightView.getResources().getColor(R.color.colorRed);
                         break;
                 }
+
                 ((TextView)flightView.findViewById(R.id.flight_info_status)).setTextColor(statusColor);
                 ((TextView)flightView.findViewById(R.id.flight_info_status)).setText(statusString);
-                ((TextView)flightView.findViewById(R.id.flight_info_status_description)).setText(statusDescription);
+                TextView dateText = (TextView) flightView.findViewById(R.id.flight_info_status_description);
+                dateText.setText(statusDescription);
+
+                ((FlightActivity) context).addDate(dateText, fd.descriptionHeader, fd.nextRelevantDate);
 
                 View detailView = flightView.findViewById(R.id.flight_info_detail);
                 detailView.setOnClickListener(new View.OnClickListener() {
@@ -203,8 +206,8 @@ public class FlightInfoCallback implements TaskCallback, OnMapReadyCallback {
 
                 MarkerAnimation.animateMarkerToHC(marker, arrival, new LatLngInterpolator.LinearFixed());
                 final FloatingActionButton fab = (FloatingActionButton) flightView.findViewById(R.id.add_flight_fab);
-
                 fab.setOnClickListener(new AddFlightOnClickListener(storedFlights, fi, fab, context));
+
             }
         }
         catch(Exception e) {

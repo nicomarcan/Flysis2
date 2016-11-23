@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.NotificationCompat;
@@ -64,18 +65,26 @@ public class FlightsFragment extends Fragment {
         intentFilter.setPriority(2);
         context.registerReceiver(broadcastReceiver, intentFilter);
 
-        ArrayList<FlightStatus> flightsAux = PreferencesHelper.getFlights(context);
-        flights.clear();
-        flights.addAll(flightsAux);
-        flightAdapter.notifyDataSetChanged();
+        Runnable r = new Runnable(){
 
-        for (FlightStatus flight: flights) {
-            Intent intent = new Intent(context, FlightsIntentService.class);
-            intent.setAction(FlightsIntentService.GET_FLIGHT);
-            intent.putExtra(FlightsIntentService.AIRLINE, flight.airline.name);
-            intent.putExtra(FlightsIntentService.FLIGHT, String.valueOf(flight.number));
-            context.startService(intent);
-        }
+            @Override
+            public void run() {
+                ArrayList<FlightStatus> flightsAux = PreferencesHelper.getFlights(context);
+                flights.clear();
+                flights.addAll(flightsAux);
+                flightAdapter.notifyDataSetChanged();
+
+                for (FlightStatus flight: flights) {
+                    Intent intent = new Intent(context, FlightsIntentService.class);
+                    intent.setAction(FlightsIntentService.GET_FLIGHT);
+                    intent.putExtra(FlightsIntentService.AIRLINE, flight.airline.name);
+                    intent.putExtra(FlightsIntentService.FLIGHT, String.valueOf(flight.number));
+                    context.startService(intent);
+                }
+            }
+        };
+        Handler handle = new Handler();
+        handle.post(r);
         /* updateAllFlights(); */
     }
     @Override
@@ -120,11 +129,19 @@ public class FlightsFragment extends Fragment {
         listView.setAdapter(flightAdapter);
     }
 
-    public void updateFlightStatus(Bundle bundle) {
-        FlightStatus flightStatus = (FlightStatus) bundle.get(FlightsIntentService.FLIGHT_STATUS);
-        flights.remove(flightStatus);
-        flightAdapter.notifyDataSetChanged();
-        PreferencesHelper.updatePreferences(flights, context);
+    public void updateFlightStatus(final Bundle bundle) {
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                FlightStatus flightStatus = (FlightStatus) bundle.get(FlightsIntentService.FLIGHT_STATUS);
+                flights.remove(flightStatus);
+                flightAdapter.notifyDataSetChanged();
+                PreferencesHelper.updatePreferences(flights, context);
+            }
+        };
+
+        Handler handle = new Handler();
+        handle.post(r);
     }
 }
 

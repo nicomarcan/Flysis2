@@ -10,6 +10,7 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ThreadFactory;
 
 /**
  * Created by traie_000 on 22-Nov-16.
@@ -19,6 +20,7 @@ public class PreferencesHelper {
     private static final String TAG = "PreferencesHelper";
 
     public static ArrayList<FlightStatus> getFlights(Context context) {
+
         Gson gson = new Gson();
         Type listType = new TypeToken<ArrayList<FlightStatus>>() {
         }.getType();
