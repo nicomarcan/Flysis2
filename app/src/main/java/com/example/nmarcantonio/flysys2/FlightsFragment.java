@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -36,22 +37,24 @@ public class FlightsFragment extends Fragment {
     AppCompatActivity context;
     View myView;
     ArrayList<FlightStatus> flights;
+    FlightStatusArrayAdapter flightAdapter;
 
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d(TAG, "onReceive: ");
-            updateFlightsStatus(intent.getExtras());
+            updateFlightStatus(intent.getExtras());
             abortBroadcast();
         }
     };
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            myView = inflater.inflate(R.layout.flights_layout, container, false);
+        myView = inflater.inflate(R.layout.flights_layout, container, false);
         ((MainActivity)getActivity()).setCurrentSect(R.id.nav_flights);
-            return myView;
-        }
+
+
+        return myView;
+    }
 
     @Override
     public void onResume() {
@@ -61,13 +64,16 @@ public class FlightsFragment extends Fragment {
         intentFilter.setPriority(2);
         context.registerReceiver(broadcastReceiver, intentFilter);
 
-        flights = PreferencesHelper.getFlights(context);
+        ArrayList<FlightStatus> flightsAux = PreferencesHelper.getFlights(context);
+        flights.clear();
+        flights.addAll(flightsAux);
+        flightAdapter.notifyDataSetChanged();
 
         for (FlightStatus flight: flights) {
             Intent intent = new Intent(context, FlightsIntentService.class);
             intent.setAction(FlightsIntentService.GET_FLIGHT);
             intent.putExtra(FlightsIntentService.AIRLINE, flight.airline.name);
-            intent.putExtra(FlightsIntentService.FLIGHT, flight.number);
+            intent.putExtra(FlightsIntentService.FLIGHT, String.valueOf(flight.number));
             context.startService(intent);
         }
         /* updateAllFlights(); */
@@ -107,10 +113,18 @@ public class FlightsFragment extends Fragment {
                 startActivity(intent);
             }
         });
+
+        flights = PreferencesHelper.getFlights(context);
+        ListView listView = (ListView) myView.findViewById(R.id.flights_list_view);
+        flightAdapter = new FlightStatusArrayAdapter(context, flights);
+        listView.setAdapter(flightAdapter);
     }
 
-    public void updateFlightsStatus(Bundle bundle) {
-        Log.d(TAG, "updateFlightStatus: ");
+    public void updateFlightStatus(Bundle bundle) {
+        FlightStatus flightStatus = (FlightStatus) bundle.get(FlightsIntentService.FLIGHT_STATUS);
+        flights.remove(flightStatus);
+        flightAdapter.notifyDataSetChanged();
+        PreferencesHelper.updatePreferences(flights, context);
     }
 }
 

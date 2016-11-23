@@ -22,4 +22,18 @@ public class FlightStatus implements Serializable {
         this.arrival = arrival;
         this.departure = departure;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj.getClass().equals(this.getClass())) {
+            FlightStatus other = (FlightStatus) obj;
+            return other.number == this.number && this.airline.id.equals(other.airline.id);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return (String.valueOf(number) + "|" +airline.id).hashCode();
+    }
 }

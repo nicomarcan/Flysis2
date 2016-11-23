@@ -14,17 +14,16 @@ public class NotificationBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (intent != null && intent.hasExtra(FlightsIntentService.FLIGHT_STATUS) && intent.hasExtra(FlightsIntentService.AIRLINE) && intent.hasExtra(FlightsIntentService.FLIGHT)) {
+        Log.d(TAG, "onReceive: ksksks");
+        if (intent != null && intent.hasExtra(FlightsIntentService.FLIGHT_STATUS)) {
             FlightStatus flightStatus = (FlightStatus) intent.getExtras().get(FlightsIntentService.FLIGHT_STATUS);
-            String airline = intent.getStringExtra(FlightsIntentService.AIRLINE);
-            String flight = intent.getStringExtra(FlightsIntentService.FLIGHT);
 
             Notification notification = new Notification.Builder(context)
                     .setSmallIcon(R.drawable.ic_flight_black_24dp)
-                    .setContentTitle("Vuelo "+ airline + flight)
+                    .setContentTitle("Vuelo "+ String.valueOf(flightStatus.number))
                     .setContentText("Despega en 20 minutos")
                     .build();
-
+            Log.d(TAG, "onReceive: ksksks");
             NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.notify("hhhh", 1, notification);
         }

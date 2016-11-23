@@ -45,4 +45,28 @@ public class PreferencesHelper {
         editor.putString("flights", flightsString);
         editor.apply();
     }
+
+    public static void updatePreferences(FlightStatus flightStatus, Context context) {
+        Gson gson = new Gson();
+        Type listType = new TypeToken<ArrayList<FlightStatus>>() {
+        }.getType();
+        SharedPreferences sharedPreferences = context.getSharedPreferences("flights", Context.MODE_PRIVATE);
+        String flightsString = sharedPreferences.getString("flights", null);
+        ArrayList<FlightStatus> flights;
+        if (flightsString == null) {
+            flights = new ArrayList<>();
+            flights.add(flightStatus);
+        }
+        else {
+            flights = gson.fromJson(flightsString, listType);
+            if (flights.contains(flightStatus)) {
+                flights.remove(flightStatus);
+                flights.add(flightStatus);
+            }
+        }
+        flightsString = gson.toJson(flights);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("flights", flightsString);
+        editor.apply();
+    }
 }
