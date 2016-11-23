@@ -7,6 +7,7 @@ import android.app.SearchManager;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
@@ -14,6 +15,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
@@ -69,6 +71,9 @@ public class OffersFragment extends Fragment {
     private Double offerPrice;
     public static int times = 0;
     public static Integer filter=0;
+    private Double ratio;
+
+    public HashMap<String,Double> stringToRatio = new HashMap<String,Double>();
 
     private HashMap<String,String> nameToId = new HashMap<>();
 
@@ -97,8 +102,15 @@ public class OffersFragment extends Fragment {
             context.getSupportActionBar().setTitle("Ofertas");
         }
 
+        stringToRatio.put("ARS",0.1);
+        stringToRatio.put("BRL",0.5);
+        stringToRatio.put("USD",1.0);
+
         //Toast.makeText(getActivity(), "ENTRE", Toast.LENGTH_SHORT).show();
         //setHasOptionsMenu(true);
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+         ratio = stringToRatio.get(prefs.getString("money_list","USD"));
 
         FloatingActionButton fab = (FloatingActionButton) myView.findViewById(R.id.map);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -136,12 +148,11 @@ public class OffersFragment extends Fragment {
             public boolean onQueryTextSubmit(String query) {
                 destId = nameToId.get(query.toLowerCase());
                 offerPrice = null;
-
-
                 Intent intent = new Intent(context, OfferResults.class);
                 intent.putExtra("filter", filter.toString());
                 intent.putExtra("currentCity", currentCity.getId());
                 intent.putExtra("destCity", destId);
+                intent.putExtra("ratio",ratio);
                 PendingIntent pendingIntent =
                         TaskStackBuilder.create(context)
                                 // add all of DetailsActivity's parents to the stack,
@@ -217,14 +228,13 @@ public class OffersFragment extends Fragment {
     }
 
 
-
-
-
-
-
-
-
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        ratio = stringToRatio.get(prefs.getString("money_list","USD"));
+        new GetCityGPS().execute();
+    }
 
     //LLena las fotos y ofertas
     private class HttpGetOffersTask extends AsyncTask<Void, Void, String> {
@@ -274,8 +284,10 @@ public class OffersFragment extends Fragment {
                 if (listView != null) {
                     final Product[] values = new Product[dealList.size()];
 
+
+
                     for (int j = 0; j <dealList.size(); j++) {
-                        values[j] = new Product(j, dealList.get(j).getName(), new Double(dealList.get(j).getPrice() ) ,dealList.get(j).getLatitude(),dealList.get(j).getLongitude());
+                        values[j] = new Product(j, dealList.get(j).getName(), new Double(dealList.get(j).getPrice() )*ratio ,dealList.get(j).getLatitude(),dealList.get(j).getLongitude());
                         nameToId.put(dealList.get(j).getName().toLowerCase(),dealList.get(j).getId());
                     }
 
@@ -301,6 +313,7 @@ public class OffersFragment extends Fragment {
                             intent.putExtra("currentCity", currentCity.getId());
                             intent.putExtra("destCity", destId);
                             intent.putExtra("offerPrice",offerPrice.toString());
+                            intent.putExtra("ratio",ratio.toString());
                             PendingIntent pendingIntent =
                                     TaskStackBuilder.create(context)
                                             // add all of DetailsActivity's parents to the stack,

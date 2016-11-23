@@ -10,7 +10,7 @@ public class OfferInfo {
     private String number;
     private String srcAir;
     private String dstAir;
-    private String price;
+    private Double price;
     private String depDate;
     private String arrDate;
 
@@ -22,7 +22,7 @@ public class OfferInfo {
         return arrDate;
     }
 
-    public OfferInfo(String id, String number, String srcAir, String dstAir, String price, String depDate, String arrDate) {
+    public OfferInfo(String id, String number, String srcAir, String dstAir, Double price, String depDate, String arrDate) {
         this.id = id;
         this.number = number;
         this.srcAir = srcAir;
@@ -45,13 +45,11 @@ public class OfferInfo {
         this.id = id;
     }
 
-    public String getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(String price) {
-        this.price = price;
-    }
+
 
     public String getDstAir() {
         return dstAir;

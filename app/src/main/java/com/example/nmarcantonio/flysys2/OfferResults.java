@@ -29,11 +29,10 @@ public class OfferResults  extends AppCompatActivity{
         GetOfferInfo.values.clear();
 
         if(getIntent().getStringExtra("offerPrice")==null) {
-           // Toast.makeText(this, "ENTRO", Toast.LENGTH_SHORT).show();
-            new GetOffersToDestTask(this, new Integer(getIntent().getStringExtra("filter"))).execute(getIntent().getStringExtra("currentCity"), getIntent().getStringExtra("destCity"));
+            new GetOffersToDestTask(this, new Integer(getIntent().getStringExtra("filter")),getIntent().getDoubleExtra("ratio",1)).execute(getIntent().getStringExtra("currentCity"), getIntent().getStringExtra("destCity"));
         }else {
          //   Toast.makeText(this, "JEJE", Toast.LENGTH_SHORT).show();
-            new GetOfferInfo(this, getIntent().getStringExtra("currentCity"), getIntent().getStringExtra("destCity"), new Double(getIntent().getStringExtra("offerPrice"))).execute(2, 8);
+            new GetOfferInfo(this, getIntent().getStringExtra("currentCity"), getIntent().getStringExtra("destCity"), new Double(getIntent().getStringExtra("offerPrice")),new Double(getIntent().getStringExtra("ratio"))).execute(2, 8);
         }
 
 

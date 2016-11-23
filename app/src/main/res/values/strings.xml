@@ -41,9 +41,9 @@
         <item>Reales</item>
     </string-array>
     <string-array name="pref_example_list_values">
-        <item>1</item>
-        <item>0</item>
-        <item>-1</item>
+        <item>ARS</item>
+        <item>USD</item>
+        <item>BRL</item>
     </string-array>
 
     <string-array name="interval_titles">

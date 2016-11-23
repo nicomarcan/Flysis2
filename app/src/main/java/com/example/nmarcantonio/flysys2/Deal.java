@@ -5,14 +5,14 @@ import android.text.Html;
 public class Deal {
 
     private City city;
-    private String price;
+    private Double price;
 
-    public Deal(City city,String price) {
+    public Deal(City city,Double price) {
         this.city = city;
         this.price = price;
     }
 
-    public String getPrice() {
+    public Double getPrice() {
         return price;
     }
 

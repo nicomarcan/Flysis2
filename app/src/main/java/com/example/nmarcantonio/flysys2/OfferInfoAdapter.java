@@ -1,6 +1,8 @@
 package com.example.nmarcantonio.flysys2;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +19,8 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
  */
 
 public class OfferInfoAdapter extends ArrayAdapter<OfferInfo> {
+
+
     public OfferInfoAdapter(Activity context, OfferInfo[] objects) {
         super(context, R.layout.list_view_item, objects);
     }
@@ -51,8 +55,8 @@ public class OfferInfoAdapter extends ArrayAdapter<OfferInfo> {
         holder.srcAirView.setText(info.getSrcAir());
 
         holder.dstAirView.setText(info.getDstAir());
-
-        holder.priceView.setText(info.getPrice());
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+        holder.priceView.setText("$"+prefs.getString("money_list","USD")+" "+info.getPrice().toString());
 
         holder.depDateView.setText(info.getDepDate());
 

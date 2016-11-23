@@ -36,14 +36,16 @@ public class GetOfferInfo extends AsyncTask<Integer, Void, String> {
     private Double offerPrice;
     private Integer days;
     private Integer maxDays;
+    private Double ratio;
     public static ArrayList<OfferInfo> values = new ArrayList<OfferInfo>();
 
 
-    public GetOfferInfo(Activity act, String currentCity, String destId, Double offerPrice) {
+    public GetOfferInfo(Activity act, String currentCity, String destId, Double offerPrice,Double ratio) {
         this.act = act;
         this.currentCity = currentCity;
         this.destId = destId;
         this.offerPrice = offerPrice;
+        this.ratio = ratio;
     }
 
 
@@ -64,8 +66,7 @@ public class GetOfferInfo extends AsyncTask<Integer, Void, String> {
 
         try {
             URL url;
-            url= new URL("http://hci.it.itba.edu.ar/v1/api/booking.groovy?method=getonewayflights&from="+currentCity+"&to="+destId+"&dep_date="+formattedDate+"&adults=1&children=0&infants=0&min_price="+offerPrice+"&max_price="+offerPrice);
-
+            url= new URL("http://hci.it.itba.edu.ar/v1/api/booking.groovy?method=getonewayflights&from="+currentCity+"&to="+destId+"&dep_date="+formattedDate+"&adults=1&children=0&infants=0&min_price="+offerPrice/ratio+"&max_price="+offerPrice/ratio);
             urlConnection = (HttpURLConnection) url.openConnection();
             InputStream in = new BufferedInputStream(urlConnection.getInputStream());
             return readStream(in);
@@ -112,14 +113,14 @@ public class GetOfferInfo extends AsyncTask<Integer, Void, String> {
 
                 Flight f = flightList.get(0);
 
-                values.add( new OfferInfo(f.getId(),f.getNumber(),f.getsrcAir() ,f.getdstAir(),f.getPrice() ,f.getDepDate(),f.getArrDate() ));
+                values.add( new OfferInfo(f.getId(),f.getNumber(),f.getsrcAir() ,f.getdstAir(),f.getPrice()*ratio ,f.getDepDate(),f.getArrDate() ));
 
 
 
             }
 
                 if(days < maxDays)
-                    new GetOfferInfo(act,currentCity,destId,offerPrice).execute(days+1,maxDays);
+                    new GetOfferInfo(act,currentCity,destId,offerPrice,ratio).execute(days+1,maxDays);
             else {
                     final ListView listView = (ListView) act.findViewById(R.id.offer_list_view);
                     OfferInfoAdapter adapter = new OfferInfoAdapter(act, values.toArray(new OfferInfo[values.size()]));

@@ -6,13 +6,13 @@ package com.example.nmarcantonio.flysys2;
 
 public class Total {
 
-    private String total;
+    private Double total;
 
-    public Total(String total) {
+    public Total(Double total) {
         this.total = total;
     }
 
-    public String getTotal() {
+    public Double getTotal() {
         return total;
     }
 }

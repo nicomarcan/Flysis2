@@ -28,10 +28,12 @@ public class GetOffersToDestTask extends AsyncTask<String,Void, String> {
     private Activity act;
     private String currentCity;
     private Integer filter;
+    private Double ratio;
 
-    public GetOffersToDestTask(Activity act,Integer filter) {
+    public GetOffersToDestTask(Activity act,Integer filter,Double ratio) {
         this.act = act;
         this.filter=filter;
+        this.ratio = ratio;
     }
 
     @Override
@@ -81,7 +83,7 @@ public class GetOffersToDestTask extends AsyncTask<String,Void, String> {
             for(Deal d : dealList){
                 if(d.getId().equals(destCity)){
                    // Toast.makeText(act, "JIJI", Toast.LENGTH_SHORT).show();
-                    new GetOfferInfo(act,currentCity,destCity,new Double(d.getPrice())).execute(2+filter*30,8+(filter*30));
+                    new GetOfferInfo(act,currentCity,destCity,new Double(d.getPrice()*ratio),ratio).execute(2+filter*30,8+(filter*30));
                     return;
                 }
             }

@@ -31,7 +31,7 @@ public class Flight {
         return outbound_routes[0].getSegments()[0].getDeparture().getAirport().getId();
     }
 
-    public String getPrice(){
+    public Double getPrice(){
         return price.getTotal().getTotal();
     }
 

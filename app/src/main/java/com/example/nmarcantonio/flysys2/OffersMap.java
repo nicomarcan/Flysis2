@@ -138,7 +138,7 @@ public class OffersMap extends AppCompatActivity  {
                     }
                     midPrice = (maxPrice + minPrice)/2;
 
-                    OfferAdapter adapter = new OfferAdapter(values);
+                    OfferAdapter adapter = new OfferAdapter(values,context);
                     mLayoutManager= new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL, false);
                     view.setLayoutManager(mLayoutManager);
                    view.setAdapter(adapter);

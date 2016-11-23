@@ -1,6 +1,9 @@
 package com.example.nmarcantonio.flysys2;
 
+import android.app.Activity;
+import android.content.SharedPreferences;
 import android.media.Image;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +24,7 @@ import java.util.List;
 public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.MyViewHolder> {
 
     private List<Product> offerList;
+    private Activity act;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public ImageView imageView;
@@ -37,8 +41,9 @@ public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.MyViewHolder
     }
 
 
-    public OfferAdapter(List<Product> offerList) {
+    public OfferAdapter(List<Product> offerList,Activity act) {
         this.offerList = offerList;
+        this.act = act;
     }
 
     @Override
@@ -57,7 +62,8 @@ public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.MyViewHolder
              holder.nameTextView.setText(prod.getName());
         else
             holder.nameTextView.setText(city[0]+","+city[2]);
-        holder.priceTextView.setText(prod.getPrice().toString());
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(act);
+        holder.priceTextView.setText("$"+prefs.getString("money_list","USD")+" "+prod.getPrice());
 
 
 

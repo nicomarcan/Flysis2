@@ -1,6 +1,8 @@
 package com.example.nmarcantonio.flysys2;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,7 +45,8 @@ public class ProductArrayAdapter extends ArrayAdapter<Product> {
        // holder.imageView.setImageResource(R.drawable.ic_menu_white);
         holder.nameTextView.setText(product.getName().split(",")[0]);
         Double price = product.getPrice();
-        holder.priceTextView.setText(price.toString());
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+        holder.priceTextView.setText("$"+prefs.getString("money_list","USD")+" "+price);
 
         return convertView;
     }
