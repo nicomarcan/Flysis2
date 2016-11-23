@@ -36,6 +36,7 @@ public class GetOfferInfo extends AsyncTask<Integer, Void, String> {
     private Double offerPrice;
     private Integer days;
     private Integer maxDays;
+    public static ArrayList<OfferInfo> values = new ArrayList<OfferInfo>();
 
 
     public GetOfferInfo(Activity act, String currentCity, String destId, Double offerPrice) {
@@ -63,10 +64,8 @@ public class GetOfferInfo extends AsyncTask<Integer, Void, String> {
 
         try {
             URL url;
-            if(offerPrice != null)
-                url= new URL("http://hci.it.itba.edu.ar/v1/api/booking.groovy?method=getonewayflights&from="+currentCity+"&to="+destId+"&dep_date="+formattedDate+"&adults=1&children=0&infants=0&min_price="+offerPrice+"&max_price="+offerPrice);
-            else
-                url= new URL("http://hci.it.itba.edu.ar/v1/api/booking.groovy?method=getonewayflights&from="+currentCity+"&to="+destId+"&dep_date="+formattedDate+"&adults=1&children=0&infants=0");
+            url= new URL("http://hci.it.itba.edu.ar/v1/api/booking.groovy?method=getonewayflights&from="+currentCity+"&to="+destId+"&dep_date="+formattedDate+"&adults=1&children=0&infants=0&min_price="+offerPrice+"&max_price="+offerPrice);
+
             urlConnection = (HttpURLConnection) url.openConnection();
             InputStream in = new BufferedInputStream(urlConnection.getInputStream());
             return readStream(in);
@@ -109,21 +108,20 @@ public class GetOfferInfo extends AsyncTask<Integer, Void, String> {
 
 
 
-            OfferInfo[] values = new OfferInfo[1];
             if(flightList.size()>0){
                 final ListView listView = (ListView) act.findViewById(R.id.offer_list_view);
                 Flight f = flightList.get(0);
 
-                values[0]=new OfferInfo(f.getId(),f.getNumber(),f.getsrcAir() ,f.getdstAir(),f.getPrice() ,f.getDepDate(),f.getArrDate()  );
-                OfferInfoAdapter adapter = new OfferInfoAdapter(act  ,values);
+                values.add( new OfferInfo(f.getId(),f.getNumber(),f.getsrcAir() ,f.getdstAir(),f.getPrice() ,f.getDepDate(),f.getArrDate() ));
+                OfferInfoAdapter adapter = new OfferInfoAdapter(act  ,values.toArray(new OfferInfo[values.size()]));
                 listView.setAdapter(adapter);
 
 
-            }else{
-                //Toast.makeText(context,"cabe",Toast.LENGTH_SHORT).show();
+            }
+
                 if(days < maxDays)
                     new GetOfferInfo(act,currentCity,destId,offerPrice).execute(days+1,maxDays);
-            }
+
 
 
         } catch (Exception exception) {

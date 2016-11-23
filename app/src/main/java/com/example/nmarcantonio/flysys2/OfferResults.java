@@ -9,6 +9,9 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import java.util.ArrayList;
 
 /**
  * Created by Nicolas on 11/21/2016.
@@ -23,11 +26,14 @@ public class OfferResults  extends AppCompatActivity{
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.offer_results);
+        GetOfferInfo.values.clear();
 
         if(getIntent().getStringExtra("offerPrice")==null)
             new GetOffersToDestTask(this,new Integer(getIntent().getStringExtra("filter"))).execute(getIntent().getStringExtra("currentCity"),getIntent().getStringExtra("destCity"));
-        else
-            new GetOfferInfo(this,getIntent().getStringExtra("currentCity"),getIntent().getStringExtra("destCity"),new Double(getIntent().getStringExtra("offerPrice"))).execute(2,9);
+        else {
+            new GetOfferInfo(this, getIntent().getStringExtra("currentCity"), getIntent().getStringExtra("destCity"), new Double(getIntent().getStringExtra("offerPrice"))).execute(2, 8);
+        }
+
     }
 
 

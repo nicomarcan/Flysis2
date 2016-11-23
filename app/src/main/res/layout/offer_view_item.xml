@@ -10,9 +10,9 @@
 
     <ImageView
         android:id="@+id/offer_photo2"
-        android:layout_width="150dp"
+        android:layout_width="170dp"
         android:layout_height="150dp"
-        android:contentDescription="@string/menu_icon" />
+    />
     <TextView
         android:id="@+id/offer_info2"
         android:textColor="#FFFFFF"

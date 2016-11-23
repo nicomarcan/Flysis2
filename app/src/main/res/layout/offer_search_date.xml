@@ -105,7 +105,7 @@
                     android:layout_height="wrap_content"
                     android:padding="3dip"
                     android:layout_marginTop="15dp"
-                    android:text="Después de un año" />
+                    android:text="Después de 1 año" />
             </TableRow>
 
         </TableLayout>

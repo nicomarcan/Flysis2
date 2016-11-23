@@ -79,7 +79,7 @@ public class GetOffersToDestTask extends AsyncTask<String,Void, String> {
             ArrayList<Deal> dealList = gson.fromJson(jsonFragment, listType);
             for(Deal d : dealList){
                 if(d.getId().equals(destCity)){
-                    new GetOfferInfo(act,currentCity,destCity,new Double(d.getPrice())).execute(2+filter*30,9+(filter*30));
+                    new GetOfferInfo(act,currentCity,destCity,new Double(d.getPrice())).execute(2+filter*30,8+(filter*30));
                 }
             }
 

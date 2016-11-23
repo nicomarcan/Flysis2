@@ -2,8 +2,13 @@ package com.example.nmarcantonio.flysys2;
 
 import android.Manifest;
 import android.app.Fragment;
+import android.app.PendingIntent;
+import android.app.SearchManager;
+import android.app.TaskStackBuilder;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -12,7 +17,6 @@ import android.os.Bundle;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
@@ -24,14 +28,18 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.InputDevice;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.ArrayAdapter;
+
 import org.json.JSONObject;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -41,16 +49,17 @@ import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 import static android.content.Context.LOCATION_SERVICE;
-import static com.example.nmarcantonio.flysys2.R.id.map;
 
 /**
  * Created by saques on 19/11/16.
  */
 public class AirportsFragment extends Fragment  {
     final static String AIRPORTS_NAME = "airports";
-    final static String CITY_NAME = "city";
-    final static String COUNTRY_NAME ="country";
+    final static String CITIES_NAME = "cities";
     private AppCompatActivity context;
     private View myView;
     private MapView mapView;
@@ -60,6 +69,8 @@ public class AirportsFragment extends Fragment  {
     private Location loc;
     private ArrayList<Marker> markers = new ArrayList<Marker>();
     private ArrayList<Airport> airportList;
+    private ArrayList<CityInfo_2> citiesList;
+    private Map<String,CityInfo_2> citiesMap;
     private AirportsFragment ap = this;
     private Integer selected;
     private String searchRadius = "100";
@@ -87,11 +98,36 @@ public class AirportsFragment extends Fragment  {
             context.getSupportActionBar().setTitle("Aeropuertos");
         }
 
+
+        MenuItem searchItem = ((MainActivity)getActivity()).getmMenu().findItem(R.id.offer_search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+
+
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+              @Override
+              public boolean onQueryTextSubmit(String query) {
+
+                  if(!citiesMap.containsKey(query)) return true;
+                  loc.setLongitude(citiesMap.get(query).getLongitude());
+                  loc.setLatitude(citiesMap.get(query).getLatitude());
+                  new GetNearbyAirportsAsync().execute();
+                  return false;
+              }
+
+              @Override
+              public boolean onQueryTextChange(String newText) {
+                  return false;
+              }
+          });
+
+
+
         loclistener = new LocationListener() {
             @Override
             public void onLocationChanged(final Location location) {
                 loc = location;
-                new HttpGetTask().execute();
+                new GetNearbyAirportsAsync().execute();
             }
 
             @Override
@@ -123,8 +159,8 @@ public class AirportsFragment extends Fragment  {
         locmanager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, loclistener);
         loc = locmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
-        new HttpGetTask().execute();
-
+        new GetNearbyAirportsAsync().execute();
+        new GetCitiesAsync(context,searchView).execute();
 
 
 
@@ -141,11 +177,121 @@ public class AirportsFragment extends Fragment  {
         }catch (SecurityException e){
 
         }
-        new HttpGetTask().execute();
+        new GetNearbyAirportsAsync().execute();
     }
 
 
-    private class HttpGetTask extends AsyncTask<Void, Void, String> implements OnMapReadyCallback {
+
+    private class GetCitiesAsync extends AsyncTask<Void, Void, String>{
+
+        Context context;
+        SearchView searchView;
+
+        public GetCitiesAsync(Context context, SearchView searchView){
+            this.context = context;
+            this.searchView = searchView;
+        }
+
+
+        @Override
+        protected String doInBackground(Void... params) {
+
+            HttpURLConnection urlConnection = null;
+
+            try {
+                URL url = new URL("http://hci.it.itba.edu.ar/v1/api/geo.groovy?method=getcities&" +"page_size=1000");
+                urlConnection = (HttpURLConnection) url.openConnection();
+                InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+                return readStream(in);
+            } catch (Exception exception) {
+                exception.printStackTrace();
+                return "Unexpected Error";
+            } finally {
+                if (urlConnection != null)
+                    urlConnection.disconnect();
+            }
+        }
+
+
+
+
+        private String readStream(InputStream inputStream) {
+            try {
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                int i = inputStream.read();
+                while (i != -1) {
+                    outputStream.write(i);
+                    i = inputStream.read();
+                }
+                return outputStream.toString();
+
+            } catch (IOException e) {
+                return "";
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+
+            try {
+                JSONObject obj = new JSONObject(result);
+                if (!obj.has(AirportsFragment.CITIES_NAME)) {
+                    return;
+                }
+                Gson gson = new Gson();
+                Type listType = new TypeToken<ArrayList<CityInfo_2>>() {
+                }.getType();
+
+
+
+                String jsonFragment = obj.getString(AirportsFragment.CITIES_NAME);
+
+                citiesList = gson.fromJson(jsonFragment, listType);
+
+                citiesMap = new HashMap<>();
+
+
+                for(CityInfo_2 c : citiesList){
+                    citiesMap.put(c.getName().split(", ")[0],c);
+                }
+
+                final SearchView.SearchAutoComplete searchAutoComplete = (SearchView.SearchAutoComplete)     searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+                searchAutoComplete.setTextColor(Color.WHITE);
+                final ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
+                        R.layout.autocomplete_layout, new ArrayList<>(citiesMap.keySet()));
+                searchAutoComplete.setAdapter(adapter);
+
+                SearchManager searchManager =
+                        (SearchManager) getActivity().getSystemService(getActivity().SEARCH_SERVICE);
+                searchView.setSearchableInfo(
+                        searchManager.getSearchableInfo(getActivity().getComponentName()));
+
+                searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
+                    @Override
+                    public boolean onSuggestionSelect(int position) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onSuggestionClick(int position) {
+                        searchView.setQuery(adapter.getItem(position), false);
+                        return true;
+                    }
+                });
+
+
+
+            } catch (Exception exception) {
+
+            }
+        }
+
+
+
+    }
+
+
+    private class GetNearbyAirportsAsync extends AsyncTask<Void, Void, String> implements OnMapReadyCallback {
         @Override
         protected String doInBackground(Void... params) {
 
@@ -246,7 +392,7 @@ public class AirportsFragment extends Fragment  {
 
             if (view != null) {
 
-                AirportAdapter adapter = new AirportAdapter(airportList);
+                AirportAdapter adapter = new AirportAdapter(airportList,loc,context);
                 LinearLayoutManager mLayoutManager= new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL, false);
                 view.setLayoutManager(mLayoutManager);
                 view.setAdapter(adapter);
@@ -264,7 +410,7 @@ public class AirportsFragment extends Fragment  {
                         LatLng a =   new LatLng(p.getLatitude(),p.getLongitude());
                         markers.get(position).remove();
                         String splitdesc[] = p.getDescription().split(", ");
-                        map.addMarker(new MarkerOptions().position(a).title(splitdesc[0] + ", " + splitdesc[1]+'\n').icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+                        map.addMarker(new MarkerOptions().position(a).title(splitdesc[0] +'\n').icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
 
                         float zoomLevel = (float)11.0; //This goes up to 21
                         map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(p.getLatitude(),p.getLongitude()), zoomLevel));

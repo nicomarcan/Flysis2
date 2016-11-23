@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * Created by Nicolas on 11/22/2016.
@@ -34,6 +35,7 @@ public class OfferFilterFragment extends Fragment {
         cross.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                OffersFragment.filter = 0;
                 getActivity().onBackPressed();
             }
         });
@@ -41,16 +43,5 @@ public class OfferFilterFragment extends Fragment {
         textView.setText(getArguments().getString("Text"));
     }
 
-    @Override
-    public boolean onOptionsItemSelected(final MenuItem item) {
 
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                getActivity().onBackPressed();
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
 }

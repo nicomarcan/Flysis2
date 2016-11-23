@@ -23,6 +23,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -90,9 +92,12 @@ public class OffersFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         context = (AppCompatActivity) getActivity();
+        ((MainActivity)getActivity()).setCurrentSect(R.id.nav_offers);
         if (context.getSupportActionBar() != null) {
             context.getSupportActionBar().setTitle("Ofertas");
         }
+
+        //Toast.makeText(getActivity(), "ENTRE", Toast.LENGTH_SHORT).show();
         //setHasOptionsMenu(true);
 
         FloatingActionButton fab = (FloatingActionButton) myView.findViewById(R.id.map);
@@ -120,8 +125,7 @@ public class OffersFragment extends Fragment {
         });
 
 
-
-
+        filter = 0;
         MenuItem searchItem = ((MainActivity)getActivity()).getmMenu().findItem(R.id.offer_search);
         SearchView searchView =
                 (SearchView) MenuItemCompat.getActionView(searchItem);
@@ -147,7 +151,7 @@ public class OffersFragment extends Fragment {
 
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
                 builder.setContentIntent(pendingIntent);
-                filter = 0;
+
                 startActivity(intent);
                 return false;
             }
@@ -211,6 +215,8 @@ public class OffersFragment extends Fragment {
 
 
     }
+
+
 
 
 
@@ -341,6 +347,7 @@ public class OffersFragment extends Fragment {
 
 
 
+
     private class GetCityGPS extends AsyncTask<Void, Void, String> {
         @Override
         protected String doInBackground(Void... params) {
@@ -414,6 +421,7 @@ public class OffersFragment extends Fragment {
 
 
 
+
     private class GetAirpAndCitiesTask extends AsyncTask<String, Void, String> {
 
 
@@ -468,46 +476,46 @@ public class OffersFragment extends Fragment {
 
                     ArrayList<Airport> airports = gson.fromJson(jsonFragment, listType);
 
-                    for(Airport a : airports){
+                    for (Airport a : airports) {
                         autoCompStrings.add(a.getDescription());
-                        nameToId.put(a.getDescription().toLowerCase(),a.getId());
-                        String city = a.getDescription().split(",")[1]+","+a.getDescription().split(",")[2];
+                        nameToId.put(a.getDescription().toLowerCase(), a.getId());
+                        String city = a.getDescription().split(",")[1] + "," + a.getDescription().split(",")[2];
                         autoCompStrings.add(city);
-                        nameToId.put(city.toLowerCase(),a.getCity().getId());
+                        nameToId.put(city.toLowerCase(), a.getCity().getId());
                     }
-
-                    Set<String> set = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
-                    set.addAll(autoCompStrings);
-                    autoCompStrings = new ArrayList<String>(set);
-
-
+                    if (isAdded()) {
+                        Set<String> set = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+                        set.addAll(autoCompStrings);
+                        autoCompStrings = new ArrayList<String>(set);
 
 
-                    final SearchView.SearchAutoComplete searchAutoComplete = (SearchView.SearchAutoComplete)     searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
-                    searchAutoComplete.setTextColor(Color.WHITE);
-                    final ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
-                            R.layout.autocomplete_layout, autoCompStrings);
-                    searchAutoComplete.setAdapter(adapter);
+                        final SearchView.SearchAutoComplete searchAutoComplete = (SearchView.SearchAutoComplete) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+                        searchAutoComplete.setTextColor(Color.WHITE);
+                        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
+                                R.layout.autocomplete_layout, autoCompStrings);
+                        searchAutoComplete.setAdapter(adapter);
 
-                    SearchManager searchManager =
-                            (SearchManager) getActivity().getSystemService(getActivity().SEARCH_SERVICE);
-                    searchView.setSearchableInfo(
-                            searchManager.getSearchableInfo(getActivity().getComponentName()));
+                        SearchManager searchManager;
 
-                    searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
-                        @Override
-                        public boolean onSuggestionSelect(int position) {
-                            return false;
-                        }
+                            searchManager = (SearchManager) getActivity().getSystemService(getActivity().SEARCH_SERVICE);
+                            searchView.setSearchableInfo(
+                                    searchManager.getSearchableInfo(getActivity().getComponentName()));
 
-                        @Override
-                        public boolean onSuggestionClick(int position) {
-                            searchView.setQuery(adapter.getItem(position), false);
-                            return true;
-                        }
-                    });
+                            searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
+                                @Override
+                                public boolean onSuggestionSelect(int position) {
+                                    return false;
+                                }
+
+                                @Override
+                                public boolean onSuggestionClick(int position) {
+                                    searchView.setQuery(adapter.getItem(position), false);
+                                    return true;
+                                }
+                            });
 
 
+                    }
                 }
             }
             catch (Exception e) {
