@@ -14,7 +14,6 @@ public class NotificationBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d(TAG, "onReceive: ksksks");
         if (intent != null && intent.hasExtra(FlightsIntentService.FLIGHT_STATUS)) {
             FlightStatus flightStatus = (FlightStatus) intent.getExtras().get(FlightsIntentService.FLIGHT_STATUS);
 
@@ -23,7 +22,6 @@ public class NotificationBroadcastReceiver extends BroadcastReceiver {
                     .setContentTitle("Vuelo "+ String.valueOf(flightStatus.number))
                     .setContentText("Despega en 20 minutos")
                     .build();
-            Log.d(TAG, "onReceive: ksksks");
             NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.notify("hhhh", 1, notification);
         }
