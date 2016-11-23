@@ -3,16 +3,21 @@ package com.example.nmarcantonio.flysys2;
 import android.Manifest;
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.AlarmManager;
 import android.app.Fragment;
 import android.app.PendingIntent;
 import android.app.SearchManager;
 import android.app.TaskStackBuilder;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -50,16 +55,19 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    static final String TAG = "MainActivity";
     TextView resultTextView;
     final static String DEALS_NAME = "deals";
     private Activity context;
     private static int currentSect = R.id.nav_flights;
     private Menu mMenu;
     private AirportsFragment af;
+
 
 
     @Override
@@ -69,6 +77,8 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         context = this;
+
+
       //  resultTextView = (TextView) findViewById(R.id.result);
 
         android.app.FragmentManager fragmentManager = getFragmentManager();
@@ -101,6 +111,8 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        setAlarm();
+
     }
 
 
@@ -116,6 +128,9 @@ public class MainActivity extends AppCompatActivity
             af.afterLocationRequest();
         }
     }
+
+
+
 
     @Override
     public void onBackPressed() {
@@ -261,6 +276,20 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    private void setAlarm() {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent i = new Intent(context, AlarmNotificationReceiver.class);
+        PendingIntent pi = PendingIntent.getBroadcast(
+                context, 0, i, 0
+        );
+        alarmManager.setInexactRepeating(
+                AlarmManager.ELAPSED_REALTIME,
+                SystemClock.elapsedRealtime() + 10000,
+                6000,
+                pi
+        );
+        Log.d("aaa", "onReceive: ");
+    }
 
 
 }

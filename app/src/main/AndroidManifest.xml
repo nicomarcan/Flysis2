@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:allowBackup="true"
@@ -61,32 +62,18 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.nmarcantonio.flysys2.FlightInfoDetailActivity" />
         </activity>
-
         <activity
             android:name=".SettingsActivity"
-
-            android:label="@string/title_activity_settings">
-
-
-
-
-
-    </activity>
-
+            android:label="@string/title_activity_settings" />
         <activity
             android:name=".OfferResults"
-            android:parentActivityName=".MainActivity"
-            android:label="@string/offer_results">
-
+            android:label="@string/offer_results"
+            android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.nmarcantonio.flysys2.MainActivity" />
-
-
-
         </activity>
-
-	<activity
+        <activity
             android:name=".FlightCommentsActivity"
             android:label="@string/title_activity_flight"
             android:parentActivityName=".FlightActivity"
@@ -96,8 +83,33 @@
                 android:value="com.example.nmarcantonio.flysys2.FlightCommentsActivity" />
         </activity>
 
+        <receiver android:name=".BootBroadcastReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".AlarmNotificationReceiver" />
 
+        <service
+            android:name=".FlightsService"
+            android:enabled="true"
+            android:exported="true" />
 
+        <service
+            android:name=".SendNotificationService"
+            android:exported="false" />
+        <service
+            android:name=".FlightsIntentService"
+            android:exported="false" />
+
+        <receiver
+            android:name=".NotificationBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter android:priority="1">
+                <action android:name="com.example.nmarcantonio.flysis2.ACTION_GET_FLIGHT" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

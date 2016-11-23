@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -25,7 +26,24 @@ import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+
 public class FlightActivity extends AppCompatActivity{
+    private static String TAG = "FlightActivity";
+
+    ArrayList<FlightStatus> flights;
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        flights = PreferencesHelper.getFlights(this);
+        Log.d(TAG, "onResume: ");
+        for (FlightStatus flight: flights) {
+            Log.d(TAG, "onResume: Vuelo "+flight.airline + " "+flight.number);
+        }
+        /* updateAllFlights(); */
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +73,11 @@ public class FlightActivity extends AppCompatActivity{
                                              }
         );
 
+        flights = PreferencesHelper.getFlights(this);
 
-        new GetFlightInfoTask(findViewById(R.id.flight_info_coordination), mapFragment, this)
-                .execute("AR", "5260");
+        new GetFlightInfoTask(
+                new FlightInfoCallback(findViewById(R.id.flight_info_coordination), mapFragment, this, flights)
+        ).execute("AR", "5260");
+
     }
 }
