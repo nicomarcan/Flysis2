@@ -99,7 +99,8 @@ public class FlightsFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, FlightActivity.class);
-
+                intent.putExtra("id","AR");
+                intent.putExtra("number","5260");
 
                 PendingIntent pendingIntent =
                         TaskStackBuilder.create(context)

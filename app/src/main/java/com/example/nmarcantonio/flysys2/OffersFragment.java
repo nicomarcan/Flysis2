@@ -23,8 +23,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -213,7 +211,7 @@ public class OffersFragment extends Fragment {
 
 
         new GetCityGPS().execute();
-        new GetAirpAndCitiesTask(context,searchView).execute();
+        new GetCitiesTask(context,searchView).execute();
 
 
     }
@@ -425,7 +423,7 @@ public class OffersFragment extends Fragment {
 
 
 
-    private class GetAirpAndCitiesTask extends AsyncTask<String, Void, String> {
+    private class GetCitiesTask extends AsyncTask<String, Void, String> {
 
 
         private Context context;
@@ -434,7 +432,7 @@ public class OffersFragment extends Fragment {
 
         private SearchView searchView;
 
-        public GetAirpAndCitiesTask(Context context, SearchView searchView) {
+        public GetCitiesTask(Context context, SearchView searchView) {
             this.context = context;
             this.searchView = searchView;
         }
@@ -445,7 +443,7 @@ public class OffersFragment extends Fragment {
             String ret = null, order;
             try {
 
-                URL url = new URL("http://hci.it.itba.edu.ar/v1/api/geo.groovy?method=getairports");
+                URL url = new URL("http://hci.it.itba.edu.ar/v1/api/geo.groovy?method=getcities");
                 conn = (HttpURLConnection) new URL(url.toString()).openConnection();
 
                 InputStream in = new BufferedInputStream(conn.getInputStream());
@@ -465,26 +463,23 @@ public class OffersFragment extends Fragment {
             try {
 
                 JSONObject obj = new JSONObject(result);
-                if (!obj.has("airports")) {
+                if (!obj.has("cities")) {
 
                     return;
                 }
                 else {
                     Gson gson = new Gson();
-                    Type listType = new TypeToken<ArrayList<Airport>>() {
+                    Type listType = new TypeToken<ArrayList<City>>() {
                     }.getType();
 
-                    String jsonFragment = obj.getString("airports");
+                    String jsonFragment = obj.getString("cities");
 
 
-                    ArrayList<Airport> airports = gson.fromJson(jsonFragment, listType);
+                    ArrayList<City> cities = gson.fromJson(jsonFragment, listType);
 
-                    for (Airport a : airports) {
-                        autoCompStrings.add(a.getDescription());
-                        nameToId.put(a.getDescription().toLowerCase(), a.getId());
-                        String city = a.getDescription().split(",")[1] + "," + a.getDescription().split(",")[2];
-                        autoCompStrings.add(city);
-                        nameToId.put(city.toLowerCase(), a.getCity().getId());
+                    for (City a : cities) {
+                        autoCompStrings.add(a.getName().split(",")[0]);
+                        nameToId.put(a.getName().split(",")[0].toLowerCase(),a.getId());
                     }
                     if (isAdded()) {
                         Set<String> set = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);

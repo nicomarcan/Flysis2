@@ -81,7 +81,7 @@ public class FlightActivity extends AppCompatActivity{
         String number = getIntent().getStringExtra("number");
         new GetFlightInfoTask(
                 new FlightInfoCallback(findViewById(R.id.flight_info_coordination), mapFragment, this, flights)
-        ).execute("AR", "5260");
+        ).execute(id, number);
 
     }
 }
