@@ -49,13 +49,13 @@ public class FlightsIntentService extends IntentService {
     }
 
     private void handleGetFlight(final String airline, final String flight) {
-        Log.d(TAG, "handleGetFlight: ");
         new GetFlightInfoTask(new TaskCallback() {
             @Override
             public void callback(String result) {
                 try {
                     JSONObject obj = new JSONObject(result);
                     if (!obj.has("status")) {
+                        Log.d(TAG, "callback: failed");
                         return;
                     } else {
                         Gson gson = new Gson();
@@ -66,8 +66,6 @@ public class FlightsIntentService extends IntentService {
                         final FlightStatus fi = gson.fromJson(jsonFragment, listType);
                         Intent intent = new Intent(ACTION_GET_FLIGHT);
                         intent.putExtra(FLIGHT_STATUS, fi);
-                        intent.putExtra(AIRLINE, airline);
-                        intent.putExtra(FLIGHT, flight);
                         sendOrderedBroadcast(intent, null);
                     }
                 }

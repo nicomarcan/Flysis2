@@ -49,6 +49,7 @@ public class FlightActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
         setContentView(R.layout.flight_info_activity);
 
         getWindow().getDecorView().setSystemUiVisibility(
