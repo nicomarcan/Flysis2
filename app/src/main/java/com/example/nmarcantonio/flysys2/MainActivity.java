@@ -60,12 +60,26 @@ public class MainActivity extends AppCompatActivity
     private static int currentSect = R.id.nav_flights;
     private Menu mMenu;
     private AirportsFragment af;
+    private final View.OnAttachStateChangeListener offerListener =new View.OnAttachStateChangeListener() {
+
+        @Override
+        public void onViewDetachedFromWindow(View arg0) {
+            onBackPressed();
+        }
+
+        @Override
+        public void onViewAttachedToWindow(View arg0) {
+            android.app.FragmentManager fragmentManager = getFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.content_frame, new OfferDateFragment()).addToBackStack("HOLAS").commit();
+        }
+    };
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         context = this;
@@ -77,7 +91,7 @@ public class MainActivity extends AppCompatActivity
            // Toast.makeText(this,"CABE",Toast.LENGTH_LONG).show();
             fragmentManager.beginTransaction().replace(R.id.content_frame,new FlightsFragment()).commit();
         } else if (currentSect == R.id.nav_offers) {
-            fragmentManager.beginTransaction().replace(R.id.content_frame,new OffersFragment()).commit();
+            fragmentManager.beginTransaction().replace(R.id.content_frame,new OffersFragment()).addToBackStack("HOLA").commit();
         } else if (currentSect == R.id.nav_airports) {
 
         } else if (currentSect == R.id.nav_conversor) {
@@ -136,6 +150,8 @@ public class MainActivity extends AppCompatActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         mMenu = menu;
+
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -169,37 +185,13 @@ public class MainActivity extends AppCompatActivity
 
         }
         if(id == R.id.offer_search){
+            MenuItem searchItem = mMenu.findItem(R.id.offer_search);
+            SearchView searchView =
+                    (SearchView) MenuItemCompat.getActionView(searchItem);
+
             if(currentSect == R.id.nav_offers){
-
-                android.app.FragmentManager fragmentManager = getFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.content_frame,new OfferDateFragment()).addToBackStack("HOLA").commit();
-                MenuItem searchItem = mMenu.findItem(R.id.offer_search);
-                SearchView searchView =
-                        (SearchView) MenuItemCompat.getActionView(searchItem);
-
-
-
-
-                searchView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
-
-                    @Override
-                    public void onViewDetachedFromWindow(View arg0) {
-                        onBackPressed();
-                    }
-
-                    @Override
-                    public void onViewAttachedToWindow(View arg0) {
-                       // Toast.makeText(context,"JEJE",Toast.LENGTH_LONG).show();
-                    }
-                });
-
-
-
+                    searchView.addOnAttachStateChangeListener(offerListener);
             }else if(currentSect == R.id.nav_flights){
-                MenuItem searchItem = mMenu.findItem(R.id.offer_search);
-                SearchView searchView =
-                        (SearchView) MenuItemCompat.getActionView(searchItem);
-
                 searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener(){
 
                     @Override
@@ -213,6 +205,10 @@ public class MainActivity extends AppCompatActivity
                         return false;
                     }
                 });
+
+                searchView.removeOnAttachStateChangeListener(offerListener);
+            }else{
+                searchView.removeOnAttachStateChangeListener(offerListener);
             }
 
            /*
@@ -240,14 +236,15 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         android.app.FragmentManager fragmentManager = getFragmentManager();
-        currentSect = id;
+
         if (id == R.id.nav_flights) {
+            fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             fragmentManager.beginTransaction().replace(R.id.content_frame,new FlightsFragment()).commit();
         } else if (id == R.id.nav_offers) {
             fragmentManager.beginTransaction().replace(R.id.content_frame,new OffersFragment()).addToBackStack("HOLA").commit();
         } else if (id == R.id.nav_airports) {
             af = new AirportsFragment();
-            fragmentManager.beginTransaction().replace(R.id.content_frame,af).commit();
+            fragmentManager.beginTransaction().replace(R.id.content_frame,af).addToBackStack("HOLA").commit();
         } else if (id == R.id.nav_conversor) {
 
         } else if (id == R.id.nav_bin) {

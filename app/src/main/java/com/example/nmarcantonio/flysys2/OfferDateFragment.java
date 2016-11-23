@@ -11,6 +11,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TableLayout;
@@ -58,7 +59,6 @@ public class OfferDateFragment extends Fragment {
         TableLayout tab = (TableLayout)context.findViewById(R.id.on);
 
 
-
         int count = tab.getChildCount();
         for(int i = 0; i < count; i++){
             TableRow t =(TableRow) tab.getChildAt(i);
@@ -83,8 +83,11 @@ public class OfferDateFragment extends Fragment {
                     bundle.putString("Text",text.toString());
                     Fragment frag = new OfferFilterFragment();
                     frag.setArguments(bundle);
-                    getFragmentManager().beginTransaction().replace(R.id.content_frame,frag).addToBackStack("JEJE").commit();
-                    // TODO: do your logic here
+                    getFragmentManager().popBackStack();
+                    getFragmentManager().beginTransaction()
+                            .replace(R.id.content_frame, frag)
+                            .addToBackStack(null)
+                            .commit();
 
                 }
             });
@@ -95,6 +98,9 @@ public class OfferDateFragment extends Fragment {
 
 
     }
+
+
+
 
     public static Integer  getFilter(){
         return filter;

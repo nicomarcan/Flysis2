@@ -195,7 +195,7 @@ public class OffersMap extends AppCompatActivity  {
         @Override
         public void onMapReady(GoogleMap googleMap) {
             mMap = googleMap;
-
+            mMap.getUiSettings().setZoomControlsEnabled(true);
             // Add a marker in Sydney and move the camera
             LatLng a;
             int i = 0;

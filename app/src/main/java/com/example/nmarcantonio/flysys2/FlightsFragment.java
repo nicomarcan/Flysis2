@@ -33,6 +33,8 @@ public class FlightsFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         context = (AppCompatActivity)getActivity();
+
+        ((MainActivity)getActivity()).setCurrentSect(R.id.nav_flights);
         if(context.getSupportActionBar() != null) {
             context.getSupportActionBar().setTitle("Vuelos");
         }

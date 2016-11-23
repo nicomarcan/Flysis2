@@ -96,8 +96,8 @@ public class GetFlickrPhotoTask extends AsyncTask<String, Void, String> {
 
                 DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
                         .cacheOnDisk(true)
-                        //.showImageOnLoading(R.drawable.ic_loading)
-                        //.showImageOnFail(R.drawable.ic_error)     //bajar iconos
+                        .showImageOnLoading(R.drawable.ic_loading)
+                        .showImageOnFail(R.drawable.ic_error)     //bajar iconos
                         .build();
                 ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context)
                         .defaultDisplayImageOptions(defaultOptions)
