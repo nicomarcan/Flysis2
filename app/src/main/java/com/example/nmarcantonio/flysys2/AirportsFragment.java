@@ -1,6 +1,8 @@
 package com.example.nmarcantonio.flysys2;
 
 import android.Manifest;
+import android.app.Activity;
+import android.app.Application;
 import android.app.Fragment;
 import android.app.PendingIntent;
 import android.app.SearchManager;
@@ -35,7 +37,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,6 +86,7 @@ public class AirportsFragment extends Fragment  {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         myView = inflater.inflate(R.layout.airports_layout, container, false);
         ((MainActivity)getActivity()).setCurrentSect(R.id.nav_airports);
 
@@ -93,60 +99,43 @@ public class AirportsFragment extends Fragment  {
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
+
+        MenuItem searchItem = menu.findItem(R.id.offer_search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+
+                if (!citiesMap.containsKey(query)) return true;
+                loc.setLongitude(citiesMap.get(query).getLongitude());
+                loc.setLatitude(citiesMap.get(query).getLatitude());
+                new GetNearbyAirportsAsync().execute();
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
+        new GetCitiesAsync(context,searchView).execute();
+    }
+
+    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         context = (AppCompatActivity)getActivity();
         if(context.getSupportActionBar() != null) {
             context.getSupportActionBar().setTitle("Aeropuertos");
         }
 
 
-        MenuItem searchItem = ((MainActivity)getActivity()).getmMenu().findItem(R.id.offer_search);
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
 
-
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-              @Override
-              public boolean onQueryTextSubmit(String query) {
-
-                  if(!citiesMap.containsKey(query)) return true;
-                  loc.setLongitude(citiesMap.get(query).getLongitude());
-                  loc.setLatitude(citiesMap.get(query).getLatitude());
-                  new GetNearbyAirportsAsync().execute();
-                  return false;
-              }
-
-              @Override
-              public boolean onQueryTextChange(String newText) {
-                  return false;
-              }
-          });
-
-
-
-        loclistener = new LocationListener() {
-            @Override
-            public void onLocationChanged(final Location location) {
-                loc = location;
-                new GetNearbyAirportsAsync().execute();
-            }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-
-            }
-
-            @Override
-            public void onProviderEnabled(String provider) {
-
-            }
-
-            @Override
-            public void onProviderDisabled(String provider) {
-
-            }
-        };
 
 
         locmanager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
@@ -157,12 +146,10 @@ public class AirportsFragment extends Fragment  {
             return;
         }
 
-        locmanager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, loclistener);
-        locmanager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, loclistener);
         loc = locmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
         new GetNearbyAirportsAsync().execute();
-        new GetCitiesAsync(context,searchView).execute();
+
 
 
 
@@ -172,15 +159,12 @@ public class AirportsFragment extends Fragment  {
 
     public void afterLocationRequest(){
         try {
-            locmanager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, loclistener);
-            locmanager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, loclistener);
             loc = locmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
         }catch (SecurityException e){
 
         }
-        new GetNearbyAirportsAsync().execute();
     }
+
 
 
 
@@ -359,7 +343,7 @@ public class AirportsFragment extends Fragment  {
         public void onMapReady(GoogleMap googleMap) {
             map = googleMap;
             map.getUiSettings().setZoomControlsEnabled(true);
-            map.getUiSettings().setMyLocationButtonEnabled(false);
+            map.getUiSettings().setMyLocationButtonEnabled(true);
 
             for(Marker m : markers){
                 m.remove();
@@ -367,24 +351,28 @@ public class AirportsFragment extends Fragment  {
 
             markers = new ArrayList<>();
 
+            LatLng locll = new LatLng(loc.getLatitude(),loc.getLongitude());
+
+            markers.add(0,map.addMarker(new MarkerOptions().position(locll).title(getString(R.string.you)).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))));
+
+
+
             try {
                 MapsInitializer.initialize(ap.getActivity());
             } catch (Exception e) {
 
             }
 
-            try{
-                map.setMyLocationEnabled(true);
-            } catch (SecurityException e){
-
-            }
-
             LatLng lat;
-            int i = 0;
+            int i = 1;
             for(Airport  a : airportList){
+                Location locb = new Location(loc);
+                locb.setLatitude(a.getLatitude());
+                locb.setLongitude(a.getLongitude());
                 lat =   new LatLng(a.getLatitude(),a.getLongitude());
                 String splitdesc[] = a.getDescription().split(", ");
-                markers.add(i,map.addMarker(new MarkerOptions().position(lat).title(splitdesc[0] + ", " + splitdesc[1]+'\n')));
+                String snippet = getString(R.string.airport_distance) +": " + (int)Math.round(loc.distanceTo(locb)/1000) + " km";
+                markers.add(i,map.addMarker(new MarkerOptions().position(lat).title(splitdesc[0] + ", " + splitdesc[1]+'\n').snippet(snippet)));
                 map.moveCamera(CameraUpdateFactory.newLatLng(lat));
                 i++;
             }
