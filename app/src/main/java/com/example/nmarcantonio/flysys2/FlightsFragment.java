@@ -62,9 +62,13 @@ public class FlightsFragment extends Fragment {
         context.registerReceiver(broadcastReceiver, intentFilter);
 
         flights = PreferencesHelper.getFlights(context);
-        Log.d(TAG, "onResume: ");
+
         for (FlightStatus flight: flights) {
-            Log.d(TAG, "onResume: Vuelo "+flight.airline + " "+flight.number);
+            Intent intent = new Intent(context, FlightsIntentService.class);
+            intent.setAction(FlightsIntentService.GET_FLIGHT);
+            intent.putExtra(FlightsIntentService.AIRLINE, flight.airline.name);
+            intent.putExtra(FlightsIntentService.FLIGHT, flight.number);
+            context.startService(intent);
         }
         /* updateAllFlights(); */
     }

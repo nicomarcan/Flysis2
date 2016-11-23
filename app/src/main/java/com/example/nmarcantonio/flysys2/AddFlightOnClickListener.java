@@ -26,16 +26,31 @@ public class AddFlightOnClickListener implements View.OnClickListener {
         this.fab = fab;
         this.context = context;
         isSubscribed = false;
+        setFabUnsubscribed();
         for (FlightStatus f: flights) {
-            if (flight.airline.name.equals(f) && flight.number == f.number) {
+            if (flight.airline.name.equals(f.airline.name) && flight.number == f.number) {
                 isSubscribed = true;
+                setFabSubscribed();
             }
         }
+        fab.show();
+    }
+
+    private void setFabSubscribed() {
+        fab.setImageResource(R.drawable.ic_clear_black_24dp);
+        fab.setColorFilter(0x000000);
+        fab.setBackgroundTintList(ColorStateList.valueOf(0xffffffff));
+    }
+
+    private void setFabUnsubscribed() {
+        fab.setImageResource(R.drawable.ic_add_black_24dp);
+        fab.setColorFilter(0xffffffff);
+        fab.setBackgroundTintList(ColorStateList.valueOf(0xffcc0000));
     }
     @Override
     public void onClick(View v) {
-        if (!isSubscribed) {
-            isSubscribed = true;
+        if (isSubscribed) {
+            isSubscribed = false;
             for(int i = 0; i < flights.size(); i++) {
                 FlightStatus f = flights.get(i);
                 if (f.airline.name.equals(flight.airline.name) && f.number == flight.number) {
@@ -44,18 +59,13 @@ public class AddFlightOnClickListener implements View.OnClickListener {
                 }
             }
             PreferencesHelper.updatePreferences(flights, context);
-            fab.setImageResource(R.drawable.ic_clear_black_24dp);
-            fab.setColorFilter(0x000000);
-            fab.setBackgroundTintList(ColorStateList.valueOf(0xffffffff));
-            Log.d(TAG, "onClick: "+ isSubscribed);
+            setFabUnsubscribed();
         }
         else {
-            isSubscribed = false;
+            isSubscribed = true;
             flights.add(flight);
             PreferencesHelper.updatePreferences(flights, context);
-            fab.setImageResource(R.drawable.ic_add_black_24dp);
-            fab.setColorFilter(0xffffffff);
-            fab.setBackgroundTintList(ColorStateList.valueOf(0xffcc0000));
+            setFabSubscribed();
         }
     }
 }
