@@ -127,7 +127,7 @@ public class OffersFragment extends Fragment {
         });
 
 
-        filter = 0;
+
         MenuItem searchItem = ((MainActivity)getActivity()).getmMenu().findItem(R.id.offer_search);
         SearchView searchView =
                 (SearchView) MenuItemCompat.getActionView(searchItem);
@@ -297,6 +297,7 @@ public class OffersFragment extends Fragment {
 
                             destId = nameToId.get(text.toString().toLowerCase());
                             offerPrice = values[position].getPrice();
+
                             Intent intent = new Intent(context, OfferResults.class);
 
                             intent.putExtra("currentCity", currentCity.getId());

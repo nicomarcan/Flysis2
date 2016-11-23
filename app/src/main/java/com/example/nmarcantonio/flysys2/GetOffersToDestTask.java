@@ -2,6 +2,7 @@ package com.example.nmarcantonio.flysys2;
 
 import android.app.Activity;
 import android.os.AsyncTask;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -45,7 +46,7 @@ public class GetOffersToDestTask extends AsyncTask<String,Void, String> {
         try {
 
             //URL url= new URL("hci.it.itba.edu.ar/v1/api/geo.groovy?method=getcitiesbyposition&latitude="+loc.getLatitude()+"&longitude="+loc.getLongitude()+"&radius=100");
-            URL url = new URL("http://hci.it.itba.edu.ar/v1/api/booking.groovy?method=getlastminuteflightdeals&from="+currentCity);
+            URL url = new URL("http://hci.it.itba.edu.ar/v1/api/booking.groovy?method=getflightdeals&from="+currentCity);
             urlConnection = (HttpURLConnection) url.openConnection();
             InputStream in = new BufferedInputStream(urlConnection.getInputStream());
             return readStream(in);
@@ -79,7 +80,9 @@ public class GetOffersToDestTask extends AsyncTask<String,Void, String> {
             ArrayList<Deal> dealList = gson.fromJson(jsonFragment, listType);
             for(Deal d : dealList){
                 if(d.getId().equals(destCity)){
+                   // Toast.makeText(act, "JIJI", Toast.LENGTH_SHORT).show();
                     new GetOfferInfo(act,currentCity,destCity,new Double(d.getPrice())).execute(2+filter*30,8+(filter*30));
+                    return;
                 }
             }
 

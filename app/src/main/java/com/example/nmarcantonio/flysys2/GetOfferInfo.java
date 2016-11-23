@@ -85,8 +85,8 @@ public class GetOfferInfo extends AsyncTask<Integer, Void, String> {
 
 
             if (!obj.has(OffersFragment.FLIGHTS_NAME )){
-                if(days < maxDays)
-                    new GetOfferInfo(act,currentCity,destId,offerPrice).execute(days+1,maxDays);
+
+
                 return;
             }
 
@@ -109,18 +109,23 @@ public class GetOfferInfo extends AsyncTask<Integer, Void, String> {
 
 
             if(flightList.size()>0){
-                final ListView listView = (ListView) act.findViewById(R.id.offer_list_view);
+
                 Flight f = flightList.get(0);
 
                 values.add( new OfferInfo(f.getId(),f.getNumber(),f.getsrcAir() ,f.getdstAir(),f.getPrice() ,f.getDepDate(),f.getArrDate() ));
-                OfferInfoAdapter adapter = new OfferInfoAdapter(act  ,values.toArray(new OfferInfo[values.size()]));
-                listView.setAdapter(adapter);
+
 
 
             }
 
                 if(days < maxDays)
                     new GetOfferInfo(act,currentCity,destId,offerPrice).execute(days+1,maxDays);
+            else {
+                    final ListView listView = (ListView) act.findViewById(R.id.offer_list_view);
+                    OfferInfoAdapter adapter = new OfferInfoAdapter(act, values.toArray(new OfferInfo[values.size()]));
+                  //  Toast.makeText(act, new Integer(values.size()).toString(), Toast.LENGTH_SHORT).show();
+                    listView.setAdapter(adapter);
+                }
 
 
 

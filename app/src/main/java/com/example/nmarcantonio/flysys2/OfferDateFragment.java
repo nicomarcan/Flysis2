@@ -31,7 +31,7 @@ public class OfferDateFragment extends Fragment {
 
     private City currentCity;
     private String destId;
-    public static  Integer filter = 0;
+
 
     private HashMap<String,String> nameToId = new HashMap<>();
 
@@ -47,7 +47,7 @@ public class OfferDateFragment extends Fragment {
        // nameToId = (HashMap<String,String>)(getArguments().getSerializable("nameToId"));
         Bundle b = getArguments();
        // Toast.makeText(getActivity(), currentCity.getName(), Toast.LENGTH_SHORT).show();
-
+        OffersFragment.filter =0;
         return myView;
     }
 
@@ -102,7 +102,5 @@ public class OfferDateFragment extends Fragment {
 
 
 
-    public static Integer  getFilter(){
-        return filter;
-    }
+
 }
