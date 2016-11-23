@@ -136,28 +136,6 @@ public class AirportsFragment extends Fragment  {
 
 
 
-        loclistener = new LocationListener() {
-            @Override
-            public void onLocationChanged(final Location location) {
-                loc = location;
-                new GetNearbyAirportsAsync().execute();
-            }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-
-            }
-
-            @Override
-            public void onProviderEnabled(String provider) {
-
-            }
-
-            @Override
-            public void onProviderDisabled(String provider) {
-
-            }
-        };
 
 
         locmanager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
@@ -168,8 +146,6 @@ public class AirportsFragment extends Fragment  {
             return;
         }
 
-        locmanager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, loclistener);
-        locmanager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, loclistener);
         loc = locmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
         new GetNearbyAirportsAsync().execute();
@@ -183,15 +159,12 @@ public class AirportsFragment extends Fragment  {
 
     public void afterLocationRequest(){
         try {
-            locmanager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, loclistener);
-            locmanager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, loclistener);
             loc = locmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
         }catch (SecurityException e){
 
         }
-        new GetNearbyAirportsAsync().execute();
     }
+
 
 
 
@@ -370,7 +343,7 @@ public class AirportsFragment extends Fragment  {
         public void onMapReady(GoogleMap googleMap) {
             map = googleMap;
             map.getUiSettings().setZoomControlsEnabled(true);
-            map.getUiSettings().setMyLocationButtonEnabled(false);
+            map.getUiSettings().setMyLocationButtonEnabled(true);
 
             for(Marker m : markers){
                 m.remove();
@@ -378,24 +351,28 @@ public class AirportsFragment extends Fragment  {
 
             markers = new ArrayList<>();
 
+            LatLng locll = new LatLng(loc.getLatitude(),loc.getLongitude());
+
+            markers.add(0,map.addMarker(new MarkerOptions().position(locll).title(getString(R.string.you)).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))));
+
+
+
             try {
                 MapsInitializer.initialize(ap.getActivity());
             } catch (Exception e) {
 
             }
 
-            try{
-                map.setMyLocationEnabled(true);
-            } catch (SecurityException e){
-
-            }
-
             LatLng lat;
-            int i = 0;
+            int i = 1;
             for(Airport  a : airportList){
+                Location locb = new Location(loc);
+                locb.setLatitude(a.getLatitude());
+                locb.setLongitude(a.getLongitude());
                 lat =   new LatLng(a.getLatitude(),a.getLongitude());
                 String splitdesc[] = a.getDescription().split(", ");
-                markers.add(i,map.addMarker(new MarkerOptions().position(lat).title(splitdesc[0] + ", " + splitdesc[1]+'\n')));
+                String snippet = getString(R.string.airport_distance) +": " + (int)Math.round(loc.distanceTo(locb)/1000) + " km";
+                markers.add(i,map.addMarker(new MarkerOptions().position(lat).title(splitdesc[0] + ", " + splitdesc[1]+'\n').snippet(snippet)));
                 map.moveCamera(CameraUpdateFactory.newLatLng(lat));
                 i++;
             }
