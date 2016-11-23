@@ -41,6 +41,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.phenotype.Configuration;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -85,6 +86,9 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -163,12 +167,16 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
+
+
+
         getMenuInflater().inflate(R.menu.main, menu);
         mMenu = menu;
 
 
         return super.onCreateOptionsMenu(menu);
     }
+
 
     public void setCurrentSect(int num){
         currentSect = num;
@@ -271,6 +279,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
         android.app.FragmentManager fragmentManager = getFragmentManager();
 
+
         if (id == R.id.nav_flights) {
             fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             fragmentManager.beginTransaction().replace(R.id.content_frame,new FlightsFragment()).commit();
@@ -278,7 +287,7 @@ public class MainActivity extends AppCompatActivity
             fragmentManager.beginTransaction().replace(R.id.content_frame,new OffersFragment()).addToBackStack("HOLA").commit();
         } else if (id == R.id.nav_airports) {
             af = new AirportsFragment();
-            fragmentManager.beginTransaction().replace(R.id.content_frame,af).addToBackStack("HOLA").commit();
+            fragmentManager.beginTransaction().replace(R.id.content_frame,af).commit();
         } else if (id == R.id.nav_conversor) {
 
         } else if (id == R.id.nav_bin) {

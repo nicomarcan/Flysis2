@@ -1,6 +1,8 @@
 package com.example.nmarcantonio.flysys2;
 
 import android.Manifest;
+import android.app.Activity;
+import android.app.Application;
 import android.app.Fragment;
 import android.app.PendingIntent;
 import android.app.SearchManager;
@@ -35,7 +37,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,6 +86,7 @@ public class AirportsFragment extends Fragment  {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         myView = inflater.inflate(R.layout.airports_layout, container, false);
         ((MainActivity)getActivity()).setCurrentSect(R.id.nav_airports);
 
@@ -93,35 +99,40 @@ public class AirportsFragment extends Fragment  {
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
+
+        MenuItem searchItem = menu.findItem(R.id.offer_search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+
+                if (!citiesMap.containsKey(query)) return true;
+                loc.setLongitude(citiesMap.get(query).getLongitude());
+                loc.setLatitude(citiesMap.get(query).getLatitude());
+                new GetNearbyAirportsAsync().execute();
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
+        new GetCitiesAsync(context,searchView).execute();
+    }
+
+    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         context = (AppCompatActivity)getActivity();
         if(context.getSupportActionBar() != null) {
             context.getSupportActionBar().setTitle("Aeropuertos");
         }
-
-
-        MenuItem searchItem = ((MainActivity)getActivity()).getmMenu().findItem(R.id.offer_search);
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-
-
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-              @Override
-              public boolean onQueryTextSubmit(String query) {
-
-                  if(!citiesMap.containsKey(query)) return true;
-                  loc.setLongitude(citiesMap.get(query).getLongitude());
-                  loc.setLatitude(citiesMap.get(query).getLatitude());
-                  new GetNearbyAirportsAsync().execute();
-                  return false;
-              }
-
-              @Override
-              public boolean onQueryTextChange(String newText) {
-                  return false;
-              }
-          });
 
 
 
@@ -162,7 +173,7 @@ public class AirportsFragment extends Fragment  {
         loc = locmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
         new GetNearbyAirportsAsync().execute();
-        new GetCitiesAsync(context,searchView).execute();
+
 
 
 
