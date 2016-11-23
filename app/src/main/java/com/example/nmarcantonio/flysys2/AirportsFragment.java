@@ -24,6 +24,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.phenotype.Configuration;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import android.support.annotation.Nullable;
@@ -74,6 +75,7 @@ public class AirportsFragment extends Fragment  {
     private AirportsFragment ap = this;
     private Integer selected;
     private String searchRadius = "100";
+
 
 
     @Nullable
@@ -359,7 +361,11 @@ public class AirportsFragment extends Fragment  {
             map.getUiSettings().setZoomControlsEnabled(true);
             map.getUiSettings().setMyLocationButtonEnabled(false);
 
+            for(Marker m : markers){
+                m.remove();
+            }
 
+            markers = new ArrayList<>();
 
             try {
                 MapsInitializer.initialize(ap.getActivity());
@@ -372,7 +378,6 @@ public class AirportsFragment extends Fragment  {
             } catch (SecurityException e){
 
             }
-
 
             LatLng lat;
             int i = 0;
@@ -388,45 +393,7 @@ public class AirportsFragment extends Fragment  {
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(lat, zoomLevel));
 
 
-            final RecyclerView view = (RecyclerView) myView.findViewById(R.id.airport_view);
 
-            if (view != null) {
-
-                AirportAdapter adapter = new AirportAdapter(airportList,loc,context);
-                LinearLayoutManager mLayoutManager= new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL, false);
-                view.setLayoutManager(mLayoutManager);
-                view.setAdapter(adapter);
-
-
-                view.addOnItemTouchListener(new OfferListener(context, view, new ClickListener() {
-
-                    public void onClick(View view, int position) {
-                        if(selected!=null){
-                            Marker selectedMarker = markers.get(selected);
-                            map.addMarker(new MarkerOptions().position(selectedMarker.getPosition()).title(selectedMarker.getTitle()));
-                        }
-                        selected = position;
-                        Airport p = airportList.get(position);
-                        LatLng a =   new LatLng(p.getLatitude(),p.getLongitude());
-                        markers.get(position).remove();
-                        String splitdesc[] = p.getDescription().split(", ");
-                        map.addMarker(new MarkerOptions().position(a).title(splitdesc[0] +'\n').icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
-
-                        float zoomLevel = (float)11.0; //This goes up to 21
-                        map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(p.getLatitude(),p.getLongitude()), zoomLevel));
-
-
-                    }
-
-
-                    public void onLongClick(View view, int position) {
-
-                    }
-                }));
-
-
-
-            }
 
         }
     }
@@ -450,6 +417,7 @@ public class AirportsFragment extends Fragment  {
         mapView.onDestroy();
     }
 
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -461,4 +429,7 @@ public class AirportsFragment extends Fragment  {
         super.onLowMemory();
         mapView.onLowMemory();
     }
+
+
+
 }
