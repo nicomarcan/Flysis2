@@ -56,7 +56,8 @@ public class OfferInfoAdapter extends ArrayAdapter<OfferInfo> {
 
         holder.dstAirView.setText(info.getDstAir());
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-        holder.priceView.setText("$"+prefs.getString("money_list","USD")+" "+info.getPrice().toString());
+        String price = String.format ("%.2f", info.getPrice());
+        holder.priceView.setText("$"+prefs.getString("money_list","USD")+" "+price);
 
         holder.depDateView.setText(info.getDepDate());
 

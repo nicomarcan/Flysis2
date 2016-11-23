@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.media.Image;
 import android.preference.PreferenceManager;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,14 +28,14 @@ public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.MyViewHolder
     private Activity act;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public ImageView imageView;
+        public CardView cardView;
         public TextView nameTextView;
         public TextView priceTextView;
 
 
         public MyViewHolder(View view) {
             super(view);
-            imageView = (ImageView) view.findViewById(R.id.offer_photo2);
+            cardView = (CardView) view.findViewById(R.id.offer_photo2);
             nameTextView = (TextView) view.findViewById(R.id.offer_info2);
             priceTextView = (TextView) view.findViewById(R.id.offer_price2);
         }
@@ -58,19 +59,17 @@ public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.MyViewHolder
     public void onBindViewHolder(MyViewHolder holder, int position) {
         Product prod = offerList.get(position);
         String [] city = prod.getName().split(",");
-        if(city.length == 2)
-             holder.nameTextView.setText(prod.getName());
-        else
-            holder.nameTextView.setText(city[0]+","+city[2]);
+        holder.nameTextView.setText(city[0]);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(act);
-        holder.priceTextView.setText("$"+prefs.getString("money_list","USD")+" "+prod.getPrice());
+        String price =  String.format ("%.2f", prod.getPrice());
+        holder.priceTextView.setText("$"+prefs.getString("money_list","USD")+" "+price);
 
 
 
 
-        ImageView imageView = (ImageView)   holder.imageView;
+        CardView cardView = (CardView)   holder.cardView;
 
-        new GetFlickrPhotoTask(holder.imageView.getContext(),  imageView).execute(prod.getName().split(",")[0].replaceAll(" ",""));
+        new GetFlickrPhotoTask(holder.cardView.getContext(),  cardView).execute(prod.getName().split(",")[0].replaceAll(" ",""));
         // Comentar la línea anterior y descomentar la siguiente para ver de que manera el framework muestra una imagen alternativa al no encontrar la solicitada.
         //imageLoader.displayImage("http://itba.edu.ar/sites/default/themes/itba/assets/images/back2.jpg", imageView);
     }

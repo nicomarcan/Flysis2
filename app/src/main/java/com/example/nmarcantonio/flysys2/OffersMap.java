@@ -3,8 +3,10 @@ package com.example.nmarcantonio.flysys2;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -62,6 +64,7 @@ public class OffersMap extends AppCompatActivity  {
     private ArrayList<Product> values;
     private ArrayList<Marker> markers = new ArrayList<Marker>();
     private Integer selected;
+    private double ratio;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,7 +132,8 @@ public class OffersMap extends AppCompatActivity  {
                     values = new ArrayList<Product>();
 
                     for (int j = 0; j <dealList.size(); j++) {
-                        Double price = new Double(dealList.get(j).getPrice());
+                        ratio = getIntent().getDoubleExtra("ratio",1);
+                        double price = dealList.get(j).getPrice()*ratio;
                         values.add (j, new Product(j, dealList.get(j).getName(), price,dealList.get(j).getLatitude(),dealList.get(j).getLongitude() ));
                         if(price < minPrice)
                             minPrice = price;

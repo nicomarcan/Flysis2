@@ -44,7 +44,8 @@ public class ProductArrayAdapter extends ArrayAdapter<Product> {
         //imageLoader.displayImage("http://itba.edu.ar/sites/default/themes/itba/assets/images/back2.jpg", imageView);
        // holder.imageView.setImageResource(R.drawable.ic_menu_white);
         holder.nameTextView.setText(product.getName().split(",")[0]);
-        Double price = product.getPrice();
+
+        String price = String.format ("%.2f", product.getPrice());
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
         holder.priceTextView.setText("$"+prefs.getString("money_list","USD")+" "+price);
 

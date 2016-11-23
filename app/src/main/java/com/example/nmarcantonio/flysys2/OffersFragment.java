@@ -73,7 +73,7 @@ public class OffersFragment extends Fragment {
     public static Integer filter=0;
     private Double ratio;
 
-    public HashMap<String,Double> stringToRatio = new HashMap<String,Double>();
+    private HashMap<String,Double> stringToRatio = new HashMap<String,Double>();
 
     private HashMap<String,String> nameToId = new HashMap<>();
 
@@ -102,15 +102,12 @@ public class OffersFragment extends Fragment {
             context.getSupportActionBar().setTitle("Ofertas");
         }
 
-        stringToRatio.put("ARS",0.1);
-        stringToRatio.put("BRL",0.5);
-        stringToRatio.put("USD",1.0);
+
 
         //Toast.makeText(getActivity(), "ENTRE", Toast.LENGTH_SHORT).show();
         //setHasOptionsMenu(true);
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-         ratio = stringToRatio.get(prefs.getString("money_list","USD"));
+
 
         FloatingActionButton fab = (FloatingActionButton) myView.findViewById(R.id.map);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -122,7 +119,7 @@ public class OffersFragment extends Fragment {
                 */
 
                 Intent intent = new Intent(context, OffersMap.class);
-
+                intent.putExtra("ratio",ratio);
                 PendingIntent pendingIntent =
                         TaskStackBuilder.create(context)
                                 // add all of DetailsActivity's parents to the stack,
@@ -219,10 +216,11 @@ public class OffersFragment extends Fragment {
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mLocationListener);
         mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, mLocationListener);
        loc = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        new GetRatiosTask().execute();
 
 
-        new GetCityGPS().execute();
         new GetCitiesTask(context,searchView).execute();
+
 
 
     }
@@ -287,7 +285,7 @@ public class OffersFragment extends Fragment {
 
 
                     for (int j = 0; j <dealList.size(); j++) {
-                        values[j] = new Product(j, dealList.get(j).getName(), new Double(dealList.get(j).getPrice() )*ratio ,dealList.get(j).getLatitude(),dealList.get(j).getLongitude());
+                        values[j] = new Product(j, dealList.get(j).getName(), dealList.get(j).getPrice()*ratio  ,dealList.get(j).getLatitude(),dealList.get(j).getLongitude());
                         nameToId.put(dealList.get(j).getName().toLowerCase(),dealList.get(j).getId());
                     }
 
@@ -312,8 +310,8 @@ public class OffersFragment extends Fragment {
 
                             intent.putExtra("currentCity", currentCity.getId());
                             intent.putExtra("destCity", destId);
-                            intent.putExtra("offerPrice",offerPrice.toString());
-                            intent.putExtra("ratio",ratio.toString());
+                            intent.putExtra("offerPrice",offerPrice);
+                            intent.putExtra("ratio",ratio);
                             PendingIntent pendingIntent =
                                     TaskStackBuilder.create(context)
                                             // add all of DetailsActivity's parents to the stack,
@@ -404,7 +402,6 @@ public class OffersFragment extends Fragment {
                 if(cityList.size()>0){
                     currentCity = cityList.get(0);
 
-                //   Toast.makeText(context,cityList.get(0).getName(),Toast.LENGTH_LONG).show();
                     new HttpGetOffersTask().execute();
                 }
 
@@ -552,5 +549,85 @@ public class OffersFragment extends Fragment {
 
     }
 
+
+
+
+
+    private class GetRatiosTask extends AsyncTask<String, Void, String> {
+
+
+
+
+        @Override
+        protected String doInBackground(String... strings) {
+            HttpURLConnection conn = null;
+            String ret = null, order;
+            try {
+
+                URL url = new URL("http://hci.it.itba.edu.ar/v1/api/misc.groovy?method=getcurrencies");
+                conn = (HttpURLConnection) new URL(url.toString()).openConnection();
+
+                InputStream in = new BufferedInputStream(conn.getInputStream());
+                ret = readStream(in);
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                if (conn != null) {
+                    conn.disconnect();
+                }
+            }
+            return ret;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            try {
+
+                JSONObject obj = new JSONObject(result);
+                if (!obj.has("currencies")) {
+                    return;
+                }
+                else {
+                    Gson gson = new Gson();
+                    Type listType = new TypeToken<ArrayList<Currency>>() {
+                    }.getType();
+
+                    String jsonFragment = obj.getString("currencies");
+
+
+                    ArrayList<Currency> currencies = gson.fromJson(jsonFragment, listType);
+
+                    for (Currency a : currencies) {
+
+                        stringToRatio.put(a.getId(),1/a.getRatio());
+                    }
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+                    ratio = stringToRatio.get(prefs.getString("money_list","USD"));
+                    new GetCityGPS().execute();
+
+                }
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        private String readStream(InputStream inputStream) {
+            try {
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                int i = inputStream.read();
+                while(i != -1 ) {
+                    outputStream.write(i);
+                    i = inputStream.read();
+                }
+                return outputStream.toString();
+            } catch(IOException e) {
+                e.printStackTrace();
+                Log.d("err", "fallo la conexion");
+                return null;
+            }
+        }
+
+
+    }
 
 }

@@ -83,7 +83,7 @@ public class GetOffersToDestTask extends AsyncTask<String,Void, String> {
             for(Deal d : dealList){
                 if(d.getId().equals(destCity)){
                    // Toast.makeText(act, "JIJI", Toast.LENGTH_SHORT).show();
-                    new GetOfferInfo(act,currentCity,destCity,new Double(d.getPrice()*ratio),ratio).execute(2+filter*30,8+(filter*30));
+                    new GetOfferInfo(act,currentCity,destCity,d.getPrice(),ratio).execute(2+filter*30,8+(filter*30));
                     return;
                 }
             }

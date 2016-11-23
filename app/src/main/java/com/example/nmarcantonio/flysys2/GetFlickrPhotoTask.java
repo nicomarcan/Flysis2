@@ -44,12 +44,9 @@ public class GetFlickrPhotoTask extends AsyncTask<String, Void, String> {
     }
 
     private CardView cardView;
-    private ImageView imageView;
 
-    public GetFlickrPhotoTask(Context context, ImageView imageView) {
-        this.context = context;
-        this.imageView = imageView;
-    }
+
+
 
     @Override
     protected String doInBackground(String... strings) {
@@ -106,11 +103,7 @@ public class GetFlickrPhotoTask extends AsyncTask<String, Void, String> {
                 imageLoader.init(config);
                 FlickrImg item = imgs.get(0);
 
-                if(imageView != null)
-                 imageLoader.displayImage("http://farm"+ item.getFarm() +".static.flickr.com/"+ item.getServer() +"/"+ item.getId() +"_"+ item.getSecret() +"_m.jpg", imageView);
 
-
-                else
                     imageLoader.loadImage("http://farm"+ item.getFarm() +".static.flickr.com/"+ item.getServer() +"/"+ item.getId() +"_"+ item.getSecret() +"_m.jpg", new SimpleImageLoadingListener(){
 
                     @Override
