@@ -69,6 +69,7 @@ public class OffersFragment extends Fragment {
     private City currentCity;
     private String destId;
     private Double offerPrice;
+    public static int times = 0;
     public static Integer filter=0;
 
     private HashMap<String,String> nameToId = new HashMap<>();
@@ -92,6 +93,7 @@ public class OffersFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         context = (AppCompatActivity) getActivity();
+        times++;
         ((MainActivity)getActivity()).setCurrentSect(R.id.nav_offers);
         if (context.getSupportActionBar() != null) {
             context.getSupportActionBar().setTitle("Ofertas");

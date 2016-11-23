@@ -221,9 +221,13 @@ public class MainActivity extends AppCompatActivity
                     }
                 });
 
-                searchView.removeOnAttachStateChangeListener(offerListener);
+                while((OffersFragment.times--) > 0) {
+                    searchView.removeOnAttachStateChangeListener(offerListener);
+                }
             }else{
-                searchView.removeOnAttachStateChangeListener(offerListener);
+                while((OffersFragment.times--) > 0) {
+                    searchView.removeOnAttachStateChangeListener(offerListener);
+                }
             }
 
            /*

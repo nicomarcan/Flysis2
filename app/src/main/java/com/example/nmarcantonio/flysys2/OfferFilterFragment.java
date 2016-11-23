@@ -36,7 +36,11 @@ public class OfferFilterFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 OffersFragment.filter = 0;
-                getActivity().onBackPressed();
+                getFragmentManager().popBackStack();
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.content_frame, new OfferDateFragment())
+                        .addToBackStack(null)
+                        .commit();
             }
         });
         TextView textView = (TextView)getActivity().findViewById(R.id.filter_text);
