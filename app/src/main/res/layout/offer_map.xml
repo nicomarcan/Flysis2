@@ -4,18 +4,94 @@
     android:layout_width="match_parent" android:layout_height="match_parent"  tools:context=".OffersMap" android:id="@+id/offer_map"
     android:gravity="bottom">
 
+
+
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:map="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.MapFragment"
         android:layout_width="match_parent"
-        android:layout_height="325dp"
+        android:layout_height="295dp"
          />
+
+    <RelativeLayout
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:background="#000000"
+        android:alpha="0.65"
+        >
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+
+            <View
+                android:layout_width="50dp"
+                android:layout_height="7dp"
+                android:background="@color/md_red_400"
+
+                android:layout_marginTop="20dp" />
+
+            <View
+                android:layout_width="50dp"
+                android:layout_height="7dp"
+
+                android:background="@color/md_orange_500"
+
+                android:layout_marginTop="20dp" />
+            <View
+                android:layout_width="50dp"
+                android:layout_height="7dp"
+
+                android:background="@color/md_light_green_400"
+
+                android:layout_marginTop="20dp" />
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/max_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                android:textSize="10sp"
+                />
+
+            <TextView
+                android:id="@+id/mid_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                android:textSize="10sp"
+                android:layout_marginLeft="60dp"
+                />
+
+
+
+            <TextView
+                android:id="@+id/min_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:textColor="#FFFFFF"
+                android:textSize="10sp"
+                />
+        </RelativeLayout>
+
+    </RelativeLayout>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/offer_view"
         android:layout_width="match_parent"
-        android:layout_height="190dp"
+        android:layout_height="220dp"
         android:background="#263238"
         android:layout_below="@+id/map"
         android:layout_alignParentStart="true"></android.support.v7.widget.RecyclerView>

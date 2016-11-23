@@ -211,7 +211,22 @@ public class MainActivity extends AppCompatActivity
 
                     @Override
                     public boolean onQueryTextSubmit(String query) {
-                        Toast.makeText(context,"HOA",Toast.LENGTH_LONG).show();
+                        String id = query.split(" ")[0];
+                        String number = query.split(" ")[1];
+                        Intent intent = new Intent(context, FlightActivity.class);
+                        intent.putExtra("id",id);
+                        intent.putExtra("number",number);
+
+                        PendingIntent pendingIntent =
+                                TaskStackBuilder.create(context)
+                                        // add all of DetailsActivity's parents to the stack,
+                                        // followed by DetailsActivity itself
+                                        .addNextIntentWithParentStack(intent)
+                                        .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+                        builder.setContentIntent(pendingIntent);
+                        startActivity(intent);
                         return false;
                     }
 

@@ -15,6 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -49,6 +50,10 @@ public class OffersMap extends AppCompatActivity  {
 
 
     private GoogleMap mMap;
+    private Double maxPrice=Double.MIN_VALUE;
+    private Double minPrice=Double.MAX_VALUE;
+    private Double midPrice;
+
     View myView;
     final static String DEALS_NAME = "deals";
     private Activity context;
@@ -124,8 +129,14 @@ public class OffersMap extends AppCompatActivity  {
                     values = new ArrayList<Product>();
 
                     for (int j = 0; j <dealList.size(); j++) {
-                        values.add (j, new Product(j, dealList.get(j).getName(), new Double(dealList.get(j).getPrice() ),dealList.get(j).getLatitude(),dealList.get(j).getLongitude() ));
+                        Double price = new Double(dealList.get(j).getPrice());
+                        values.add (j, new Product(j, dealList.get(j).getName(), price,dealList.get(j).getLatitude(),dealList.get(j).getLongitude() ));
+                        if(price < minPrice)
+                            minPrice = price;
+                        if(price > maxPrice)
+                            maxPrice = price;
                     }
+                    midPrice = (maxPrice + minPrice)/2;
 
                     OfferAdapter adapter = new OfferAdapter(values);
                     mLayoutManager= new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL, false);
@@ -142,17 +153,9 @@ public class OffersMap extends AppCompatActivity  {
                     view.addOnItemTouchListener(new OfferListener(getApplicationContext(), view, new ClickListener() {
 
                         public void onClick(View view, int position) {
-                            if(selected != null){
-                                Marker selectedMarker = markers.get(selected);
-                                mMap.addMarker(new MarkerOptions().position(selectedMarker.getPosition()).title(selectedMarker.getTitle()));
-                            }
-                            selected = position;
+
                             //Toast.makeText(getApplicationContext(), product.getName() + " is selected!", Toast.LENGTH_LONG).show();
                             Product p = values.get(position);
-                            LatLng a =   new LatLng(p.getLatitude(),p.getLongitude());
-                            markers.get(position).remove();
-                            mMap.addMarker(new MarkerOptions().position(a).title(p.getName().split(",")[0]+'\n'+p.getPrice()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
-
                             float zoomLevel = (float)3.0; //This goes up to 21
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(p.getLatitude(),p.getLongitude()), zoomLevel));
 
@@ -201,17 +204,25 @@ public class OffersMap extends AppCompatActivity  {
             int i = 0;
             for(Product p : values){
                 a =   new LatLng(p.getLatitude(),p.getLongitude());
-                markers.add(i,mMap.addMarker(new MarkerOptions().position(a).title(p.getName().split(",")[0]+'\n'+p.getPrice())));
+                float color;
+                if(p.getPrice() > (midPrice+maxPrice)/2)
+                    color = BitmapDescriptorFactory.HUE_RED;
+                else if(p.getPrice() < (midPrice+minPrice)/2)
+                    color = BitmapDescriptorFactory.HUE_GREEN;
+                else
+                    color = BitmapDescriptorFactory.HUE_ORANGE;
+                markers.add(i,mMap.addMarker(new MarkerOptions().position(a).title(p.getName().split(",")[0]+'\n'+p.getPrice()).icon(BitmapDescriptorFactory.defaultMarker(color))));
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(a));
                 i++;
             }
                 Product p = values.get(0);
-            a =   new LatLng(p.getLatitude(),p.getLongitude());
-                markers.get(0).remove();
-                mMap.addMarker(new MarkerOptions().position(a).title(p.getName().split(",")[0]+'\n'+p.getPrice()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+
             float zoomLevel = (float)3.0; //This goes up to 21
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(p.getLatitude(),p.getLongitude()), zoomLevel));
-                selected = 0;
+            ((TextView)findViewById(R.id.max_price)).setText(new Integer(maxPrice.intValue()).toString());
+            ((TextView)findViewById(R.id.mid_price)).setText(new Integer(midPrice.intValue()).toString());
+            ((TextView)findViewById(R.id.min_price)).setText(new Integer(minPrice.intValue()).toString());
+
 
 
         }

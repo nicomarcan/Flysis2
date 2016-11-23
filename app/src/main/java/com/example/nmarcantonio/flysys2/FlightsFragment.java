@@ -68,7 +68,6 @@ public class FlightsFragment extends Fragment {
         flights.clear();
         flights.addAll(flightsAux);
         flightAdapter.notifyDataSetChanged();
-
         for (FlightStatus flight: flights) {
             Intent intent = new Intent(context, FlightsIntentService.class);
             intent.setAction(FlightsIntentService.GET_FLIGHT);
@@ -100,6 +99,7 @@ public class FlightsFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, FlightActivity.class);
+
 
                 PendingIntent pendingIntent =
                         TaskStackBuilder.create(context)

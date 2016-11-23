@@ -77,6 +77,8 @@ public class FlightActivity extends AppCompatActivity{
         flights = PreferencesHelper.getFlights(this);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.add_flight_fab);
         fab.hide();
+        String id = getIntent().getStringExtra("id");
+        String number = getIntent().getStringExtra("number");
         new GetFlightInfoTask(
                 new FlightInfoCallback(findViewById(R.id.flight_info_coordination), mapFragment, this, flights)
         ).execute("AR", "5260");
