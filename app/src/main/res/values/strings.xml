@@ -80,4 +80,5 @@
     <string name="offers_active">Activar Alertas de Ofertas</string>
     <string name="update_interval">Intervalo de actualización</string>
     <string name="offer_results">Resultados</string>
+    <string name="map_status_text">Buscar vuelo</string>
 </resources>

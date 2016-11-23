@@ -98,21 +98,21 @@ public class FlightActivity extends AppCompatActivity{
                                                  }
                                              }
         );
-
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.add_flight_fab);
+        fab.hide();
+        
         final Activity context = this;
         Runnable r = new Runnable() {
             @Override
             public void run() {
                 flights = PreferencesHelper.getFlights(context);
-                FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.add_flight_fab);
-                fab.hide();
+
                 new GetFlightInfoTask(
                         new FlightInfoCallback(findViewById(R.id.flight_info_coordination), mapFragment, context, flights)
                 ).execute("AR", "5260");
             }
         };
         new Handler().post(r);
-
 
     }
 }

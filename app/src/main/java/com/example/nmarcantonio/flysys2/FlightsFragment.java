@@ -64,7 +64,6 @@ public class FlightsFragment extends Fragment {
         intentFilter.addAction(FlightsIntentService.ACTION_GET_FLIGHT);
         intentFilter.setPriority(2);
         context.registerReceiver(broadcastReceiver, intentFilter);
-
         Runnable r = new Runnable(){
 
             @Override
@@ -109,6 +108,8 @@ public class FlightsFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, FlightActivity.class);
+                intent.putExtra("id","AR");
+                intent.putExtra("number","5260");
 
                 PendingIntent pendingIntent =
                         TaskStackBuilder.create(context)
@@ -134,7 +135,7 @@ public class FlightsFragment extends Fragment {
             @Override
             public void run() {
                 FlightStatus flightStatus = (FlightStatus) bundle.get(FlightsIntentService.FLIGHT_STATUS);
-                flights.remove(flightStatus);
+                flights.set(flights.indexOf(flightStatus), flightStatus);
                 flightAdapter.notifyDataSetChanged();
                 PreferencesHelper.updatePreferences(flights, context);
             }
