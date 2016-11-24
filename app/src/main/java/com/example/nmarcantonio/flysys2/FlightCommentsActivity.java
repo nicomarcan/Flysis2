@@ -19,6 +19,7 @@ public class FlightCommentsActivity extends AppCompatActivity{
     ListView list;
     int[] lastPage;
     int sort = 0;
+    FlightStatus flightStatus;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -41,7 +42,12 @@ public class FlightCommentsActivity extends AppCompatActivity{
                     }
                     else {
                         new GetCommentsTask(findViewById(R.id.flight_comments_list_view), activity)
-                                .execute("AR", "5260", "0", activity.getSortOrder());
+                                .execute(
+                                        flightStatus.airline.id,
+                                        String.valueOf(flightStatus.number),
+                                        "0",
+                                        activity.getSortOrder()
+                                );
                     }
                 }
                 return true;
@@ -65,7 +71,12 @@ public class FlightCommentsActivity extends AppCompatActivity{
 
                     } else {
                         new GetCommentsTask(findViewById(R.id.flight_comments_list_view), activity)
-                                .execute("AR", "5260", "0", activity.getSortOrder());
+                                .execute(
+                                        flightStatus.airline.id,
+                                        String.valueOf(flightStatus.number),
+                                        "0",
+                                        activity.getSortOrder()
+                                );
                     }
                 }
                 return true;
@@ -84,7 +95,12 @@ public class FlightCommentsActivity extends AppCompatActivity{
                 activity.getAdapter().notifyDataSetChanged();
                 activity.setAdapter(null);
                 new GetCommentsTask(findViewById(R.id.flight_comments_list_view), activity)
-                        .execute("AR", "5260", "0", activity.getSortOrder());
+                        .execute(
+                                flightStatus.airline.id,
+                                String.valueOf(flightStatus.number),
+                                "0",
+                                activity.getSortOrder()
+                        );
                 return true;
             }
         });
@@ -94,7 +110,13 @@ public class FlightCommentsActivity extends AppCompatActivity{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.flight_comments_activity);
-        setTitle("Vuelo 1");
+        if (getIntent() != null) {
+            Bundle bundle = getIntent().getExtras();
+            if (bundle.get("flight_info") != null) {
+                flightStatus = (FlightStatus) bundle.get("flight_info");
+            }
+        }
+        setTitle("Vuelo " + flightStatus);
         final FlightCommentsActivity a = this;
 
         ListView list = (ListView) findViewById(R.id.flight_comments_list_view);
@@ -111,11 +133,21 @@ public class FlightCommentsActivity extends AppCompatActivity{
             public boolean onLoadMore(int page, int totalItemsCount) {
 
                 new GetCommentsTask(findViewById(R.id.flight_comments_list_view), outer)
-                        .execute("AR", "5260", String.valueOf(page), outer.getSortOrder());
+                        .execute(
+                                flightStatus.airline.id,
+                                String.valueOf(flightStatus.number),
+                                String.valueOf(page),
+                                outer.getSortOrder()
+                        );
                 return true;
             }
         });
-        new GetCommentsTask(findViewById(R.id.flight_comments_list_view), a).execute("AR", "5260", "0", getSortOrder());
+        new GetCommentsTask(findViewById(R.id.flight_comments_list_view), a).execute(
+            flightStatus.airline.id,
+            String.valueOf(flightStatus.number),
+            "0",
+            getSortOrder()
+        );
     }
 
     public CommentArrayAdapter getAdapter() {
