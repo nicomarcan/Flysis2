@@ -9,7 +9,7 @@ import java.util.Date;
 
 public class CustomDateInterval {
     private static long[] interval(Date from, Date to) {
-        long diff = from.getTime() - to.getTime();
+        long diff = Math.abs(to.getTime() - from.getTime());
         long days = diff / (24 * 60 * 60 * 1000);
         diff = diff % (24 * 60 * 60 * 1000);
         long hours = diff / (60 * 60 * 1000);

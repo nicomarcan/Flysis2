@@ -3,6 +3,7 @@ package com.example.nmarcantonio.flysys2;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -42,7 +43,21 @@ public class FlightActivity extends AppCompatActivity{
     Map<TextView, Tuple> map = new HashMap<>();
     private Timer timer;
     private TimerTask timerTask;
+    String number;
+    String airline;
+    FlightStatus flightStatus;
 
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Bundle bundle = intent.getExtras();
+            FlightStatus flightStatus = (FlightStatus) bundle.get(FlightsIntentService.FLIGHT_STATUS);
+            if (flightStatus.airline.id.equals(airline) && number.equals(String.valueOf(flightStatus.number))) {
+                updateFlightStatus(flightStatus);
+                abortBroadcast();
+            }
+        }
+    };
     public class Tuple {
         String header;
         Date date;
@@ -59,8 +74,11 @@ public class FlightActivity extends AppCompatActivity{
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(TAG, "onResume: aasdfasd");
-        Log.d(TAG, "onResume: a");
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(FlightsIntentService.ACTION_GET_FLIGHT);
+        intentFilter.setPriority(2);
+        registerReceiver(broadcastReceiver, intentFilter);
+
         try {
             Log.d(TAG, "onResume: a");
             timer = new Timer();
@@ -74,9 +92,20 @@ public class FlightActivity extends AppCompatActivity{
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onPause() {
+        super.onPause();
+        unregisterReceiver(broadcastReceiver);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
 
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            airline = bundle.getString("id");
+            number = bundle.getString("number");
+        }
         setContentView(R.layout.flight_info_activity);
         getWindow().getDecorView().setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -100,7 +129,7 @@ public class FlightActivity extends AppCompatActivity{
         );
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.add_flight_fab);
         fab.hide();
-        
+
         final Activity context = this;
         Runnable r = new Runnable() {
             @Override
@@ -109,10 +138,62 @@ public class FlightActivity extends AppCompatActivity{
 
                 new GetFlightInfoTask(
                         new FlightInfoCallback(findViewById(R.id.flight_info_coordination), mapFragment, context, flights)
-                ).execute("AR", "5260");
+                ).execute(airline, number);
             }
         };
         new Handler().post(r);
 
+    }
+
+    private void updateFlightStatus(FlightStatus fi) {
+        View flightView = findViewById(R.id.flight_info_coordination);
+        ((TextView)flightView.findViewById(R.id.flight_info_number)).setText("Vuelo " + fi.number);
+        ((TextView)flightView.findViewById(R.id.flight_origin_content)).setText(fi.departure.airport.city.name.split(",")[0]);
+        ((TextView)flightView.findViewById(R.id.flight_destination_content_2)).setText(fi.arrival.airport.city.name.split(",")[0]);
+        String statusString;
+        String statusDescription = "";
+        int statusColor;
+        Date arrivalTime = null;
+        Date currentTime = new Date();
+        String stringHeader = null;
+        fi.setDescription();
+        FlightStatusDescription fd = fi.flightStatusDescription;
+        switch (fd.state) {
+            case SCHEDULED:
+                statusString = "Programado";
+                statusColor = flightView.getResources().getColor(R.color.colorGreen);
+                break;
+            case BOARDING:
+                statusString = "Aterrizado";
+                statusColor = flightView.getResources().getColor(R.color.colorGreen);
+                break;
+            case FLYING:
+                statusString = "En vuelo";
+                statusColor = flightView.getResources().getColor(R.color.colorGreen);
+                break;
+            case DIVERT:
+                statusString = "Desviado";
+                statusColor = flightView.getResources().getColor(R.color.colorRed);
+                break;
+            case CANCELLED:
+                statusString = "Cancelado";
+                statusColor = flightView.getResources().getColor(R.color.colorRed);
+                break;
+            case LANDED:
+                statusString = "Aterrizado";
+                statusColor = flightView.getResources().getColor(R.color.colorGreen);
+                break;
+            default:
+                statusString = "Desconocido";
+                statusColor = flightView.getResources().getColor(R.color.colorRed);
+                break;
+        }
+
+        ((TextView)flightView.findViewById(R.id.flight_info_status)).setTextColor(statusColor);
+        ((TextView)flightView.findViewById(R.id.flight_info_status)).setText(statusString);
+        TextView dateText = (TextView) flightView.findViewById(R.id.flight_info_status_description);
+        dateText.setText(statusDescription);
+
+        addDate(dateText, fd.descriptionHeader, fd.nextRelevantDate);
     }
 }

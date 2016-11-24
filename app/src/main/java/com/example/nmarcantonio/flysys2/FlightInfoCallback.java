@@ -122,6 +122,10 @@ public class FlightInfoCallback implements TaskCallback, OnMapReadyCallback {
                         statusString = "Cancelado";
                         statusColor = flightView.getResources().getColor(R.color.colorRed);
                         break;
+                    case LANDED:
+                        statusString = "Aterrizado";
+                        statusColor = flightView.getResources().getColor(R.color.colorGreen);
+                        break;
                     default:
                         statusString = "Desconocido";
                         statusColor = flightView.getResources().getColor(R.color.colorRed);

@@ -20,7 +20,6 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -52,11 +51,10 @@
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.nmarcantonio.flysys2.MainActivity" />
+                android:value=".MainActivity" />
         </activity>
         <activity
             android:name=".FlightInfoDetailActivity"
-            android:label="@string/title_activity_flight"
             android:parentActivityName=".FlightActivity"
             android:theme="@style/AppTheme">
             <meta-data
