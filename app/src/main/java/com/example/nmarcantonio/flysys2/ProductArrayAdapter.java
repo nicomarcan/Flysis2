@@ -27,20 +27,17 @@ public class ProductArrayAdapter extends ArrayAdapter<Product> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
-        if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_view_item, parent, false);
-            holder = new ViewHolder();
-            holder.imageView = (CardView) convertView.findViewById(R.id.card_view);
-            holder.nameTextView = (TextView) convertView.findViewById(R.id.offer_info);
-            holder.priceTextView = (TextView) convertView.findViewById(R.id.offer_price);
-            convertView.setTag(holder);
-        } else {
-            holder = (ViewHolder) convertView.getTag();
-        }
+        convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_view_item, parent, false);
+        holder = new ViewHolder();
+        holder.imageView = (CardView) convertView.findViewById(R.id.card_view);
+        holder.nameTextView = (TextView) convertView.findViewById(R.id.offer_info);
+        holder.priceTextView = (TextView) convertView.findViewById(R.id.offer_price);
+        convertView.setTag(holder);
+
 
         Product product = getItem(position);
         holder.imageView.setBackground(ContextCompat.getDrawable(act, R.drawable.ic_loading));
-        new GetFlickrPhotoTask(convertView.getContext(),  (CardView) convertView.findViewById(R.id.card_view)).execute(product.getName().split(",")[0].replaceAll(" ",""));
+        new GetFlickrPhotoTask(convertView.getContext(),  (CardView) convertView.findViewById(R.id.card_view)).execute(product.getName().split(",")[0].replaceAll(" ",""),product.getId());
         // Comentar la línea anterior y descomentar la siguiente para ver de que manera el framework muestra una imagen alternativa al no encontrar la solicitada.
         //imageLoader.displayImage("http://itba.edu.ar/sites/default/themes/itba/assets/images/back2.jpg", imageView);
        // holder.imageView.setImageResource(R.drawable.ic_menu_white);

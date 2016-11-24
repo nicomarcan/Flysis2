@@ -134,7 +134,7 @@ public class OffersMap extends AppCompatActivity  {
                     for (int j = 0; j <dealList.size(); j++) {
                         ratio = getIntent().getDoubleExtra("ratio",1);
                         double price = dealList.get(j).getPrice()*ratio;
-                        values.add (j, new Product(j, dealList.get(j).getName(), price,dealList.get(j).getLatitude(),dealList.get(j).getLongitude() ));
+                        values.add (j, new Product(dealList.get(j).getId(), dealList.get(j).getName(), price,dealList.get(j).getLatitude(),dealList.get(j).getLongitude() ));
                         if(price < minPrice)
                             minPrice = price;
                         if(price > maxPrice)

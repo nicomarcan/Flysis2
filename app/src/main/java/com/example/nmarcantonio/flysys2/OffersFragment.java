@@ -109,6 +109,8 @@ public class OffersFragment extends Fragment {
 
 
 
+
+
         //setHasOptionsMenu(true);
 
 
@@ -321,7 +323,7 @@ public class OffersFragment extends Fragment {
                     prevBadge= prefs.getString("money_list","USD");
 
                     for (int j = 0; j <dealList.size(); j++) {
-                        values[j] = new Product(j, dealList.get(j).getName(), dealList.get(j).getPrice()*ratio  ,dealList.get(j).getLatitude(),dealList.get(j).getLongitude());
+                        values[j] = new Product(dealList.get(j).getId(), dealList.get(j).getName(), dealList.get(j).getPrice()*ratio  ,dealList.get(j).getLatitude(),dealList.get(j).getLongitude());
                         nameToId.put(dealList.get(j).getName().toLowerCase(),dealList.get(j).getId());
                     }
 

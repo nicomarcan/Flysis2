@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -37,6 +38,7 @@ public class GetFlickrPhotoTask extends AsyncTask<String, Void, String> {
 
 
     private Context context;
+    private String id;
 
     public GetFlickrPhotoTask(Context context, CardView cardView) {
         this.context = context;
@@ -53,7 +55,10 @@ public class GetFlickrPhotoTask extends AsyncTask<String, Void, String> {
         HttpURLConnection conn = null;
         String ret = null, order;
         try {
-
+            id = strings[1];
+            if(OfferImages.getInstance().getImagesMap().get(id) != null){
+                return null;
+            }
             URL url = new URL("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=e3dae01fb6981aeab9b4b352ceb8a59a&tags=landscape&text="+strings[0]+"&sort=interestingness-desc&format=json&nojsoncallback=1");
 
             conn = (HttpURLConnection) new URL(url.toString()).openConnection();
@@ -74,6 +79,10 @@ public class GetFlickrPhotoTask extends AsyncTask<String, Void, String> {
     protected void onPostExecute(String result) {
         try {
 
+            if(result == null){
+                cardView.setBackground(new BitmapDrawable(OfferImages.getInstance().getImagesMap().get(id) ));
+                return;
+            }
             JSONObject obj = new JSONObject(result);
             if (!obj.has("photos")) {
 
@@ -100,8 +109,8 @@ public class GetFlickrPhotoTask extends AsyncTask<String, Void, String> {
                         .defaultDisplayImageOptions(defaultOptions)
                         .build();
                 ImageLoader imageLoader = ImageLoader.getInstance();
-
-                imageLoader.init(config);
+                if(!imageLoader.isInited())
+                     imageLoader.init(config);
                 FlickrImg item = imgs.get(0);
 
 
@@ -111,7 +120,7 @@ public class GetFlickrPhotoTask extends AsyncTask<String, Void, String> {
                     public void onLoadingComplete(String imageUri, View view,
                                                   Bitmap loadedImage) {
                         super.onLoadingComplete(imageUri, view, loadedImage);
-
+                        OfferImages.getInstance().getImagesMap().put(id,loadedImage);
                         cardView.setBackground(new BitmapDrawable(loadedImage));
                     }
 
