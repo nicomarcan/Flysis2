@@ -9,8 +9,12 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +46,7 @@ public class OfferDateFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         myView = inflater.inflate(R.layout.offer_search_date, container, false);
+        setHasOptionsMenu(true);
          //currentCity = (City)(getArguments().getSerializable("currentCity"));
 
        // nameToId = (HashMap<String,String>)(getArguments().getSerializable("nameToId"));
@@ -101,6 +106,11 @@ public class OfferDateFragment extends Fragment {
 
 
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+       int id = item.getItemId();
 
 
+        return true;
+    }
 }

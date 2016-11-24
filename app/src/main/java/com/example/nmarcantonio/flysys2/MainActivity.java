@@ -68,19 +68,7 @@ public class MainActivity extends AppCompatActivity
     private static int currentSect = R.id.nav_flights;
     private Menu mMenu;
     private AirportsFragment af;
-    private final View.OnAttachStateChangeListener offerListener =new View.OnAttachStateChangeListener() {
 
-        @Override
-        public void onViewDetachedFromWindow(View arg0) {
-            onBackPressed();
-        }
-
-        @Override
-        public void onViewAttachedToWindow(View arg0) {
-            android.app.FragmentManager fragmentManager = getFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.content_frame, new OfferDateFragment()).addToBackStack("HOLAS").commit();
-        }
-    };
 
 
 
@@ -193,18 +181,7 @@ public class MainActivity extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
 
-            Intent intent = new Intent(this, SettingsActivity.class);
-
-            PendingIntent pendingIntent =
-                    TaskStackBuilder.create(this)
-                            // add all of DetailsActivity's parents to the stack,
-                            // followed by DetailsActivity itself
-                            .addNextIntentWithParentStack(intent)
-                            .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
-            builder.setContentIntent(pendingIntent);
-            startActivity(intent);
+           return true;
 
         }
         if(id == R.id.offer_search){
@@ -213,7 +190,7 @@ public class MainActivity extends AppCompatActivity
                     (SearchView) MenuItemCompat.getActionView(searchItem);
 
             if(currentSect == R.id.nav_offers){
-                    searchView.addOnAttachStateChangeListener(offerListener);
+                    return false;
             }else if(currentSect == R.id.nav_flights){
                 searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener(){
 
@@ -244,13 +221,8 @@ public class MainActivity extends AppCompatActivity
                     }
                 });
 
-                while((OffersFragment.times--) > 0) {
-                    searchView.removeOnAttachStateChangeListener(offerListener);
-                }
+
             }else{
-                while((OffersFragment.times--) > 0) {
-                    searchView.removeOnAttachStateChangeListener(offerListener);
-                }
             }
 
            /*
@@ -287,12 +259,24 @@ public class MainActivity extends AppCompatActivity
             fragmentManager.beginTransaction().replace(R.id.content_frame,new OffersFragment()).addToBackStack("HOLA").commit();
         } else if (id == R.id.nav_airports) {
             af = new AirportsFragment();
-            fragmentManager.beginTransaction().replace(R.id.content_frame,af).commit();
+            fragmentManager.beginTransaction().replace(R.id.content_frame,af).addToBackStack(null).commit();
         } else if (id == R.id.nav_conversor) {
 
         } else if (id == R.id.nav_bin) {
 
         } else if (id == R.id.nav_configuration) {
+            Intent intent = new Intent(this, SettingsActivity.class);
+
+            PendingIntent pendingIntent =
+                    TaskStackBuilder.create(this)
+                            // add all of DetailsActivity's parents to the stack,
+                            // followed by DetailsActivity itself
+                            .addNextIntentWithParentStack(intent)
+                            .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+            builder.setContentIntent(pendingIntent);
+            startActivity(intent);
 
         }
 

@@ -25,6 +25,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,6 +74,8 @@ public class OffersFragment extends Fragment {
     public static int times = 0;
     public static Integer filter=0;
     private Double ratio;
+    private Menu menu;
+    private String prevBadge;
 
     private HashMap<String,Double> stringToRatio = new HashMap<String,Double>();
 
@@ -86,6 +90,7 @@ public class OffersFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         myView = inflater.inflate(R.layout.offers_layout, container, false);
+        setHasOptionsMenu(true);
 
 
         return myView;
@@ -94,9 +99,8 @@ public class OffersFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         context = (AppCompatActivity) getActivity();
-        times++;
+
         ((MainActivity)getActivity()).setCurrentSect(R.id.nav_offers);
         if (context.getSupportActionBar() != null) {
             context.getSupportActionBar().setTitle("Ofertas");
@@ -104,7 +108,7 @@ public class OffersFragment extends Fragment {
 
 
 
-        //Toast.makeText(getActivity(), "ENTRE", Toast.LENGTH_SHORT).show();
+
         //setHasOptionsMenu(true);
 
 
@@ -135,42 +139,7 @@ public class OffersFragment extends Fragment {
 
 
 
-        MenuItem searchItem = ((MainActivity)getActivity()).getmMenu().findItem(R.id.offer_search);
-        SearchView searchView =
-                (SearchView) MenuItemCompat.getActionView(searchItem);
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener(){
-
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                destId = nameToId.get(query.toLowerCase());
-                offerPrice = null;
-                Intent intent = new Intent(context, OfferResults.class);
-                intent.putExtra("filter", filter.toString());
-                intent.putExtra("currentCity", currentCity.getId());
-                intent.putExtra("destCity", destId);
-                intent.putExtra("ratio",ratio);
-                PendingIntent pendingIntent =
-                        TaskStackBuilder.create(context)
-                                // add all of DetailsActivity's parents to the stack,
-                                // followed by DetailsActivity itself
-                                .addNextIntentWithParentStack(intent)
-                                .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-                builder.setContentIntent(pendingIntent);
-
-                startActivity(intent);
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
-            }
-
-
-        });
 
 
 
@@ -219,7 +188,7 @@ public class OffersFragment extends Fragment {
         new GetRatiosTask().execute();
 
 
-        new GetCitiesTask(context,searchView).execute();
+
 
 
 
@@ -228,10 +197,75 @@ public class OffersFragment extends Fragment {
 
     @Override
     public void onResume() {
-        super.onResume();
+       super.onResume();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        ratio = stringToRatio.get(prefs.getString("money_list","USD"));
-        new GetCityGPS().execute();
+        if(prevBadge != prefs.getString("money_list","USD")) {
+            ratio = stringToRatio.get(prefs.getString("money_list", "USD"));
+            prevBadge = prefs.getString("money_list","USD");
+            new GetCityGPS().execute();
+        }
+
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+        if(id == R.id.offer_search) {
+            android.app.FragmentManager fragmentManager = getFragmentManager();
+           // fragmentManager.beginTransaction().replace(R.id.content_frame, new OfferDateFragment()).addToBackStack("HOLAS").commit();
+        }
+
+        return true;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        this.menu = menu;
+        MenuItem searchItem = menu.findItem(R.id.offer_search);
+        SearchView searchView =
+                (SearchView) MenuItemCompat.getActionView(searchItem);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener(){
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                destId = nameToId.get(query.toLowerCase());
+                offerPrice = null;
+                Intent intent = new Intent(context, OfferResults.class);
+                intent.putExtra("filter", filter.toString());
+                intent.putExtra("currentCity", currentCity.getId());
+                intent.putExtra("destCity", destId);
+                intent.putExtra("ratio",ratio);
+                PendingIntent pendingIntent =
+                        TaskStackBuilder.create(context)
+                                // add all of DetailsActivity's parents to the stack,
+                                // followed by DetailsActivity itself
+                                .addNextIntentWithParentStack(intent)
+                                .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+                builder.setContentIntent(pendingIntent);
+
+                startActivity(intent);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+
+
+        });
+
+
+
+
+
+
+        new GetCitiesTask(context,searchView).execute();
     }
 
     //LLena las fotos y ofertas
@@ -282,7 +316,9 @@ public class OffersFragment extends Fragment {
                 if (listView != null) {
                     final Product[] values = new Product[dealList.size()];
 
-
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+                    ratio = stringToRatio.get(prefs.getString("money_list","USD"));
+                    prevBadge= prefs.getString("money_list","USD");
 
                     for (int j = 0; j <dealList.size(); j++) {
                         values[j] = new Product(j, dealList.get(j).getName(), dealList.get(j).getPrice()*ratio  ,dealList.get(j).getLatitude(),dealList.get(j).getLongitude());
@@ -453,7 +489,7 @@ public class OffersFragment extends Fragment {
             String ret = null, order;
             try {
 
-                URL url = new URL("http://hci.it.itba.edu.ar/v1/api/geo.groovy?method=getcities");
+                URL url = new URL("http://hci.it.itba.edu.ar/v1/api/geo.groovy?method=getcities&page_size=1000");
                 conn = (HttpURLConnection) new URL(url.toString()).openConnection();
 
                 InputStream in = new BufferedInputStream(conn.getInputStream());
@@ -601,8 +637,7 @@ public class OffersFragment extends Fragment {
 
                         stringToRatio.put(a.getId(),1/a.getRatio());
                     }
-                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-                    ratio = stringToRatio.get(prefs.getString("money_list","USD"));
+
                     new GetCityGPS().execute();
 
                 }

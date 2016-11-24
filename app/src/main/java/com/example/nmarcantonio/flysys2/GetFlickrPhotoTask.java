@@ -54,7 +54,7 @@ public class GetFlickrPhotoTask extends AsyncTask<String, Void, String> {
         String ret = null, order;
         try {
 
-            URL url = new URL("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=e3dae01fb6981aeab9b4b352ceb8a59a&text="+strings[0]+"&sort=interestingness-desc&format=json&nojsoncallback=1");
+            URL url = new URL("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=e3dae01fb6981aeab9b4b352ceb8a59a&tags=landscape&text="+strings[0]+"&sort=interestingness-desc&format=json&nojsoncallback=1");
 
             conn = (HttpURLConnection) new URL(url.toString()).openConnection();
 
@@ -100,6 +100,7 @@ public class GetFlickrPhotoTask extends AsyncTask<String, Void, String> {
                         .defaultDisplayImageOptions(defaultOptions)
                         .build();
                 ImageLoader imageLoader = ImageLoader.getInstance();
+
                 imageLoader.init(config);
                 FlickrImg item = imgs.get(0);
 

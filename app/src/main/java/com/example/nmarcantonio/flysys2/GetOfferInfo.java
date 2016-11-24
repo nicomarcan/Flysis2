@@ -83,7 +83,7 @@ public class GetOfferInfo extends AsyncTask<Integer, Void, String> {
     protected void onPostExecute(String result) {
         try {
             JSONObject obj = new JSONObject(result);
-
+          //  Toast.makeText(act, currentCity+" "+destId+" "+offerPrice*ratio, Toast.LENGTH_SHORT).show();
 
             if (!obj.has(OffersFragment.FLIGHTS_NAME )){
 
@@ -124,7 +124,7 @@ public class GetOfferInfo extends AsyncTask<Integer, Void, String> {
             else {
                     final ListView listView = (ListView) act.findViewById(R.id.offer_list_view);
                     OfferInfoAdapter adapter = new OfferInfoAdapter(act, values.toArray(new OfferInfo[values.size()]));
-                  //  Toast.makeText(act, new Integer(values.size()).toString(), Toast.LENGTH_SHORT).show();
+
                     listView.setAdapter(adapter);
                 }
 
