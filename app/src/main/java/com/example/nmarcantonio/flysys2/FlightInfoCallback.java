@@ -175,6 +175,26 @@ public class FlightInfoCallback implements TaskCallback, OnMapReadyCallback {
                         context.startActivity(intent);
                     }
                 });
+
+                View putCommentView = flightView.findViewById(R.id.flight_post_comment);
+                putCommentView.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View view) {
+                        new PutFlightCommentTask().execute(
+                                "AM",
+                                "3530",
+                                "1",
+                                "1",
+                                "1",
+                                "1",
+                                "1",
+                                "1",
+                                "true",
+                                "ala akbar!"
+                        );
+                    }
+                });
                 lock.lock();
                 while (!mapInit) {
                     try {

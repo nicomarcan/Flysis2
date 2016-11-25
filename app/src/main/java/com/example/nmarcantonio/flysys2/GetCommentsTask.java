@@ -142,7 +142,6 @@ public class GetCommentsTask extends AsyncTask<String, Void, String> {
             return outputStream.toString();
         } catch(IOException e) {
             e.printStackTrace();
-            Log.d("err", "fallo la conexion");
             return null;
         }
     }

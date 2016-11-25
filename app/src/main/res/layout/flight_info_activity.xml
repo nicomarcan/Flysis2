@@ -274,6 +274,7 @@
                         android:padding="20dp"
                         android:clickable="true"
                         android:background="?attr/selectableItemBackground"
+                        android:id="@+id/flight_post_comment"
                         >
                         <TextView
                             android:layout_width="match_parent"
