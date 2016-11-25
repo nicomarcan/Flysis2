@@ -240,9 +240,7 @@ public class OffersFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.offer_fragment_menu,menu);
         this.menu = menu;
-        MenuItem searchItem = menu.findItem(R.id.offer_search);
-        SearchView searchView =
-                (SearchView) MenuItemCompat.getActionView(searchItem);
+
 
 
 

@@ -100,7 +100,7 @@ public class AirportsFragment extends Fragment  {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
-
+        inflater.inflate(R.menu.searchview,menu);
         MenuItem searchItem = menu.findItem(R.id.offer_search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
 
