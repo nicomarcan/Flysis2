@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -31,13 +32,13 @@ public class OfferInfoAdapter extends ArrayAdapter<OfferInfo> {
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.offer_list_item, parent, false);
             holder = new OfferInfoViewHolder();
-            holder.numberView = (TextView) convertView.findViewById(R.id.offer_info_num);
-            holder.idView =(TextView) convertView.findViewById(R.id.offer_info_airline_id) ;
+            holder.flightView = (TextView) convertView.findViewById(R.id.offer_info_flight);
             holder.srcAirView = (TextView) convertView.findViewById(R.id.offer_info_source_air);
             holder.dstAirView =(TextView) convertView.findViewById(R.id.offer_info_dest_air) ;
             holder.priceView = (TextView) convertView.findViewById(R.id.offer_info_price);
             holder.depDateView =(TextView) convertView.findViewById(R.id.offer_info_dep_date) ;
             holder.arrDateView = (TextView) convertView.findViewById(R.id.offer_info_arr_date);
+            holder.rating = (RatingBar)convertView.findViewById(R.id.flight_rating) ;
 
 
             convertView.setTag(holder);
@@ -48,9 +49,8 @@ public class OfferInfoAdapter extends ArrayAdapter<OfferInfo> {
         OfferInfo info = getItem(position);
 
 
-        holder.numberView.setText(info.getNumber());
+        holder.flightView.setText(info.getId()+" "+info.getNumber());
 
-        holder.idView.setText(info.getId());
 
         holder.srcAirView.setText(info.getSrcAir());
 
@@ -58,6 +58,7 @@ public class OfferInfoAdapter extends ArrayAdapter<OfferInfo> {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
         String price = String.format ("%.2f", info.getPrice());
         holder.priceView.setText("$"+prefs.getString("money_list","USD")+" "+price);
+        holder.rating.setRating(info.getRating());
 
         holder.depDateView.setText(info.getDepDate());
 

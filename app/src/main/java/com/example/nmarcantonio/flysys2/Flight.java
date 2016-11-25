@@ -27,6 +27,10 @@ public class Flight {
         return outbound_routes[0].getSegments()[0].getArrival().getAirport().getId();
     }
 
+    public float getRating(){
+        return outbound_routes[0].getSegments()[0].getAirline().getRating();
+    }
+
     public String getsrcAir(){
         return outbound_routes[0].getSegments()[0].getDeparture().getAirport().getId();
     }
