@@ -106,22 +106,7 @@ public class OffersFragment extends Fragment {
             context.getSupportActionBar().setTitle("Ofertas");
         }
 
-
-
-
-
-
         //setHasOptionsMenu(true);
-
-
-
-
-
-
-
-
-
-
 
         mLocationListener = new LocationListener() {
             @Override
@@ -145,10 +130,7 @@ public class OffersFragment extends Fragment {
 
             }
         };
-
-
          mLocationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
-
 
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -168,10 +150,6 @@ public class OffersFragment extends Fragment {
            loc = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
         new GetRatiosTask().execute();
-
-
-
-
 
 
     }
@@ -219,15 +197,6 @@ public class OffersFragment extends Fragment {
         inflater.inflate(R.menu.offer_fragment_menu,menu);
         this.menu = menu;
 
-
-
-
-
-
-
-
-
-
     }
 
     //LLena las fotos y ofertas
@@ -236,9 +205,6 @@ public class OffersFragment extends Fragment {
         protected String doInBackground(Void... params) {
 
             HttpURLConnection urlConnection = null;
-
-
-
 
             try {
 
@@ -364,9 +330,6 @@ public class OffersFragment extends Fragment {
 
             HttpURLConnection urlConnection = null;
 
-
-
-
             try {
 
                 URL url= new URL("http://hci.it.itba.edu.ar/v1/api/geo.groovy?method=getcitiesbyposition&latitude="+loc.getLatitude()+"&longitude="+loc.getLongitude()+"&radius=100");
@@ -454,20 +417,7 @@ public class OffersFragment extends Fragment {
         }
     }
 
-
-
-
-
-
-
-
-
-
-
     private class GetRatiosTask extends AsyncTask<String, Void, String> {
-
-
-
 
         @Override
         protected String doInBackground(String... strings) {
@@ -538,6 +488,11 @@ public class OffersFragment extends Fragment {
         }
 
 
+    }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        //mapView.onDestroy();
     }
 
 }
