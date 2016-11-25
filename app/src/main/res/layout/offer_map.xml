@@ -14,25 +14,55 @@
         android:layout_width="match_parent"
         android:layout_height="520dp"
          />
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical" android:layout_width="match_parent"
+      android:id="@+id/loading_blur"
+        android:background="#000000"
+        android:layout_height="match_parent"
+        android:alpha="0.3"></LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/loading"
+            android:background="#FFFFFF"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+           android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="50dp">
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@android:style/Widget.ProgressBar"
+            android:layout_marginRight="5dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:text="Ota esta buscando las mejores ofertas para ti" />
+    </LinearLayout>
+
+
 
     <RelativeLayout
-        android:layout_width="150dp"
+        android:layout_width="360dp"
         android:layout_height="wrap_content"
         android:background="#000000"
-        android:alpha="0.65"
+        android:alpha="0.8"
+        android:paddingLeft="5dp"
         >
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            >
 
 
             <View
                 android:layout_width="50dp"
                 android:layout_height="7dp"
-                android:background="@color/md_red_400"
+                android:background="@color/md_red_A700"
 
                 android:layout_marginTop="20dp" />
 
@@ -40,9 +70,34 @@
                 android:layout_width="50dp"
                 android:layout_height="7dp"
 
-                android:background="@color/md_orange_500"
+                android:background="@color/md_red_600"
 
                 android:layout_marginTop="20dp" />
+
+            <View
+                android:layout_width="50dp"
+                android:layout_height="7dp"
+
+                android:background="@color/md_orange_800"
+
+                android:layout_marginTop="20dp" />
+            <View
+                android:layout_width="50dp"
+                android:layout_height="7dp"
+
+                android:background="@color/md_orange_600"
+
+                android:layout_marginTop="20dp" />
+
+
+            <View
+                android:layout_width="50dp"
+                android:layout_height="7dp"
+
+                android:background="@color/md_yellow_700"
+
+                android:layout_marginTop="20dp" />
+
             <View
                 android:layout_width="50dp"
                 android:layout_height="7dp"
@@ -50,6 +105,16 @@
                 android:background="@color/md_light_green_400"
 
                 android:layout_marginTop="20dp" />
+            <View
+                android:layout_width="50dp"
+                android:layout_height="7dp"
+
+                android:background="@color/md_light_green_700"
+
+                android:layout_marginTop="20dp" />
+
+
+
 
         </LinearLayout>
 
@@ -59,31 +124,74 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/max_price"
+                android:id="@+id/first_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#FFFFFF"
                 android:textSize="10sp"
+                android:paddingLeft="5dp"
                 />
 
             <TextView
-                android:id="@+id/mid_price"
+                android:id="@+id/second_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#FFFFFF"
                 android:textSize="10sp"
-                android:layout_marginLeft="60dp"
+                android:paddingLeft="34dp"
+                android:layout_toEndOf="@id/first_price"
                 />
 
 
 
             <TextView
-                android:id="@+id/min_price"
+                android:id="@+id/third_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
                 android:textColor="#FFFFFF"
                 android:textSize="10sp"
+                android:paddingLeft="34dp"
+                android:layout_toEndOf="@id/second_price"
+                />
+
+            <TextView
+                android:id="@+id/fourth_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                android:textSize="10sp"
+                android:paddingLeft="34dp"
+                android:layout_toEndOf="@id/third_price"
+                />
+
+            <TextView
+                android:id="@+id/fifth_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                android:textSize="10sp"
+                android:paddingLeft="34dp"
+                android:layout_toEndOf="@id/fourth_price"
+                />
+
+            <TextView
+                android:id="@+id/sixth_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                android:textSize="10sp"
+                android:paddingLeft="34dp"
+                android:layout_toEndOf="@id/fifth_price"
+                />
+
+            <TextView
+                android:id="@+id/seventh_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                android:textSize="10sp"
+                android:paddingLeft="34dp"
+                android:layout_toEndOf="@id/sixth_price"
                 />
         </RelativeLayout>
 

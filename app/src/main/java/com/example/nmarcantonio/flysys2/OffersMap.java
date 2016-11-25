@@ -61,9 +61,14 @@ public class OffersMap extends AppCompatActivity  {
 
 
     private GoogleMap mMap;
-    private Double maxPrice=Double.MIN_VALUE;
-    private Double minPrice=Double.MAX_VALUE;
-    private Double midPrice;
+    private Double firstPrice=Double.MIN_VALUE;
+    private Double seventhPrice=Double.MAX_VALUE;
+    private Double secondPrice;
+    private Double thirdPrice;
+    private Double fourthPrice;
+    private Double fifthPrice;
+    private Double sixthPrice;
+
 
     View myView;
     final static String DEALS_NAME = "deals";
@@ -148,22 +153,28 @@ public class OffersMap extends AppCompatActivity  {
                         double price = dealList.get(j).getPrice()*ratio;
                         nameToId.put(dealList.get(j).getName().split(",")[0],dealList.get(j).getId());
                         values.add (j, new Product(dealList.get(j).getId(), dealList.get(j).getName(), price,dealList.get(j).getLatitude(),dealList.get(j).getLongitude() ));
-                        if(price < minPrice)
-                            minPrice = price;
-                        if(price > maxPrice)
-                            maxPrice = price;
+                        if(price < seventhPrice)
+                            seventhPrice = price;
+                        if(price > firstPrice)
+                           firstPrice= price;
                     }
-                    midPrice = (maxPrice + minPrice)/2;
+                   fourthPrice = (firstPrice + seventhPrice)/2;
+                Double aux = (firstPrice + fourthPrice)/2;
+                secondPrice = (aux+firstPrice)/2;
+                thirdPrice = (aux+fourthPrice)/2;
+                aux = (fourthPrice+seventhPrice)/2;
+                fifthPrice = (aux+fourthPrice)/2;
+                sixthPrice = (aux + seventhPrice)/2;
 /*
                     OfferAdapter adapter = new OfferAdapter(values,context);
                     mLayoutManager= new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL, false);
                     view.setLayoutManager(mLayoutManager);
                    view.setAdapter(adapter);
 */
-                    // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-                    MapFragment mapFragment = (MapFragment) getFragmentManager()
-                            .findFragmentById(R.id.map);
-                    mapFragment.getMapAsync(this);
+
+                new GetPhotosToCache(context,this,dealList,0).execute();
+
+
 
 
 /*
@@ -245,7 +256,7 @@ public class OffersMap extends AppCompatActivity  {
                     googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                         public void onInfoWindowClick(Marker marker) {
                             String destId = nameToId.get(marker.getTitle().split("&")[0]);
-                            Double offerPrice = new Double(marker.getTitle().split("&")[1]);
+                            Double offerPrice = new Double(marker.getTitle().split("&")[3]);
 
                             Intent intent = new Intent(context, OfferResults.class);
 
@@ -277,13 +288,21 @@ public class OffersMap extends AppCompatActivity  {
             for(Product p : values){
                 a =   new LatLng(p.getLatitude(),p.getLongitude());
                 float color;
-                if(p.getPrice() > (midPrice+maxPrice)/2)
+                if(p.getPrice() >= (firstPrice+secondPrice)/2)
                     color = BitmapDescriptorFactory.HUE_RED;
-                else if(p.getPrice() < (midPrice+minPrice)/2)
-                    color = BitmapDescriptorFactory.HUE_GREEN;
-                else
+                else if(p.getPrice() >= (secondPrice+thirdPrice)/2)
+                    color = 15;
+                else if(p.getPrice() >= (thirdPrice+fourthPrice)/2)
                     color = BitmapDescriptorFactory.HUE_ORANGE;
-                markers.add(i,mMap.addMarker(new MarkerOptions().position(a).title(p.getName().split(",")[0]+"&"+ String.format ("%.2f", p.getPrice())+"&"+p.getId()).icon(BitmapDescriptorFactory.defaultMarker(color))));
+                else if(p.getPrice() >= (fifthPrice+fourthPrice)/2)
+                    color = 45;
+                else if(p.getPrice() >= (fifthPrice+sixthPrice)/2)
+                    color = BitmapDescriptorFactory.HUE_YELLOW;
+                else if(p.getPrice() >= (sixthPrice+seventhPrice)/2)
+                    color =75;
+                else
+                    color = 105;
+                markers.add(i,mMap.addMarker(new MarkerOptions().position(a).title(p.getName().split(",")[0]+"&"+ String.format ("%.2f", p.getPrice())+"&"+p.getId()+"&"+p.getPrice()).icon(BitmapDescriptorFactory.defaultMarker(color))));
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(a));
                 i++;
             }
@@ -291,11 +310,16 @@ public class OffersMap extends AppCompatActivity  {
 
             float zoomLevel = (float)3.0; //This goes up to 21
          //   mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(p.getLatitude(),p.getLongitude()), zoomLevel));
-            ((TextView)findViewById(R.id.max_price)).setText(new Integer(maxPrice.intValue()).toString());
-            ((TextView)findViewById(R.id.mid_price)).setText(new Integer(midPrice.intValue()).toString());
-            ((TextView)findViewById(R.id.min_price)).setText(new Integer(minPrice.intValue()).toString());
+            ((TextView)findViewById(R.id.first_price)).setText(new Integer(firstPrice.intValue()).toString());
+            ((TextView)findViewById(R.id.second_price)).setText(new Integer(secondPrice.intValue()).toString());
+            ((TextView)findViewById(R.id.third_price)).setText(new Integer(thirdPrice.intValue()).toString());
+            ((TextView)findViewById(R.id.fourth_price)).setText(new Integer(fourthPrice.intValue()).toString());
+            ((TextView)findViewById(R.id.fifth_price)).setText(new Integer(fifthPrice.intValue()).toString());
+            ((TextView)findViewById(R.id.sixth_price)).setText(new Integer(sixthPrice.intValue()).toString());
+            ((TextView)findViewById(R.id.seventh_price)).setText(new Integer(seventhPrice.intValue()).toString());
 
-
+            ((LinearLayout) context.findViewById(R.id.loading)).setVisibility(View.GONE);
+            ((LinearLayout) context.findViewById(R.id.loading_blur)).setVisibility(View.GONE);
 
         }
     }
