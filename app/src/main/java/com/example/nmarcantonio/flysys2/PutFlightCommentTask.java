@@ -45,8 +45,7 @@ public class PutFlightCommentTask extends AsyncTask<String, Void, String> {
                     .appendPath("review.groovy")
                     .appendQueryParameter("method", "reviewairline")
                     .build();
-            conn = (HttpURLConnection) new URL(uri.toString()).openConnection();
-            conn.setRequestMethod("POST");
+
             JSONObject ratingsJson = new JSONObject();
             ratingsJson.put("friendliness", Integer.valueOf(params[2]));
             ratingsJson.put("food", Integer.valueOf(params[3]));
@@ -64,7 +63,19 @@ public class PutFlightCommentTask extends AsyncTask<String, Void, String> {
             requestJson.put("rating", ratingsJson);
             requestJson.put("yes_recommend", Boolean.valueOf(params[8]));
             requestJson.put("comments", params[9]);
+            uri = new Uri.Builder()
+                    .scheme("http")
+                    .authority("hci.it.itba.edu.ar")
+                    .appendPath("v1")
+                    .appendPath("api")
+                    .appendPath("review.groovy")
+                    .appendQueryParameter("method", "reviewairline2")
+                    .appendQueryParameter("review",requestJson.toString())
+                    .build();
+            conn = (HttpURLConnection) new URL(uri.toString()).openConnection();
+            conn.setRequestMethod("POST");
             OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+            //Log.v(TAG,requestJson.toString());
             wr.write(requestJson.toString());
             wr.flush();
 
