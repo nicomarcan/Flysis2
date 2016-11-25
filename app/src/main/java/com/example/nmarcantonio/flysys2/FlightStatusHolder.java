@@ -7,8 +7,24 @@ import android.widget.TextView;
  */
 
 public class FlightStatusHolder {
+    private String id;
+    private int number;
     TextView origin;
     TextView destintation;
     TextView description;
     TextView header;
+
+    public FlightStatusHolder(String id, int number){
+        this.id = id;
+        this.number = number;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public int getNumber() {
+        return number;
+    }
+
 }
