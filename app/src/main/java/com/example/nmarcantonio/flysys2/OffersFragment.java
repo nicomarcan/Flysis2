@@ -81,7 +81,7 @@ public class OffersFragment extends Fragment {
 
     private HashMap<String,String> nameToId = new HashMap<>();
 
-    private ArrayList<String> autoCompStrings = new ArrayList<String>();
+
 
 
 
@@ -186,7 +186,9 @@ public class OffersFragment extends Fragment {
 
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mLocationListener);
         mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, mLocationListener);
-       loc = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+       if((loc = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER))==null)
+           loc = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
         new GetRatiosTask().execute();
 
 
@@ -214,9 +216,21 @@ public class OffersFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         int id = item.getItemId();
-        if(id == R.id.offer_search) {
-            android.app.FragmentManager fragmentManager = getFragmentManager();
-           // fragmentManager.beginTransaction().replace(R.id.content_frame, new OfferDateFragment()).addToBackStack("HOLAS").commit();
+        if(id == R.id.action_search_offer) {
+            Intent intent = new Intent(context, OfferSearch.class);
+            intent.putExtra("ratio",ratio);
+            intent.putExtra("scrId",currentCity.getId());
+            PendingIntent pendingIntent =
+                    TaskStackBuilder.create(context)
+                            // add all of DetailsActivity's parents to the stack,
+                            // followed by DetailsActivity itself
+                            .addNextIntentWithParentStack(intent)
+                            .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+            builder.setContentIntent(pendingIntent);
+
+            startActivity(intent);
         }
 
         return true;
@@ -224,50 +238,20 @@ public class OffersFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.offer_fragment_menu,menu);
         this.menu = menu;
         MenuItem searchItem = menu.findItem(R.id.offer_search);
         SearchView searchView =
                 (SearchView) MenuItemCompat.getActionView(searchItem);
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener(){
-
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                destId = nameToId.get(query.toLowerCase());
-                offerPrice = null;
-                Intent intent = new Intent(context, OfferResults.class);
-                intent.putExtra("filter", filter.toString());
-                intent.putExtra("currentCity", currentCity.getId());
-                intent.putExtra("destCity", destId);
-                intent.putExtra("ratio",ratio);
-                PendingIntent pendingIntent =
-                        TaskStackBuilder.create(context)
-                                // add all of DetailsActivity's parents to the stack,
-                                // followed by DetailsActivity itself
-                                .addNextIntentWithParentStack(intent)
-                                .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-                builder.setContentIntent(pendingIntent);
-
-                startActivity(intent);
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
-            }
-
-
-        });
 
 
 
 
 
 
-        new GetCitiesTask(context,searchView).execute();
+
+
     }
 
     //LLena las fotos y ofertas
@@ -471,121 +455,7 @@ public class OffersFragment extends Fragment {
 
 
 
-    private class GetCitiesTask extends AsyncTask<String, Void, String> {
 
-
-        private Context context;
-
-
-
-        private SearchView searchView;
-
-        public GetCitiesTask(Context context, SearchView searchView) {
-            this.context = context;
-            this.searchView = searchView;
-        }
-
-        @Override
-        protected String doInBackground(String... strings) {
-            HttpURLConnection conn = null;
-            String ret = null, order;
-            try {
-
-                URL url = new URL("http://hci.it.itba.edu.ar/v1/api/geo.groovy?method=getcities&page_size=1000");
-                conn = (HttpURLConnection) new URL(url.toString()).openConnection();
-
-                InputStream in = new BufferedInputStream(conn.getInputStream());
-                ret = readStream(in);
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                if (conn != null) {
-                    conn.disconnect();
-                }
-            }
-            return ret;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            try {
-
-                JSONObject obj = new JSONObject(result);
-                if (!obj.has("cities")) {
-
-                    return;
-                }
-                else {
-                    Gson gson = new Gson();
-                    Type listType = new TypeToken<ArrayList<City>>() {
-                    }.getType();
-
-                    String jsonFragment = obj.getString("cities");
-
-
-                    ArrayList<City> cities = gson.fromJson(jsonFragment, listType);
-
-                    for (City a : cities) {
-                        autoCompStrings.add(a.getName().split(",")[0]);
-                        nameToId.put(a.getName().split(",")[0].toLowerCase(),a.getId());
-                    }
-                    if (isAdded()) {
-                        Set<String> set = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
-                        set.addAll(autoCompStrings);
-                        autoCompStrings = new ArrayList<String>(set);
-
-
-                        final SearchView.SearchAutoComplete searchAutoComplete = (SearchView.SearchAutoComplete) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
-                        searchAutoComplete.setTextColor(Color.WHITE);
-                        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
-                                R.layout.autocomplete_layout, autoCompStrings);
-                        searchAutoComplete.setAdapter(adapter);
-
-                        SearchManager searchManager;
-
-                            searchManager = (SearchManager) getActivity().getSystemService(getActivity().SEARCH_SERVICE);
-                            searchView.setSearchableInfo(
-                                    searchManager.getSearchableInfo(getActivity().getComponentName()));
-
-                            searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
-                                @Override
-                                public boolean onSuggestionSelect(int position) {
-                                    return false;
-                                }
-
-                                @Override
-                                public boolean onSuggestionClick(int position) {
-                                    searchView.setQuery(adapter.getItem(position), false);
-                                    return true;
-                                }
-                            });
-
-
-                    }
-                }
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        private String readStream(InputStream inputStream) {
-            try {
-                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                int i = inputStream.read();
-                while(i != -1 ) {
-                    outputStream.write(i);
-                    i = inputStream.read();
-                }
-                return outputStream.toString();
-            } catch(IOException e) {
-                e.printStackTrace();
-                Log.d("err", "fallo la conexion");
-                return null;
-            }
-        }
-
-
-    }
 
 
 

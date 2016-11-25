@@ -4,12 +4,10 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * Created by Nicolas on 11/22/2016.
@@ -35,12 +33,7 @@ public class OfferFilterFragment extends Fragment {
         cross.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                OffersFragment.filter = 0;
-                getFragmentManager().popBackStack();
-                getFragmentManager().beginTransaction()
-                        .replace(R.id.content_frame, new OfferDateFragment())
-                        .addToBackStack(null)
-                        .commit();
+               getActivity().onBackPressed();
             }
         });
         TextView textView = (TextView)getActivity().findViewById(R.id.filter_text);

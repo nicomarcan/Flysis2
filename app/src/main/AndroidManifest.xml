@@ -72,6 +72,16 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.nmarcantonio.flysys2.MainActivity" />
         </activity>
+
+
+        <activity
+            android:name=".OfferSearch"
+
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.nmarcantonio.flysys2.MainActivity" />
+        </activity>
         <activity
             android:name=".FlightCommentsActivity"
             android:label="@string/title_activity_flight"
