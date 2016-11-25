@@ -23,16 +23,11 @@
     <string name="pref_header_general">General</string>
 
 
-
-
-
-
     <string-array name="money_titles">
-    <item>Pesos Argentinos</item>
-    <item>Dólares</item>
-    <item>Reales</item>
-</string-array>
-
+        <item>Pesos Argentinos</item>
+        <item>Dólares</item>
+        <item>Reales</item>
+    </string-array>
 
 
     <string-array name="measure_titles">
@@ -62,10 +57,8 @@
     </string-array>
 
 
-
     <!-- Example settings for Notifications -->
     <string name="pref_header_notifications">Notificaciones</string>
-
 
 
     <string name="pref_title_ringtone">Ringtone</string>
@@ -81,4 +74,16 @@
     <string name="update_interval">Intervalo de actualización</string>
     <string name="offer_results">Resultados</string>
     <string name="map_status_text">Buscar vuelo</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="fragment_comment_dialog_header">Opine sobre el vuelo</string>
+    <string name="fragment_comment_dialog_friendliness">Amabilidad</string>
+    <string name="fragment_comment_dialog_food">Comida</string>
+    <string name="fragment_comment_dialog_punctuality">Puntualidad</string>
+    <string name="fragment_comment_dialog_mileage_programe">Programa de pasajeros frecuentes</string>
+    <string name="fragment_comment_dialog_comfort">Confort</string>
+    <string name="fragment_comment_dialog_quality_price">Relacion precio/calidad</string>
+    <string name="flight_comment_dialog_send">ENVIAR</string>
+    <string name="comentario">Comentario</string>
 </resources>

@@ -12,12 +12,14 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 
 /**
  * Created by aa on 11/24/2016.
@@ -37,16 +39,6 @@ public class PutFlightCommentTask extends AsyncTask<String, Void, String> {
                 throw new IllegalArgumentException();
             }
 
-            Uri uri = new Uri.Builder()
-                    .scheme("http")
-                    .authority("hci.it.itba.edu.ar")
-                    .appendPath("v1")
-                    .appendPath("api")
-                    .appendPath("review.groovy")
-                    .appendQueryParameter("method", "reviewairline")
-                    .build();
-            conn = (HttpURLConnection) new URL(uri.toString()).openConnection();
-            conn.setRequestMethod("POST");
             JSONObject ratingsJson = new JSONObject();
             ratingsJson.put("friendliness", Integer.valueOf(params[2]));
             ratingsJson.put("food", Integer.valueOf(params[3]));
@@ -64,9 +56,19 @@ public class PutFlightCommentTask extends AsyncTask<String, Void, String> {
             requestJson.put("rating", ratingsJson);
             requestJson.put("yes_recommend", Boolean.valueOf(params[8]));
             requestJson.put("comments", params[9]);
-            OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-            wr.write(requestJson.toString());
-            wr.flush();
+            String encodedJson = URLEncoder.encode(requestJson.toString(), "UTF-8");
+
+            Uri uri = new Uri.Builder()
+                    .scheme("http")
+                    .authority("hci.it.itba.edu.ar")
+                    .appendPath("v1")
+                    .appendPath("api")
+                    .appendPath("review.groovy")
+                    .appendQueryParameter("method", "reviewairline2")
+                    .appendQueryParameter("review", encodedJson)
+                    .build();
+
+            conn = (HttpURLConnection) new URL(uri.toString()).openConnection();
 
             int httpResult = conn.getResponseCode();
             if (httpResult == HttpURLConnection.HTTP_OK) {

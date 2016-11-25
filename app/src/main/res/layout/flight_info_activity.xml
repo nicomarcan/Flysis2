@@ -307,6 +307,7 @@
                                 android:src="@drawable/ic_thumb_down_black_24dp"
                                 android:layout_toRightOf="@id/flight_comments_thumbs_up"
                                 android:clickable="true"
+                                android:id="@+id/flight_comments_thumbs_down"
                                 android:backgroundTint="@android:color/white"
                                 />
                         </RelativeLayout>

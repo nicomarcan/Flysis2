@@ -1,6 +1,9 @@
 package com.example.nmarcantonio.flysys2;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.app.Fragment;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.BroadcastReceiver;
@@ -12,6 +15,7 @@ import android.os.Handler;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.app.FragmentTransaction;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -36,7 +40,7 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class FlightActivity extends AppCompatActivity{
+public class FlightActivity extends Activity{
     private static String TAG = "FlightActivity";
 
     ArrayList<FlightStatus> flights;
@@ -46,6 +50,7 @@ public class FlightActivity extends AppCompatActivity{
     String number;
     String airline;
     FlightStatus flightStatus;
+    DialogFragment dialogFragment;
 
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -94,6 +99,7 @@ public class FlightActivity extends AppCompatActivity{
     @Override
     public void onPause() {
         super.onPause();
+        timer.cancel();
         unregisterReceiver(broadcastReceiver);
     }
 
@@ -119,7 +125,6 @@ public class FlightActivity extends AppCompatActivity{
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
 
 
-
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                                                  @Override
                                                  public void onClick(View view) {
@@ -142,9 +147,13 @@ public class FlightActivity extends AppCompatActivity{
             }
         };
         new Handler().post(r);
-
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        dialogFragment = null;
+    }
     private void updateFlightStatus(FlightStatus fi) {
         View flightView = findViewById(R.id.flight_info_coordination);
         ((TextView)flightView.findViewById(R.id.flight_info_number)).setText("Vuelo " + fi.number);
@@ -195,5 +204,21 @@ public class FlightActivity extends AppCompatActivity{
         dateText.setText(statusDescription);
 
         addDate(dateText, fd.descriptionHeader, fd.nextRelevantDate);
+    }
+
+    void showPostCommentDialog(Boolean thumbs, String airline, String number) {
+        if (dialogFragment == null || !((DialogFragment)dialogFragment).isResumed() ) {
+            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+            Fragment prev = getFragmentManager().findFragmentById(R.id.flight_comment_dialog);
+            if (prev != null) {
+                fragmentTransaction.remove(prev);
+            }
+            fragmentTransaction.addToBackStack(null);
+            if (dialogFragment == null ) {
+                dialogFragment = CommentDialogFragment.newInstance(thumbs, airline, number );
+            }
+            ((CommentDialogFragment) dialogFragment).setThumbs(thumbs);
+            dialogFragment.show(fragmentTransaction, "dialog");
+        }
     }
 }
