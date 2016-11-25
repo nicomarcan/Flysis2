@@ -102,28 +102,6 @@ public class FlightsFragment extends Fragment {
             context.getSupportActionBar().setTitle("Vuelos");
         }
 
-        FloatingActionButton fab = (FloatingActionButton) myView.findViewById(R.id.flight_button);
-
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, FlightActivity.class);
-                intent.putExtra("id","AR");
-                intent.putExtra("number","5260");
-
-                PendingIntent pendingIntent =
-                        TaskStackBuilder.create(context)
-                                // add all of DetailsActivity's parents to the stack,
-                                // followed by DetailsActivity itself
-                                .addNextIntentWithParentStack(intent)
-                                .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-                builder.setContentIntent(pendingIntent);
-                startActivity(intent);
-            }
-        });
-
         flights = PreferencesHelper.getFlights(context);
         ListView listView = (ListView) myView.findViewById(R.id.flights_list_view);
         flightAdapter = new FlightStatusArrayAdapter(context, flights);
