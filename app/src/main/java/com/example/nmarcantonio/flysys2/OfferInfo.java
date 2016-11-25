@@ -13,6 +13,7 @@ public class OfferInfo {
     private Double price;
     private String depDate;
     private String arrDate;
+    public float rating;
 
     public String getDepDate() {
         return depDate;
@@ -22,7 +23,7 @@ public class OfferInfo {
         return arrDate;
     }
 
-    public OfferInfo(String id, String number, String srcAir, String dstAir, Double price, String depDate, String arrDate) {
+    public OfferInfo(String id, String number, String srcAir, String dstAir, Double price, String depDate, String arrDate,float rating) {
         this.id = id;
         this.number = number;
         this.srcAir = srcAir;
@@ -30,6 +31,7 @@ public class OfferInfo {
         this.price = price;
         this.depDate = depDate;
         this.arrDate = arrDate;
+        this.rating = rating;
     }
 
 
@@ -49,6 +51,9 @@ public class OfferInfo {
         return price;
     }
 
+    public float getRating(){
+        return rating;
+    }
 
 
     public String getDstAir() {

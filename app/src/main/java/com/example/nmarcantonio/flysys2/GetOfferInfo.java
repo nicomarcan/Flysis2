@@ -120,7 +120,7 @@ public class GetOfferInfo extends AsyncTask<Integer, Void, String> {
 
                 Flight f = flightList.get(0);
 
-                values.add( new OfferInfo(f.getId(),f.getNumber(),f.getsrcAir() ,f.getdstAir(),f.getPrice()*ratio ,f.getDepDate(),f.getArrDate() ));
+                values.add( new OfferInfo(f.getId(),f.getNumber(),f.getsrcAir() ,f.getdstAir(),f.getPrice()*ratio ,f.getDepDate(),f.getArrDate() ,f.getRating()/2));
 
 
 
@@ -137,8 +137,8 @@ public class GetOfferInfo extends AsyncTask<Integer, Void, String> {
                         @Override
                         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                             Intent intent = new Intent(act, FlightActivity.class);
-                            String id = ((TextView)view.findViewById(R.id.offer_info_airline_id)).getText().toString();
-                            String number =((TextView)view.findViewById(R.id.offer_info_num)).getText().toString();;
+                            String id = ((TextView)view.findViewById(R.id.offer_info_flight)).getText().toString().split(" ")[0];
+                            String number =((TextView)view.findViewById(R.id.offer_info_flight)).getText().toString().split(" ")[1];
                             intent.putExtra("id",id);
                             intent.putExtra("number",number);
 

@@ -9,10 +9,12 @@ public class Airline {
 
     private String id;
     private String name;
+    public float rating;
 
-    public Airline(String id,String name){
+    public Airline(String id,String name,float rating){
         this.id = id;
         this.name = name;
+        this.rating = rating;
     }
 
     public String getId() {
@@ -21,5 +23,9 @@ public class Airline {
 
     public String getName() {
         return name;
+    }
+
+    public float getRating() {
+        return rating;
     }
 }
