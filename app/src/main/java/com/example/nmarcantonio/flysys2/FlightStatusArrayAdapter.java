@@ -9,16 +9,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.ArraySwipeAdapter;
+import com.daimajia.swipe.adapters.BaseSwipeAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.R.attr.id;
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
 
@@ -26,95 +29,115 @@ import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
  * Created by traie_000 on 23-Nov-16.
  */
 
-public class FlightStatusArrayAdapter extends ArraySwipeAdapter<FlightStatus> {
+public class FlightStatusArrayAdapter extends BaseSwipeAdapter{
     private Context context;
     private List<FlightStatus> flights;
+    private boolean isOpenSwipeLayout = false;
 
     public FlightStatusArrayAdapter(Context context, List<FlightStatus> objects) {
-        super(context, R.layout.flights_status_item, objects);
         this.flights=objects;
         this.context = context;
     }
 
     @Override
-    public int getSwipeLayoutResourceId(int position) {
-        return R.id.flights_list_view;
+    public int getCount() {
+        return flights.size();
     }
 
-
+    @Override
+    public Object getItem(int position) {
+        return flights.get(position);
+    }
 
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getSwipeLayoutResourceId(int position) {
+        return R.id.swipe;
+    }
+
+    @Override
+    public View generateView(int position, ViewGroup parent){
+        return (SwipeLayout)LayoutInflater.from(context).inflate(R.layout.flight_status_item_swipeable,parent,false);
+    }
+
+    @Override
+    public void fillValues(final int position, View convertView){
         FlightStatus flightStatus = (FlightStatus)getItem(position);
-        SwipeLayout swipeLayout = null;
+        final SwipeLayout swipeLayout = (SwipeLayout)convertView;
         FlightStatusHolder holder;
-        if (convertView == null) {
-            swipeLayout = (SwipeLayout)LayoutInflater.from(getContext()).inflate(R.layout.flight_status_item_swipeable,parent,false);
-            holder = new FlightStatusHolder(flightStatus.airline.id,flightStatus.number);
-            holder.header = (TextView) swipeLayout.findViewById(R.id.flights_card_header);
-            holder.origin = (TextView) swipeLayout.findViewById(R.id.flights_card_origin);
-            holder.destintation = (TextView) swipeLayout.findViewById(R.id.flights_card_destination);
-            holder.description = (TextView) swipeLayout.findViewById(R.id.flights_card_description);
-            swipeLayout.setTag(holder);
-            swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
-            swipeLayout.addSwipeListener(new SwipeLayout.SwipeListener() {
-                @Override
-                public void onClose(SwipeLayout layout) {
-                    //when the SurfaceView totally cover the BottomView.
-                }
+        holder = new FlightStatusHolder(flightStatus.airline.id,flightStatus.number);
+        holder.header = (TextView) swipeLayout.findViewById(R.id.flights_card_header);
+        holder.origin = (TextView) swipeLayout.findViewById(R.id.flights_card_origin);
+        holder.destintation = (TextView) swipeLayout.findViewById(R.id.flights_card_destination);
+        holder.description = (TextView) swipeLayout.findViewById(R.id.flights_card_description);
+        swipeLayout.setTag(holder);
+        swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
+        swipeLayout.addSwipeListener(new SwipeLayout.SwipeListener() {
+            @Override
+            public void onClose(SwipeLayout layout) {
+                //when the SurfaceView totally cover the BottomView.
+            }
 
-                @Override
-                public void onUpdate(SwipeLayout layout, int leftOffset, int topOffset) {
-                    //you are swiping.
-                }
+            @Override
+            public void onUpdate(SwipeLayout layout, int leftOffset, int topOffset) {
+                //you are swiping.
+            }
 
-                @Override
-                public void onStartOpen(SwipeLayout layout) {
+            @Override
+            public void onStartOpen(SwipeLayout layout) {
+                isOpenSwipeLayout = true;
+            }
 
-                }
-
-                @Override
-                public void onOpen(SwipeLayout layout) {
-                    //when the BottomView totally show.
-                    FlightStatusHolder holder = (FlightStatusHolder)layout.getTag();
-                    String s = holder.getId()+"-"+holder.getNumber();
-                    int i;
-                    for(i = 0; i < flights.size(); i++) {
-                        FlightStatus f = flights.get(i);
-                        if (f.airline.id.equals(holder.getId()) && f.number == holder.getNumber()) {
-                            flights.remove(i);
-                            break;
-                        }
+            @Override
+            public void onOpen(SwipeLayout layout) {
+                //when the BottomView totally show.
+                FlightStatusHolder holder = (FlightStatusHolder)layout.getTag();
+                String s = holder.getId()+"-"+holder.getNumber();
+                int i;
+                for(i = 0; i < flights.size(); i++) {
+                    FlightStatus f = flights.get(i);
+                    if (f.airline.id.equals(holder.getId()) && f.number == holder.getNumber()) {
+                        flights.remove(i);
+                        break;
                     }
-                    PreferencesHelper.updatePreferences((ArrayList)flights, context);
-                    layout.getSurfaceView().setOnClickListener(null);
-//                    layout.removeAllViews();
                 }
+                PreferencesHelper.updatePreferences((ArrayList) flights, context);
+                notifyDataSetChanged();
+            }
 
-                @Override
-                public void onStartClose(SwipeLayout layout) {
+            @Override
+            public void onStartClose(SwipeLayout layout) {
+                isOpenSwipeLayout = false;
+            }
 
+            @Override
+            public void onHandRelease(SwipeLayout layout, float xvel, float yvel) {
+                //when user's hand released.
+            }
+        });
+
+        ViewTreeObserver.OnGlobalLayoutListener swipeGlobalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                if (isOpenSwipeLayout) {
+                    swipeLayout.close(false);
                 }
+            }
+        };
 
-                @Override
-                public void onHandRelease(SwipeLayout layout, float xvel, float yvel) {
-                    //when user's hand released.
-                }
-            });
-        }
-        else {
-            holder = (FlightStatusHolder) convertView.getTag();
-            swipeLayout = (SwipeLayout)convertView;
-        }
+        swipeLayout.getViewTreeObserver().addOnGlobalLayoutListener(swipeGlobalLayoutListener);
 
-
-        swipeLayout.getSurfaceView().setOnClickListener(new View.OnClickListener() {
+        swipeLayout.getSurfaceView().setOnClickListener(new SwipeLayout.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FlightStatus flightStatus = (FlightStatus)getItem(position);
+                FlightStatus status = flights.get(position);
                 Intent intent = new Intent(context, FlightActivity.class);
-                intent.putExtra("id",flightStatus.airline.id);
-                intent.putExtra("number",new Integer(flightStatus.number).toString());
+                intent.putExtra("id",status.airline.id);
+                intent.putExtra("number",new Integer(status.number).toString());
 
                 PendingIntent pendingIntent =
                         TaskStackBuilder.create(context)
@@ -129,13 +152,9 @@ public class FlightStatusArrayAdapter extends ArraySwipeAdapter<FlightStatus> {
             }
         });
 
-
-
-
         holder.header.setText("Vuelo " + flightStatus.number);
         holder.origin.setText(flightStatus.departure.airport.id);
         holder.destintation.setText(flightStatus.arrival.airport.id);
         holder.description.setText("Arribando dentro de 30 minutos");
-        return swipeLayout;
     }
 }
