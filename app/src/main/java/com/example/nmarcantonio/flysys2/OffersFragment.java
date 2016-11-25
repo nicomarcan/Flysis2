@@ -115,29 +115,7 @@ public class OffersFragment extends Fragment {
 
 
 
-        FloatingActionButton fab = (FloatingActionButton) myView.findViewById(R.id.map);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
 
-                */
-
-                Intent intent = new Intent(context, OffersMap.class);
-                intent.putExtra("ratio",ratio);
-                PendingIntent pendingIntent =
-                        TaskStackBuilder.create(context)
-                                // add all of DetailsActivity's parents to the stack,
-                                // followed by DetailsActivity itself
-                                .addNextIntentWithParentStack(intent)
-                                .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-                builder.setContentIntent(pendingIntent);
-                startActivity(intent);
-            }
-        });
 
 
 
@@ -423,6 +401,33 @@ public class OffersFragment extends Fragment {
                     currentCity = cityList.get(0);
 
                     new HttpGetOffersTask().execute();
+
+
+
+                    FloatingActionButton fab = (FloatingActionButton) myView.findViewById(R.id.map);
+                    fab.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+
+                */
+
+                            Intent intent = new Intent(context, OffersMap.class);
+                            intent.putExtra("ratio",ratio);
+                            intent.putExtra("srcId",currentCity.getId());
+                            PendingIntent pendingIntent =
+                                    TaskStackBuilder.create(context)
+                                            // add all of DetailsActivity's parents to the stack,
+                                            // followed by DetailsActivity itself
+                                            .addNextIntentWithParentStack(intent)
+                                            .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                            NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+                            builder.setContentIntent(pendingIntent);
+                            startActivity(intent);
+                        }
+                    });
                 }
 
 

@@ -3,6 +3,7 @@ package com.example.nmarcantonio.flysys2;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.support.v7.widget.CardView;
@@ -40,10 +41,15 @@ public class GetFlickrPhotoTask extends AsyncTask<String, Void, String> {
     private Context context;
     private String id;
 
+
+
     public GetFlickrPhotoTask(Context context, CardView cardView) {
         this.context = context;
         this.cardView = cardView;
     }
+
+
+
 
     private CardView cardView;
 
@@ -80,7 +86,8 @@ public class GetFlickrPhotoTask extends AsyncTask<String, Void, String> {
         try {
 
             if(result == null){
-                cardView.setBackground(new BitmapDrawable(OfferImages.getInstance().getImagesMap().get(id) ));
+                if(cardView != null)
+                 cardView.setBackground(new BitmapDrawable(OfferImages.getInstance().getImagesMap().get(id) ));
                 return;
             }
             JSONObject obj = new JSONObject(result);
@@ -114,17 +121,19 @@ public class GetFlickrPhotoTask extends AsyncTask<String, Void, String> {
                 FlickrImg item = imgs.get(0);
 
 
-                    imageLoader.loadImage("http://farm"+ item.getFarm() +".static.flickr.com/"+ item.getServer() +"/"+ item.getId() +"_"+ item.getSecret() +"_m.jpg", new SimpleImageLoadingListener(){
+                        imageLoader.loadImage("http://farm" + item.getFarm() + ".static.flickr.com/" + item.getServer() + "/" + item.getId() + "_" + item.getSecret() + "_m.jpg", new SimpleImageLoadingListener() {
 
-                    @Override
-                    public void onLoadingComplete(String imageUri, View view,
-                                                  Bitmap loadedImage) {
-                        super.onLoadingComplete(imageUri, view, loadedImage);
-                        OfferImages.getInstance().getImagesMap().put(id,loadedImage);
-                        cardView.setBackground(new BitmapDrawable(loadedImage));
-                    }
+                            @Override
+                            public void onLoadingComplete(String imageUri, View view,
+                                                          Bitmap loadedImage) {
+                                super.onLoadingComplete(imageUri, view, loadedImage);
+                                OfferImages.getInstance().getImagesMap().put(id, loadedImage);
+                                cardView.setBackground(new BitmapDrawable(loadedImage));
+                            }
 
-                });
+                        });
+
+
 
             }
         }
