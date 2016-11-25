@@ -1,9 +1,13 @@
 package com.example.nmarcantonio.flysys2;
 
 import android.app.Activity;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -11,11 +15,15 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,6 +51,7 @@ import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -64,13 +73,16 @@ public class OffersMap extends AppCompatActivity  {
     private ArrayList<Product> values;
     private ArrayList<Marker> markers = new ArrayList<Marker>();
     private Integer selected;
+    private String srcId;
     private double ratio;
+    private HashMap<String,String> nameToId = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.offer_map);
         context=this;
+        srcId = getIntent().getStringExtra("srcId");
         if(getSupportActionBar() != null) {
             getSupportActionBar().setTitle("Mapa");
         }
@@ -126,14 +138,15 @@ public class OffersMap extends AppCompatActivity  {
 
 
                 ArrayList<Deal> dealList = gson.fromJson(jsonFragment, listType);
-                final RecyclerView view = (RecyclerView) findViewById(R.id.offer_view);
+              //  final RecyclerView view = (RecyclerView) findViewById(R.id.offer_view);
 
-                if (view != null) {
+              //  if (view != null) {
                     values = new ArrayList<Product>();
 
                     for (int j = 0; j <dealList.size(); j++) {
                         ratio = getIntent().getDoubleExtra("ratio",1);
                         double price = dealList.get(j).getPrice()*ratio;
+                        nameToId.put(dealList.get(j).getName().split(",")[0],dealList.get(j).getId());
                         values.add (j, new Product(dealList.get(j).getId(), dealList.get(j).getName(), price,dealList.get(j).getLatitude(),dealList.get(j).getLongitude() ));
                         if(price < minPrice)
                             minPrice = price;
@@ -141,19 +154,19 @@ public class OffersMap extends AppCompatActivity  {
                             maxPrice = price;
                     }
                     midPrice = (maxPrice + minPrice)/2;
-
+/*
                     OfferAdapter adapter = new OfferAdapter(values,context);
                     mLayoutManager= new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL, false);
                     view.setLayoutManager(mLayoutManager);
                    view.setAdapter(adapter);
-
+*/
                     // Obtain the SupportMapFragment and get notified when the map is ready to be used.
                     MapFragment mapFragment = (MapFragment) getFragmentManager()
                             .findFragmentById(R.id.map);
                     mapFragment.getMapAsync(this);
 
 
-
+/*
                     view.addOnItemTouchListener(new OfferListener(getApplicationContext(), view, new ClickListener() {
 
                         public void onClick(View view, int position) {
@@ -174,7 +187,7 @@ public class OffersMap extends AppCompatActivity  {
 
 
 
-                }
+                }*/
                 ;
 
 
@@ -200,10 +213,65 @@ public class OffersMap extends AppCompatActivity  {
         }
 
         @Override
-        public void onMapReady(GoogleMap googleMap) {
+        public void onMapReady(final GoogleMap googleMap) {
             mMap = googleMap;
             mMap.getUiSettings().setZoomControlsEnabled(true);
-            // Add a marker in Sydney and move the camera
+
+
+
+            googleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+                // Use default InfoWindow frame
+                @Override
+                public View getInfoWindow(Marker arg0) {
+                    return null;
+                }
+
+                @Override
+                public View getInfoContents(Marker arg0) {
+                    View view = getLayoutInflater().inflate(R.layout.offer_map_selected_item, null);
+
+                    CardView image = (CardView) view.findViewById(R.id.offer_map_image);
+                    //new GetFlickrPhotoTask(context,image).execute("BuenosAires","LON");
+                    image.setBackground(new BitmapDrawable(OfferImages.getInstance().getImagesMap().get(arg0.getTitle().split("&")[2]) ));
+                    TextView title = (TextView) view.findViewById(R.id.offer_map_name);
+                    title.setText(arg0.getTitle().split("&")[0]);
+
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+
+                    TextView price = (TextView) view.findViewById(R.id.offer_map_price);
+                    price.setText("$"+prefs.getString("money_list","USD")+" "+arg0.getTitle().split("&")[1]);
+
+                    googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                        public void onInfoWindowClick(Marker marker) {
+                            String destId = nameToId.get(marker.getTitle().split("&")[0]);
+                            Double offerPrice = new Double(marker.getTitle().split("&")[1]);
+
+                            Intent intent = new Intent(context, OfferResults.class);
+
+                            intent.putExtra("currentCity", srcId);
+                            intent.putExtra("destCity", destId);
+                            intent.putExtra("offerPrice",offerPrice);
+                            intent.putExtra("ratio",ratio);
+                           // Toast.makeText(context, srcId+" "+destId+" "+offerPrice+" "+ratio, Toast.LENGTH_SHORT).show();
+                            PendingIntent pendingIntent =
+                                    TaskStackBuilder.create(context)
+                                            // add all of DetailsActivity's parents to the stack,
+                                            // followed by DetailsActivity itself
+                                            .addNextIntentWithParentStack(intent)
+                                            .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                            NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+                            builder.setContentIntent(pendingIntent);
+                            startActivity(intent);
+                        }
+
+                    });
+
+                    return view;
+                }
+            });
+
             LatLng a;
             int i = 0;
             for(Product p : values){
@@ -215,14 +283,14 @@ public class OffersMap extends AppCompatActivity  {
                     color = BitmapDescriptorFactory.HUE_GREEN;
                 else
                     color = BitmapDescriptorFactory.HUE_ORANGE;
-                markers.add(i,mMap.addMarker(new MarkerOptions().position(a).title(p.getName().split(",")[0]+'\n'+p.getPrice()).icon(BitmapDescriptorFactory.defaultMarker(color))));
+                markers.add(i,mMap.addMarker(new MarkerOptions().position(a).title(p.getName().split(",")[0]+"&"+ String.format ("%.2f", p.getPrice())+"&"+p.getId()).icon(BitmapDescriptorFactory.defaultMarker(color))));
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(a));
                 i++;
             }
                 Product p = values.get(0);
 
             float zoomLevel = (float)3.0; //This goes up to 21
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(p.getLatitude(),p.getLongitude()), zoomLevel));
+         //   mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(p.getLatitude(),p.getLongitude()), zoomLevel));
             ((TextView)findViewById(R.id.max_price)).setText(new Integer(maxPrice.intValue()).toString());
             ((TextView)findViewById(R.id.mid_price)).setText(new Integer(midPrice.intValue()).toString());
             ((TextView)findViewById(R.id.min_price)).setText(new Integer(minPrice.intValue()).toString());
