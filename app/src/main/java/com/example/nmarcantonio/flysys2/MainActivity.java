@@ -234,7 +234,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_conversor) {
 
         } else if (id == R.id.nav_bin) {
-
+            fragmentManager.beginTransaction().replace(R.id.content_frame,new BinFragment()).addToBackStack(null).commit();
         } else if (id == R.id.nav_configuration) {
             Intent intent = new Intent(this, SettingsActivity.class);
 
