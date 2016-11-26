@@ -17,7 +17,7 @@ import static android.R.attr.id;
 
 public class BinPreferencesHelper {
     private static final String TAG = "BinPreferencesHelper";
-    private static FlightBinArrayAdapter adapter;
+    private static FlightBinArrayAdapter adapter = null;
 
     public static void registerFlightBinAdapter(FlightBinArrayAdapter a){
         adapter = a;
@@ -50,7 +50,9 @@ public class BinPreferencesHelper {
         String flightsString = gson.toJson(list, listType);
         editor.putString("flightsBin", flightsString);
         editor.apply();
-        adapter.update();
+        if(adapter != null) {
+            adapter.update();
+        }
     }
 
     public static boolean recycleFlight(FlightShort flight, Context context){
