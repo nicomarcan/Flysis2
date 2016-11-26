@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Html;
 import android.util.Log;
 import android.view.View;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
@@ -97,7 +99,7 @@ public class GetCommentsTask extends AsyncTask<String, Void, String> {
                         ri.comments = "null";
                     }
                     comments.add(new Comment(
-                            Html.fromHtml(Uri.decode(ri.comments)).toString(),
+                            Uri.decode(StringEscapeUtils.unescapeHtml4(ri.comments)),
                             ri.yes_recommend,
                             ri.rating.overall,
                             ri.rating.friendliness,
@@ -127,6 +129,10 @@ public class GetCommentsTask extends AsyncTask<String, Void, String> {
                     context.getComments().addAll(comments);
                     context.getAdapter().addAll(comments);
                     context.getAdapter().notifyDataSetChanged();
+                }
+                final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) commentView.findViewById(R.id.comments_refresh);
+                if (swipeRefreshLayout != null) {
+                    swipeRefreshLayout.setRefreshing(false);
                 }
             }
         }

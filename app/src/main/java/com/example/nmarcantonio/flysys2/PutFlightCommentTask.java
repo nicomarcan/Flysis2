@@ -7,6 +7,7 @@ import android.view.View;
 
 import com.google.gson.JsonObject;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -55,7 +56,7 @@ public class PutFlightCommentTask extends AsyncTask<String, Void, String> {
             requestJson.put("flight", flightJson);
             requestJson.put("rating", ratingsJson);
             requestJson.put("yes_recommend", Boolean.valueOf(params[8]));
-            requestJson.put("comments", params[9]);
+            requestJson.put("comments", Uri.encode(StringEscapeUtils.escapeHtml4(params[9])));
             String encodedJson = URLEncoder.encode(requestJson.toString(), "UTF-8");
 
             Uri uri = new Uri.Builder()

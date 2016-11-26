@@ -19,6 +19,7 @@ import com.daimajia.swipe.adapters.ArraySwipeAdapter;
 import com.daimajia.swipe.adapters.BaseSwipeAdapter;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static android.R.attr.id;
@@ -158,6 +159,10 @@ public class FlightStatusArrayAdapter extends BaseSwipeAdapter{
         holder.header.setText("Vuelo " + flightStatus.number);
         holder.origin.setText(flightStatus.departure.airport.id);
         holder.destintation.setText(flightStatus.arrival.airport.id);
-        holder.description.setText("Arribando dentro de 30 minutos");
+        flightStatus.setDescription();
+        if (flightStatus.flightStatusDescription != null) {
+            holder.description.setText(flightStatus.flightStatusDescription.buildDescription(new Date()));
+        }
+
     }
 }

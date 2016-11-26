@@ -92,4 +92,7 @@
     <string name="comentario">Comentario</string>
     <string name="cerrar">CERRAR</string>
     <string name="flight_comment_dialog_close">CERRAR</string>
+    <string name="comments_refresh">Actualizar</string>
+    <string name="comments_sort_asc">Ordenar de menor a mayor</string>
+    <string name="comments_sort_desc">Ordenar de mayor a menor</string>
 </resources>

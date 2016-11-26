@@ -4,19 +4,19 @@
     <item
         android:id="@+id/flight_comment_order_button"
         android:icon="@drawable/ic_sort_white_24dp"
-        app:showAsAction="always"
+        app:showAsAction="ifRoom"
         android:title="Vuelo xxx"
         android:orderInCategory="1"
         >
         <menu>
             <item
                 android:id="@+id/orderDescending"
-                android:title="Ordenar de mayor a menor"
+                android:title="@string/comments_sort_desc"
                 android:orderInCategory="1"
                 />
             <item
                 android:id="@+id/orderAscending"
-                android:title="Ordenar de menor a mayor"
+                android:title="@string/comments_sort_asc"
                 android:orderInCategory="2">
             </item>
         </menu>
@@ -25,5 +25,6 @@
         android:id="@+id/flight_comment_refresh_button"
         android:icon="@drawable/ic_refresh_white_24dp"
         app:showAsAction="always"
-        android:orderInCategory="0"/>
+        android:orderInCategory="0"
+        android:title="@string/comments_refresh"/>
 </menu>

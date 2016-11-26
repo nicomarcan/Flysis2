@@ -2,6 +2,7 @@ package com.example.nmarcantonio.flysys2;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -83,27 +84,41 @@ public class FlightCommentsActivity extends AppCompatActivity{
             }
         });
 
+        final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.comments_refresh);
+        swipeRefreshLayout.setOnRefreshListener(
+                new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        a.refresh();
+                    }
+                }
+        );
         MenuItem refresh = menu.findItem(R.id.flight_comment_refresh_button);
         refresh.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             FlightCommentsActivity activity = a;
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-                activity.comments[0] = null;
-                activity.comments[1] = null;
-                activity.list.smoothScrollToPosition(0);
-                activity.getAdapter().clear();
-                activity.getAdapter().notifyDataSetChanged();
-                activity.setAdapter(null);
-                new GetCommentsTask(findViewById(R.id.flight_comments_list_view), activity)
-                        .execute(
-                                flightStatus.airline.id,
-                                String.valueOf(flightStatus.number),
-                                "0",
-                                activity.getSortOrder()
-                        );
-                return true;
+                swipeRefreshLayout.setRefreshing(true);
+                return activity.refresh();
             }
         });
+        return true;
+    }
+
+    private boolean refresh() {
+        comments[0] = null;
+        comments[1] = null;
+        list.smoothScrollToPosition(0);
+        getAdapter().clear();
+        getAdapter().notifyDataSetChanged();
+        setAdapter(null);
+        new GetCommentsTask(findViewById(R.id.flight_comments_view), this)
+                .execute(
+                        flightStatus.airline.id,
+                        String.valueOf(flightStatus.number),
+                        "0",
+                        getSortOrder()
+                );
         return true;
     }
     @Override
@@ -169,4 +184,5 @@ public class FlightCommentsActivity extends AppCompatActivity{
     public String getSortOrder(){ return String.valueOf(sort); }
 
     public void setSort(int sort) { this.sort = sort;}
+
 }

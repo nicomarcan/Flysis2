@@ -2,9 +2,15 @@
 <FrameLayout android:layout_height="match_parent"
     android:layout_width="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-    <ListView android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/flight_comments_view">
+    <android.support.v4.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/flight_comments_list_view"/>
+        android:layout_height="wrap_content"
+        android:id="@+id/comments_refresh">
+        <ListView android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/flight_comments_list_view"/>
+    </android.support.v4.widget.SwipeRefreshLayout>
 </FrameLayout>
