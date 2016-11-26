@@ -12,17 +12,23 @@ public class FlightStatusHolder {
     private AirlineInfo airlineInfo;
     private AirportInfo departure;
     private AirportInfo arrival;
+    private FlightStatus status;
     TextView origin;
     TextView destintation;
     TextView description;
     TextView header;
 
-    public FlightStatusHolder(String id, int number, AirlineInfo airlineInfo, AirportInfo departure, AirportInfo arrival){
+    public FlightStatusHolder(String id, int number, AirlineInfo airlineInfo, AirportInfo departure, AirportInfo arrival, FlightStatus status){
         this.id = id;
         this.number = number;
         this.airlineInfo = airlineInfo;
         this.departure = departure;
         this.arrival = arrival;
+        this.status = status;
+    }
+
+    public FlightStatus getStatus() {
+        return status;
     }
 
     public String getId() {

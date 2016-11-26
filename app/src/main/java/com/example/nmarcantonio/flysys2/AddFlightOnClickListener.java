@@ -63,7 +63,7 @@ public class AddFlightOnClickListener implements View.OnClickListener {
         }
         else {
             BinPreferencesHelper.deleteFlight(new FlightShort(flight.airline.id,flight.number,flight.airline,
-                    flight.departure.airport,flight.arrival.airport),context);
+                    flight.departure.airport,flight.arrival.airport,flight),context);
             isSubscribed = true;
             flights.add(flight);
             PreferencesHelper.updatePreferences(flights, context);

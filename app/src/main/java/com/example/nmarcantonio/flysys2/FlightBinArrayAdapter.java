@@ -18,6 +18,8 @@ import com.daimajia.swipe.adapters.BaseSwipeAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
+
 /**
  * Created by saques on 25/11/2016.
  */
@@ -91,7 +93,39 @@ public class FlightBinArrayAdapter extends BaseSwipeAdapter {
             }
         });
 
+        ViewTreeObserver.OnGlobalLayoutListener swipeGlobalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                swipeLayout.close(false);
+            }
+        };
 
+        swipeLayout.getViewTreeObserver().addOnGlobalLayoutListener(swipeGlobalLayoutListener);
+
+        swipeLayout.findViewById(R.id.bin_delete).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FlightShort flight = flights.get(position);
+                String s = flight.getId()+"-"+flight.getNumber();
+                BinPreferencesHelper.deleteFlight(flight,context);
+                Toast.makeText(context,s+" "+context.getString(R.string.eliminated), Toast.LENGTH_SHORT).show();
+                update();
+            }
+        });
+
+        swipeLayout.findViewById(R.id.bin_undo).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FlightShort flight = flights.get(position);
+                String s = flight.getId()+"-"+flight.getNumber();
+                BinPreferencesHelper.deleteFlight(flight,context);
+                ArrayList<FlightStatus> statuses = PreferencesHelper.getFlights(context);
+                statuses.add(flight.getStatus());
+                PreferencesHelper.updatePreferences(statuses,context);
+                Toast.makeText(context,s+" "+context.getString(R.string.undo), Toast.LENGTH_SHORT).show();
+                update();
+            }
+        });
 
         swipeLayout.getSurfaceView().setOnClickListener(new SwipeLayout.OnClickListener() {
             @Override

@@ -70,7 +70,8 @@ public class FlightStatusArrayAdapter extends BaseSwipeAdapter{
         final SwipeLayout swipeLayout = (SwipeLayout)convertView;
         FlightStatusHolder holder;
 
-        holder = new FlightStatusHolder(flightStatus.airline.id,flightStatus.number,flightStatus.airline,flightStatus.departure.airport,flightStatus.arrival.airport);
+        holder = new FlightStatusHolder(flightStatus.airline.id,flightStatus.number,
+                flightStatus.airline,flightStatus.departure.airport,flightStatus.arrival.airport,flightStatus);
         holder.header = (TextView) swipeLayout.findViewById(R.id.flights_card_header);
         holder.origin = (TextView) swipeLayout.findViewById(R.id.flights_card_origin);
         holder.destintation = (TextView) swipeLayout.findViewById(R.id.flights_card_destination);
@@ -109,8 +110,8 @@ public class FlightStatusArrayAdapter extends BaseSwipeAdapter{
                 notifyDataSetChanged();
                 PreferencesHelper.updatePreferences((ArrayList) flights, context);
                 if(BinPreferencesHelper.recycleFlight(new FlightShort(holder.getId(),holder.getNumber(),
-                        holder.getAirlineInfo(),holder.getDeparture(),holder.getArrival()),context)){
-                    Toast.makeText(context,s, Toast.LENGTH_SHORT).show();
+                        holder.getAirlineInfo(),holder.getDeparture(),holder.getArrival(),holder.getStatus()),context)){
+                    Toast.makeText(context,s+" "+context.getString(R.string.toBin), Toast.LENGTH_SHORT).show();
                 }
             }
 
