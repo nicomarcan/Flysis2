@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -12,6 +13,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -35,9 +37,11 @@ public class OfferDateFragment extends Fragment {
 
     private City currentCity;
     private String destId;
+    private MenuItem searchItem;
 
 
     private HashMap<String,String> nameToId = new HashMap<>();
+
 
 
 
@@ -105,30 +109,17 @@ public class OfferDateFragment extends Fragment {
 
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        MenuItem searchItem = menu.findItem(R.id.offer_search);
-        final  SearchView searchView =
-                (SearchView) MenuItemCompat.getActionView(searchItem);
-        searchView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
-            @Override
-            public void onViewAttachedToWindow(View view) {
 
-            }
-
-            @Override
-            public void onViewDetachedFromWindow(View view) {
-                if(OfferSearch.filter ==0)
-                    context.onBackPressed();
-            }
-        });
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
 
+
         return true;
     }
+
+
+
 }

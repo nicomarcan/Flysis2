@@ -32,7 +32,7 @@ import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
 public class FlightStatusArrayAdapter extends BaseSwipeAdapter{
     private Context context;
     private List<FlightStatus> flights;
-    private boolean isOpenSwipeLayout = false;
+    private BaseSwipeAdapter adapter = this;
 
     public FlightStatusArrayAdapter(Context context, List<FlightStatus> objects) {
         this.flights=objects;
@@ -70,7 +70,8 @@ public class FlightStatusArrayAdapter extends BaseSwipeAdapter{
         final SwipeLayout swipeLayout = (SwipeLayout)convertView;
         FlightStatusHolder holder;
 
-        holder = new FlightStatusHolder(flightStatus.airline.id,flightStatus.number,flightStatus.airline,flightStatus.departure.airport,flightStatus.arrival.airport);
+        holder = new FlightStatusHolder(flightStatus.airline.id,flightStatus.number,
+                flightStatus.airline,flightStatus.departure.airport,flightStatus.arrival.airport,flightStatus);
         holder.header = (TextView) swipeLayout.findViewById(R.id.flights_card_header);
         holder.origin = (TextView) swipeLayout.findViewById(R.id.flights_card_origin);
         holder.destintation = (TextView) swipeLayout.findViewById(R.id.flights_card_destination);
@@ -78,6 +79,7 @@ public class FlightStatusArrayAdapter extends BaseSwipeAdapter{
         swipeLayout.setTag(holder);
         swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
         swipeLayout.addSwipeListener(new SwipeLayout.SwipeListener() {
+
             @Override
             public void onClose(SwipeLayout layout) {
                 //when the SurfaceView totally cover the BottomView.
@@ -90,7 +92,6 @@ public class FlightStatusArrayAdapter extends BaseSwipeAdapter{
 
             @Override
             public void onStartOpen(SwipeLayout layout) {
-                isOpenSwipeLayout = true;
             }
 
             @Override
@@ -106,17 +107,16 @@ public class FlightStatusArrayAdapter extends BaseSwipeAdapter{
                         break;
                     }
                 }
+                notifyDataSetChanged();
                 PreferencesHelper.updatePreferences((ArrayList) flights, context);
                 if(BinPreferencesHelper.recycleFlight(new FlightShort(holder.getId(),holder.getNumber(),
-                        holder.getAirlineInfo(),holder.getDeparture(),holder.getArrival()),context)){
-                    Toast.makeText(context,s, Toast.LENGTH_SHORT).show();
+                        holder.getAirlineInfo(),holder.getDeparture(),holder.getArrival(),holder.getStatus()),context)){
+                    Toast.makeText(context,s+" "+context.getString(R.string.toBin), Toast.LENGTH_SHORT).show();
                 }
-                notifyDataSetChanged();
             }
 
             @Override
             public void onStartClose(SwipeLayout layout) {
-                isOpenSwipeLayout = false;
             }
 
             @Override
@@ -128,9 +128,7 @@ public class FlightStatusArrayAdapter extends BaseSwipeAdapter{
         ViewTreeObserver.OnGlobalLayoutListener swipeGlobalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                if (isOpenSwipeLayout) {
-                    swipeLayout.close(false);
-                }
+                swipeLayout.close(false);
             }
         };
 

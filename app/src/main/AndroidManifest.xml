@@ -76,7 +76,6 @@
 
         <activity
             android:name=".OfferSearch"
-
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

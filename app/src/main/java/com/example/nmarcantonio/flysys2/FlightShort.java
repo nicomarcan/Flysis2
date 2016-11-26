@@ -10,13 +10,15 @@ public class FlightShort {
     private AirlineInfo airlineInfo;
     private AirportInfo departure;
     private AirportInfo arrival;
+    private FlightStatus status;
 
-    public FlightShort(String id, int number, AirlineInfo airlineInfo, AirportInfo departure, AirportInfo arrival){
+    public FlightShort(String id, int number, AirlineInfo airlineInfo, AirportInfo departure, AirportInfo arrival, FlightStatus status){
         this.id = id;
         this.number = number;
         this.airlineInfo = airlineInfo;
         this.departure = departure;
         this.arrival = arrival;
+        this.status = status;
     }
 
     public int getNumber() {
@@ -37,5 +39,9 @@ public class FlightShort {
 
     public AirportInfo getArrival() {
         return arrival;
+    }
+
+    public FlightStatus getStatus() {
+        return status;
     }
 }
