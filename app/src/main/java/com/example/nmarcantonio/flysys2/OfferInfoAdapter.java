@@ -29,7 +29,6 @@ public class OfferInfoAdapter extends ArrayAdapter<OfferInfo> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
        OfferInfoViewHolder holder;
-        if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.offer_list_item, parent, false);
             holder = new OfferInfoViewHolder();
             holder.flightView = (TextView) convertView.findViewById(R.id.offer_info_flight);
@@ -39,12 +38,11 @@ public class OfferInfoAdapter extends ArrayAdapter<OfferInfo> {
             holder.depDateView =(TextView) convertView.findViewById(R.id.offer_info_dep_date) ;
             holder.arrDateView = (TextView) convertView.findViewById(R.id.offer_info_arr_date);
             holder.rating = (RatingBar)convertView.findViewById(R.id.flight_rating) ;
+            holder.logo = (ImageView)convertView.findViewById((R.id.logo));
 
 
             convertView.setTag(holder);
-        } else {
-            holder = (OfferInfoViewHolder) convertView.getTag();
-        }
+
 
         OfferInfo info = getItem(position);
 
@@ -59,6 +57,7 @@ public class OfferInfoAdapter extends ArrayAdapter<OfferInfo> {
         String price = String.format ("%.2f", info.getPrice());
         holder.priceView.setText("$"+prefs.getString("money_list","USD")+" "+price);
         holder.rating.setRating(info.getRating());
+        holder.logo.setImageBitmap(CacheImages.getInstance().getLogos().get(info.getId()));
 
         holder.depDateView.setText(info.getDepDate());
 

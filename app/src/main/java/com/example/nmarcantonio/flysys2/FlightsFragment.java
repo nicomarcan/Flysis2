@@ -140,12 +140,16 @@ public class FlightsFragment extends Fragment {
 
             @Override
             public boolean onQueryTextSubmit(String query) {
-                String id = query.split(" ")[0];
+                if(query.split(" ").length!=2){
+                    //TODO: Arreglarlo bien esto, #NegradaOta
+                    Toast.makeText(context,"NUCLEAR",Toast.LENGTH_LONG).show();
+                    return false;
+                }
+                String id = query.split(" ")[0].toUpperCase();
                 String number = query.split(" ")[1];
                 Intent intent = new Intent(context, FlightActivity.class);
                 intent.putExtra("id",id);
                 intent.putExtra("number",number);
-
                 PendingIntent pendingIntent =
                         TaskStackBuilder.create(context)
                                 // add all of DetailsActivity's parents to the stack,

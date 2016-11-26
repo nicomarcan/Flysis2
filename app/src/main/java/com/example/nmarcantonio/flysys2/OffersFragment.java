@@ -21,6 +21,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
@@ -48,7 +49,9 @@ import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -106,6 +109,13 @@ public class OffersFragment extends Fragment {
             context.getSupportActionBar().setTitle("Ofertas");
         }
 
+        final SwipeRefreshLayout l = (SwipeRefreshLayout)getActivity().findViewById(R.id.offer_refresh) ;
+        l.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new GetCityGPS().execute();
+            }
+        });
         //setHasOptionsMenu(true);
 
         mLocationListener = new LocationListener() {
@@ -188,6 +198,21 @@ public class OffersFragment extends Fragment {
 
             startActivity(intent);
         }
+        if(id == R.id.action_map) {
+            Intent intent = new Intent(context, OffersMap.class);
+            intent.putExtra("ratio",ratio);
+            intent.putExtra("srcId",currentCity.getId());
+            PendingIntent pendingIntent =
+                    TaskStackBuilder.create(context)
+                            // add all of DetailsActivity's parents to the stack,
+                            // followed by DetailsActivity itself
+                            .addNextIntentWithParentStack(intent)
+                            .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+            builder.setContentIntent(pendingIntent);
+            startActivity(intent);
+        }
 
         return true;
     }
@@ -248,6 +273,10 @@ public class OffersFragment extends Fragment {
                     ratio = stringToRatio.get(prefs.getString("money_list","USD"));
                     prevBadge= prefs.getString("money_list","USD");
 
+                    long seed = System.nanoTime();
+                    Collections.shuffle(dealList, new Random(seed));
+
+
                     for (int j = 0; j <dealList.size(); j++) {
                         values[j] = new Product(dealList.get(j).getId(), dealList.get(j).getName(), dealList.get(j).getPrice()*ratio  ,dealList.get(j).getLatitude(),dealList.get(j).getLongitude());
                         nameToId.put(dealList.get(j).getName().toLowerCase(),dealList.get(j).getId());
@@ -257,7 +286,8 @@ public class OffersFragment extends Fragment {
 
                     ProductArrayAdapter adapter = new ProductArrayAdapter(context  , values);
                     listView.setAdapter(adapter);
-
+                    final SwipeRefreshLayout l = (SwipeRefreshLayout)getActivity().findViewById(R.id.offer_refresh) ;
+                    l.setRefreshing(false);
 
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
                     {
@@ -376,19 +406,7 @@ public class OffersFragment extends Fragment {
 
                 */
 
-                            Intent intent = new Intent(context, OffersMap.class);
-                            intent.putExtra("ratio",ratio);
-                            intent.putExtra("srcId",currentCity.getId());
-                            PendingIntent pendingIntent =
-                                    TaskStackBuilder.create(context)
-                                            // add all of DetailsActivity's parents to the stack,
-                                            // followed by DetailsActivity itself
-                                            .addNextIntentWithParentStack(intent)
-                                            .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
-                            NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-                            builder.setContentIntent(pendingIntent);
-                            startActivity(intent);
                         }
                     });
                 }

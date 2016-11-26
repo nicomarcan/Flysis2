@@ -16,6 +16,8 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
+import java.net.URLEncoder;
+
 public class ProductArrayAdapter extends ArrayAdapter<Product> {
 
     private Activity act;
@@ -37,8 +39,12 @@ public class ProductArrayAdapter extends ArrayAdapter<Product> {
 
         Product product = getItem(position);
         holder.imageView.setBackground(ContextCompat.getDrawable(act, R.drawable.ic_loading));
-        new GetFlickrPhotoTask(convertView.getContext(),  (CardView) convertView.findViewById(R.id.card_view)).execute(product.getName().split(",")[0].replaceAll(" ",""),product.getId());
-        // Comentar la línea anterior y descomentar la siguiente para ver de que manera el framework muestra una imagen alternativa al no encontrar la solicitada.
+        try {
+            new GetFlickrPhotoTask(convertView.getContext(), (CardView) convertView.findViewById(R.id.card_view)).execute(URLEncoder.encode(product.getName().split(",")[0], "UTF-8"), product.getId());
+        }catch(Exception e){
+            ;
+        }
+            // Comentar la línea anterior y descomentar la siguiente para ver de que manera el framework muestra una imagen alternativa al no encontrar la solicitada.
         //imageLoader.displayImage("http://itba.edu.ar/sites/default/themes/itba/assets/images/back2.jpg", imageView);
        // holder.imageView.setImageResource(R.drawable.ic_menu_white);
         holder.nameTextView.setText(product.getName().split(",")[0]);

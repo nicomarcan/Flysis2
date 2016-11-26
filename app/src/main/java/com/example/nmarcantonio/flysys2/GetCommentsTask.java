@@ -93,6 +93,9 @@ public class GetCommentsTask extends AsyncTask<String, Void, String> {
                 ArrayList<Comment> comments = new ArrayList<>();
                 for (int i = 0; i < ci.reviews.length; i++) {
                     CommentInfo.ReviewInfo ri = ci.reviews[i];
+                    if (ri.comments == null) {
+                        ri.comments = "null";
+                    }
                     comments.add(new Comment(
                             Html.fromHtml(Uri.decode(ri.comments)).toString(),
                             ri.yes_recommend,

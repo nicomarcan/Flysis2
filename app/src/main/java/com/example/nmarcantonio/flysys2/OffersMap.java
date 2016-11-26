@@ -3,36 +3,24 @@ package com.example.nmarcantonio.flysys2;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
-import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -46,13 +34,11 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by nmarcantonio on 17/11/16.
@@ -243,7 +229,7 @@ public class OffersMap extends AppCompatActivity  {
 
                     CardView image = (CardView) view.findViewById(R.id.offer_map_image);
                     //new GetFlickrPhotoTask(context,image).execute("BuenosAires","LON");
-                    image.setBackground(new BitmapDrawable(OfferImages.getInstance().getImagesMap().get(arg0.getTitle().split("&")[2]) ));
+                    image.setBackground(new BitmapDrawable(CacheImages.getInstance().getImagesMap().get(arg0.getTitle().split("&")[2]) ));
                     TextView title = (TextView) view.findViewById(R.id.offer_map_name);
                     title.setText(arg0.getTitle().split("&")[0]);
 
