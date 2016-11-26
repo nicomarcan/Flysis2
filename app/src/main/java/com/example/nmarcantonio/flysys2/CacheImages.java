@@ -8,22 +8,28 @@ import java.util.HashMap;
  * Created by Nicolas on 11/24/2016.
  */
 
-public class OfferImages {
+public class CacheImages {
     private HashMap<String,Bitmap> images;
-    private static OfferImages instance;
+    private static CacheImages instance;
+    private HashMap<String,Bitmap> logos;
 
-    private OfferImages(){
+    private CacheImages(){
         images = new HashMap<String, Bitmap>();
+        logos = new HashMap<String,Bitmap>();
     }
 
-    public static OfferImages getInstance(){
+    public static CacheImages getInstance(){
         if(instance == null){
-            instance= new OfferImages();
+            instance= new CacheImages();
         }
             return instance;
     }
 
     public HashMap<String,Bitmap> getImagesMap(){
         return images;
+    }
+
+    public HashMap<String, Bitmap> getLogos() {
+        return logos;
     }
 }

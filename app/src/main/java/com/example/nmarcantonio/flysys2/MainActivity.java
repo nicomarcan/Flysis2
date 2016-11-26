@@ -111,6 +111,7 @@ public class MainActivity extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
+        new GetAirlinesLogos(this).execute();
 
 
 
@@ -171,49 +172,7 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-
-           return true;
-
-        }
-        if(id == R.id.offer_search){
-
-
-            if(currentSect == R.id.nav_offers){
-                    return false;
-            }else if(currentSect == R.id.nav_flights){
-
-
-
-            }else{
-            }
-
-           /*
-            Intent intent = new Intent(this, OfferSearch.class);
-
-            PendingIntent pendingIntent =
-                    TaskStackBuilder.create(context)
-                            // add all of DetailsActivity's parents to the stack,
-                            // followed by DetailsActivity itself
-                            .addNextIntentWithParentStack(intent)
-                            .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-            builder.setContentIntent(pendingIntent);
-            startActivity(intent);*/
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override

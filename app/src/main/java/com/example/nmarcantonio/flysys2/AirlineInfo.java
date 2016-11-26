@@ -16,4 +16,19 @@ public class AirlineInfo implements Serializable{
         this.name = name;
         this.logo = logo;
     }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getLogo() {
+        return logo;
+    }
+
+    public AirlineInfo() {
+    }
 }
