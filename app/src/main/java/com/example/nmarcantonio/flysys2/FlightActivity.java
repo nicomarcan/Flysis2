@@ -110,6 +110,8 @@ public class FlightActivity extends Activity{
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
             dialogFragment = (DialogFragment) getFragmentManager().getFragment(savedInstanceState, "CommentDialogFragment");
+            airline = savedInstanceState.getString("airline");
+            number = savedInstanceState.getString("number");
         }
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
@@ -229,9 +231,13 @@ public class FlightActivity extends Activity{
 
     @Override
     public void onSaveInstanceState(Bundle bundle) {
-        super.onSaveInstanceState(bundle);
         if (dialogFragment != null && dialogFragment.isResumed()) {
             getFragmentManager().putFragment(bundle, "CommentDialogFragment", dialogFragment);
         }
+        if (number != null && airline != null) {
+            bundle.putString("number", number);
+            bundle.putString("airline", airline);
+        }
+        super.onSaveInstanceState(bundle);
     }
 }

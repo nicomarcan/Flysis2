@@ -48,7 +48,8 @@
             android:name=".FlightActivity"
             android:label="@string/title_activity_flight"
             android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:launchMode="singleTop">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
@@ -59,7 +60,7 @@
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.nmarcantonio.flysys2.FlightInfoDetailActivity" />
+                android:value="com.example.nmarcantonio.flysys2.FlightActivity" />
         </activity>
         <activity
             android:name=".SettingsActivity"
@@ -88,7 +89,7 @@
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.nmarcantonio.flysys2.FlightCommentsActivity" />
+                android:value="com.example.nmarcantonio.flysys2.FlightActivity" />
         </activity>
 
         <receiver android:name=".BootBroadcastReceiver">

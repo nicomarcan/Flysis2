@@ -172,7 +172,7 @@ public class FlightInfoCallback implements TaskCallback, OnMapReadyCallback {
                         PendingIntent pendingIntent =
                                 TaskStackBuilder.create(context)
                                         .addNextIntentWithParentStack(intent)
-                                        .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+                                        .getPendingIntent(1, PendingIntent.FLAG_UPDATE_CURRENT);
 
                         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
                         builder.setContentIntent(pendingIntent);
@@ -213,27 +213,28 @@ public class FlightInfoCallback implements TaskCallback, OnMapReadyCallback {
                     }
                 }
                 lock.unlock();
-                LatLng departure = new LatLng(fi.departure.airport.city.latitude, fi.departure.airport.city.longitude);
-                LatLng arrival = new LatLng(fi.arrival.airport.city.latitude, fi.arrival.airport.city.longitude);
+                LatLng departure = new LatLng(Double.valueOf(fi.departure.airport.latitude), Double.valueOf(fi.departure.airport.longitude));
+                LatLng arrival = new LatLng(Double.valueOf(fi.arrival.airport.latitude), Double.valueOf(fi.arrival.airport.longitude));
 
                 Drawable plane = context.getResources().getDrawable(R.drawable.ic_flight_black_24dp);
                 Drawable arrow = context.getResources().getDrawable(R.drawable.ic_keyboard_arrow_up_black_24dp);
                 BitmapDescriptor bd = getMarkerIconFromDrawable(plane);
                 BitmapDescriptor ad = getMarkerIconFromDrawable(arrow);
+
                 Marker marker = map.addMarker(new MarkerOptions().position(departure).icon(bd));
                 Marker arrowTip = map.addMarker(new MarkerOptions().position(arrival).icon(ad));
-                marker.setAnchor(0.49f, 0.5f);
-                marker.setRotation((float) SphericalUtil.computeHeading(departure, arrival));
-                arrowTip.setAnchor(0.5f, 0.45f);
+                arrowTip.setAnchor(0.5f, 0.5f);
                 arrowTip.setRotation((float) SphericalUtil.computeHeading(departure, arrival));
+                marker.setAnchor(0.5f, 0.5f);
+                marker.setRotation((float) SphericalUtil.computeHeading(departure, arrival));
                 map.addPolyline(new PolylineOptions().color(context.getResources().getColor(R.color.colorRed)).add(departure).add(arrival).width(5));
                 //marker.setIcon(bd);
                 LatLngBounds.Builder builder = new LatLngBounds.Builder();
-                builder.include(departure).include(arrival);
+                builder.include(departure);
+                builder.include(arrival);
                 LatLngBounds bounds = builder.build();
                 //marker.setPosition(arrival);
-                CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 100);
-                map.moveCamera(cu);
+                map.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 50));
 
                 MarkerAnimation.animateMarkerToHC(marker, arrival, new LatLngInterpolator.LinearFixed());
                 final FloatingActionButton fab = (FloatingActionButton) flightView.findViewById(R.id.add_flight_fab);
