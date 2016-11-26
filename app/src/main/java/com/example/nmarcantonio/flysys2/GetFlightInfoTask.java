@@ -95,13 +95,14 @@ public class GetFlightInfoTask extends AsyncTask<String, Void, String>{
             InputStream in = new BufferedInputStream(conn.getInputStream());
             return readStream(in);
         } catch (Exception e) {
+            /* connection failed */
             e.printStackTrace();
-            return null;
         } finally {
             if (conn != null) {
                 conn.disconnect();
             }
         }
+        return null;
     }
 
     @Override
@@ -120,7 +121,6 @@ public class GetFlightInfoTask extends AsyncTask<String, Void, String>{
             return outputStream.toString();
         } catch(IOException e) {
             e.printStackTrace();
-            Log.d("err", "fallo la conexion");
             return null;
         }
     }

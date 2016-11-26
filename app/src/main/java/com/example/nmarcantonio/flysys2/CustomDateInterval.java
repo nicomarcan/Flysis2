@@ -62,6 +62,7 @@ public class CustomDateInterval {
     public static SignificantTimeInterval significantInterval(Date from, Date to) {
         long[] interval = interval(from, to);
         SignificantTimeInterval ret = SignificantTimeInterval.ZERO;
+
         if (interval[0] > 0) {
             ret = SignificantTimeInterval.ONE_DAY_PLUS;
         }

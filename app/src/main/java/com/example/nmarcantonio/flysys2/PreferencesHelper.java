@@ -61,14 +61,35 @@ public class PreferencesHelper {
         }
         else {
             flights = gson.fromJson(flightsString, listType);
-            if (flights.contains(flightStatus)) {
-                flights.remove(flightStatus);
-                flights.add(flightStatus);
+            int index = flights.indexOf(flightStatus);
+            if (index >= 0) {
+                flights.set(index, flightStatus);
             }
         }
         flightsString = gson.toJson(flights);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("flights", flightsString);
         editor.apply();
+    }
+
+    public static FlightStatus getFlight(FlightStatus flightStatus, Context context) {
+        Gson gson = new Gson();
+        Type listType = new TypeToken<ArrayList<FlightStatus>>() {
+        }.getType();
+        SharedPreferences sharedPreferences = context.getSharedPreferences("flights", Context.MODE_PRIVATE);
+
+        String flightStatusOut = sharedPreferences.getString("flights", null);
+        if (flightStatusOut == null) {
+            return null;
+        }
+
+        ArrayList<FlightStatus> flightStatusArrayList = gson.fromJson(flightStatusOut, listType);
+        int index = flightStatusArrayList.indexOf(flightStatus);
+        if (index >= 0) {
+            FlightStatus flight = flightStatusArrayList.get(index);
+            flight.setDescription();
+            return flight;
+        }
+        return null;
     }
 }

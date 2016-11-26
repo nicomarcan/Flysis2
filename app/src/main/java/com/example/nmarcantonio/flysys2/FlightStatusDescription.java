@@ -67,7 +67,7 @@ public class FlightStatusDescription implements Serializable {
                     nextRelevantDate = arrivalTime;
                     timeInterval = CustomDateInterval.significantInterval(currentTime, arrivalTime);
                     break;
-                case "D":
+                case "R":
                     /* DESVIO */
                     Date atime;
                     if (fi.arrival.actual_time != null) {

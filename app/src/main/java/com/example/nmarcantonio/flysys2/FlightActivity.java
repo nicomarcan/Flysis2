@@ -74,7 +74,9 @@ public class FlightActivity extends Activity{
     }
 
     public void addDate(TextView textView, String header, Date date) {
-        map.put(textView, new Tuple(header, date));
+        if (date != null) {
+            map.put(textView, new Tuple(header, date));
+        }
     }
     @Override
     public void onResume() {

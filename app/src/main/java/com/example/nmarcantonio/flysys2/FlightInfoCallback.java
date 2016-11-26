@@ -43,6 +43,8 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import static com.example.nmarcantonio.flysys2.FlightStatus.FlightStatusState.CANCELLED;
+
 /**
  * Created by traie_000 on 22-Nov-16.
  */
@@ -138,7 +140,9 @@ public class FlightInfoCallback implements TaskCallback, OnMapReadyCallback {
                 TextView dateText = (TextView) flightView.findViewById(R.id.flight_info_status_description);
                 dateText.setText(statusDescription);
 
-                ((FlightActivity) context).addDate(dateText, fd.descriptionHeader, fd.nextRelevantDate);
+                if (fd.state != CANCELLED){
+                    ((FlightActivity) context).addDate(dateText, fd.descriptionHeader, fd.nextRelevantDate);
+                }
 
                 View detailView = flightView.findViewById(R.id.flight_info_detail);
                 detailView.setOnClickListener(new View.OnClickListener() {

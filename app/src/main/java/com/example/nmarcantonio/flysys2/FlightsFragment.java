@@ -81,7 +81,7 @@ public class FlightsFragment extends Fragment {
                 for (FlightStatus flight: flights) {
                     Intent intent = new Intent(context, FlightsIntentService.class);
                     intent.setAction(FlightsIntentService.GET_FLIGHT);
-                    intent.putExtra(FlightsIntentService.AIRLINE, flight.airline.name);
+                    intent.putExtra(FlightsIntentService.AIRLINE, flight.airline.id);
                     intent.putExtra(FlightsIntentService.FLIGHT, String.valueOf(flight.number));
                     context.startService(intent);
                 }
