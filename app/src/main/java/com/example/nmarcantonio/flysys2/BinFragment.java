@@ -31,8 +31,8 @@ public class BinFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        myView = inflater.inflate(R.layout.flights_layout, container, false);
-        ((MainActivity)getActivity()).setCurrentSect(R.id.nav_flights);
+        myView = inflater.inflate(R.layout.bin_layout, container, false);
+        ((MainActivity)getActivity()).setCurrentSect(R.id.nav_bin);
 
         return myView;
     }
