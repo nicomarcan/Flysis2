@@ -29,6 +29,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.phenotype.Configuration;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import android.os.Parcel;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
@@ -64,6 +66,10 @@ import static android.content.Context.LOCATION_SERVICE;
  * Created by saques on 19/11/16.
  */
 public class AirportsFragment extends Fragment  {
+    private static final String LATITUDE_BUND = "Latitude";
+    private static final String LONGITUDE_BUND = "Longitude";
+
+
     final static String AIRPORTS_NAME = "airports";
     final static String CITIES_NAME = "cities";
     private AppCompatActivity context;
@@ -72,7 +78,7 @@ public class AirportsFragment extends Fragment  {
     private GoogleMap map;
     private LocationListener loclistener;
     private LocationManager locmanager;
-    private Location loc;
+    private Location loc = null;
     private ArrayList<Marker> markers = new ArrayList<Marker>();
     private ArrayList<Airport> airportList;
     private ArrayList<CityInfo_2> citiesList;
@@ -90,9 +96,15 @@ public class AirportsFragment extends Fragment  {
         myView = inflater.inflate(R.layout.airports_layout, container, false);
         ((MainActivity)getActivity()).setCurrentSect(R.id.nav_airports);
 
+        if(savedInstanceState != null && savedInstanceState.getBoolean("check")){
+            loc = new Location("dummyprovider");
+            loc.setLatitude(savedInstanceState.getDouble(LATITUDE_BUND));
+            loc.setLongitude(savedInstanceState.getDouble(LONGITUDE_BUND));
+        }
 
         mapView = (MapView) myView.findViewById(R.id.mapview);
         mapView.onCreate(savedInstanceState);
+
 
 
         return myView;
@@ -146,9 +158,11 @@ public class AirportsFragment extends Fragment  {
             return;
         }
 
-        loc = locmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        if(loc == null){
-            loc = locmanager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        if(loc == null) {
+            loc = locmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if (loc == null) {
+                loc = locmanager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            }
         }
 
         new GetNearbyAirportsAsync().execute();
@@ -162,9 +176,11 @@ public class AirportsFragment extends Fragment  {
 
     public void afterLocationRequest(){
         try {
-            loc = locmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            if(loc == null){
-                loc = locmanager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            if(loc == null) {
+                loc = locmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                if (loc == null) {
+                    loc = locmanager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                }
             }
             new GetNearbyAirportsAsync().execute();
         }catch (SecurityException e){
@@ -416,7 +432,16 @@ public class AirportsFragment extends Fragment  {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        mapView.onSaveInstanceState(outState);
+        if(loc != null) {
+            outState.putBoolean("check",true);
+            outState.putDouble(LATITUDE_BUND, loc.getLatitude());
+            outState.putDouble(LONGITUDE_BUND, loc.getLongitude());
+        } else {
+            outState.putBoolean("check",false);
+        }
+        if(mapView != null) {
+            mapView.onSaveInstanceState(outState);
+        }
     }
 
     @Override
