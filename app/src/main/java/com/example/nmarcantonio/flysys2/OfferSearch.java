@@ -24,6 +24,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -81,7 +82,7 @@ public class OfferSearch extends AppCompatActivity {
         ratio = getIntent().getDoubleExtra("ratio",1);
        srcId = getIntent().getStringExtra("scrId");
         android.app.FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.content_frame_search,new OfferDateFragment()).addToBackStack(null).commit();
+        fragmentManager.beginTransaction().replace(R.id.content_frame_search,new OfferDateFragment()).commit();
 
 
 
@@ -105,6 +106,8 @@ public class OfferSearch extends AppCompatActivity {
         searchView.requestFocus();
 
         new GetCitiesTask(this,searchView).execute();
+        int options = searchView.getImeOptions();
+        searchView.setImeOptions(options| EditorInfo.IME_FLAG_NO_EXTRACT_UI);
 
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener(){
