@@ -16,10 +16,7 @@
         android:layout_gravity="center"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        card_view:cardElevation="12dp"
-
-
-        >
+        card_view:cardElevation="12dp">
 
 
     <LinearLayout

@@ -163,13 +163,14 @@ public class AirportsFragment extends Fragment  {
             if (loc == null) {
                 loc = locmanager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
             }
+            if (loc == null){
+                loc = new Location("dummyprovider");
+                loc.setLongitude(-58.381592);
+                loc.setLatitude(-34.603722);
+            }
         }
 
         new GetNearbyAirportsAsync().execute();
-
-
-
-
 
 
     }
@@ -180,6 +181,11 @@ public class AirportsFragment extends Fragment  {
                 loc = locmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                 if (loc == null) {
                     loc = locmanager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                }
+                if (loc == null){
+                    loc = new Location("dummyprovider");
+                    loc.setLongitude(-58.381592);
+                    loc.setLatitude(-34.603722);
                 }
             }
             new GetNearbyAirportsAsync().execute();
@@ -413,19 +419,25 @@ public class AirportsFragment extends Fragment  {
     @Override
     public void onResume() {
         super.onResume();
-        mapView.onResume();
+        if(mapView != null){
+            mapView.onResume();
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        mapView.onPause();
+        if(mapView != null) {
+            mapView.onPause();
+        }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mapView.onDestroy();
+        if(mapView != null) {
+            mapView.onDestroy();
+        }
     }
 
 
@@ -447,7 +459,9 @@ public class AirportsFragment extends Fragment  {
     @Override
     public void onLowMemory() {
         super.onLowMemory();
-        mapView.onLowMemory();
+        if(mapView != null) {
+            mapView.onLowMemory();
+        }
     }
 
 

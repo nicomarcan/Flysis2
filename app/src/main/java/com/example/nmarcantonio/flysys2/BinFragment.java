@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -58,7 +59,7 @@ public class BinFragment extends Fragment {
         }
         setHasOptionsMenu(true);
         flights = BinPreferencesHelper.getFlightsInBin(context);
-        ListView listView = (ListView) myView.findViewById(R.id.flights_list_view);
+        GridView listView = (GridView) myView.findViewById(R.id.flights_list_view);
         flightAdapter = new FlightBinArrayAdapter(context, flights);
         listView.setAdapter(flightAdapter);
     }

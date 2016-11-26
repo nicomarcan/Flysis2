@@ -33,6 +33,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -264,7 +265,7 @@ public class OffersFragment extends Fragment {
 
 
                 ArrayList<Deal> dealList = gson.fromJson(jsonFragment, listType);
-                final ListView listView = (ListView) myView.findViewById(R.id.list_view);
+                final GridView listView = (GridView) myView.findViewById(R.id.list_view);
                 // Toast.makeText(context,"HOLAAA",Toast.LENGTH_LONG).show();
                 if (listView != null) {
                     final Product[] values = new Product[dealList.size()];

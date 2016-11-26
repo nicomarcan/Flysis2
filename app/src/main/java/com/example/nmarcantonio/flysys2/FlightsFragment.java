@@ -24,6 +24,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -108,7 +109,7 @@ public class FlightsFragment extends Fragment {
         }
         setHasOptionsMenu(true);
         flights = PreferencesHelper.getFlights(context);
-        ListView listView = (ListView) myView.findViewById(R.id.flights_list_view);
+        GridView listView = (GridView) myView.findViewById(R.id.flights_list_view);
         flightAdapter = new FlightStatusArrayAdapter(context, flights);
         listView.setAdapter(flightAdapter);
     }
@@ -118,9 +119,27 @@ public class FlightsFragment extends Fragment {
             @Override
             public void run() {
                 FlightStatus flightStatus = (FlightStatus) bundle.get(FlightsIntentService.FLIGHT_STATUS);
-                flights.set(flights.indexOf(flightStatus), flightStatus);
-                flightAdapter.notifyDataSetChanged();
+                flights.clear();
+                flights.addAll(PreferencesHelper.getFlights(context));
+
+                for(int i=0; i<flights.size() ; i++){
+                    FlightStatus f = flights.get(i);
+                    if(f.airline.id.equals(flightStatus.airline.getId()) && f.number == flightStatus.number){
+                        flights.set(i,flightStatus);
+                        flightAdapter.notifyDataSetChanged();
+
+                    }
+                }
                 PreferencesHelper.updatePreferences(flights, context);
+
+                /*
+                Old Variant
+                 */
+
+//                FlightStatus flightStatus = (FlightStatus) bundle.get(FlightsIntentService.FLIGHT_STATUS);
+//                flights.set(flights.indexOf(flightStatus), flightStatus);
+//                flightAdapter.notifyDataSetChanged();
+//                PreferencesHelper.updatePreferences(flights, context);
             }
         };
 
