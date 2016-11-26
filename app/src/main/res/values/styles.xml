@@ -21,5 +21,8 @@
         <item name="colorControlNormal">@color/colorBlack</item>
         <item name="colorControlActivated">@color/colorBlack</item>
     </style>
-
+    <style name="CustomDialog" parent="@android:style/Theme.Holo.Light" >
+        <item name="android:windowBackground">@null</item>
+        <item name="android:windowIsFloating">true</item>
+    </style>
 </resources>

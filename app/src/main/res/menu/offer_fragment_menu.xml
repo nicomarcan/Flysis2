@@ -2,10 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item android:id="@+id/offer_search"
-        android:title="@string/search_title"
+    <item
+        android:id="@+id/action_search_offer"
+        android:orderInCategory="100"
+        android:title="@string/action_offer_search"
         android:icon="@drawable/ic_search"
-        app:showAsAction="always"
-        app:actionViewClass="android.support.v7.widget.SearchView" />
+        app:showAsAction="ifRoom" />
 
 </menu>

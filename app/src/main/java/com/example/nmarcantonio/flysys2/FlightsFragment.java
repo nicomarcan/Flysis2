@@ -14,9 +14,14 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -101,29 +106,7 @@ public class FlightsFragment extends Fragment {
         if(context.getSupportActionBar() != null) {
             context.getSupportActionBar().setTitle("Vuelos");
         }
-
-        FloatingActionButton fab = (FloatingActionButton) myView.findViewById(R.id.flight_button);
-
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, FlightActivity.class);
-                intent.putExtra("id","AR");
-                intent.putExtra("number","5260");
-
-                PendingIntent pendingIntent =
-                        TaskStackBuilder.create(context)
-                                // add all of DetailsActivity's parents to the stack,
-                                // followed by DetailsActivity itself
-                                .addNextIntentWithParentStack(intent)
-                                .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-                builder.setContentIntent(pendingIntent);
-                startActivity(intent);
-            }
-        });
-
+        setHasOptionsMenu(true);
         flights = PreferencesHelper.getFlights(context);
         ListView listView = (ListView) myView.findViewById(R.id.flights_list_view);
         flightAdapter = new FlightStatusArrayAdapter(context, flights);
@@ -143,6 +126,44 @@ public class FlightsFragment extends Fragment {
 
         Handler handle = new Handler();
         handle.post(r);
+    }
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+       inflater.inflate(R.menu.searchview,menu);
+        MenuItem searchItem = menu.findItem(R.id.offer_search);
+        SearchView searchView =
+                (SearchView) MenuItemCompat.getActionView(searchItem);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener(){
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                String id = query.split(" ")[0];
+                String number = query.split(" ")[1];
+                Intent intent = new Intent(context, FlightActivity.class);
+                intent.putExtra("id",id);
+                intent.putExtra("number",number);
+
+                PendingIntent pendingIntent =
+                        TaskStackBuilder.create(context)
+                                // add all of DetailsActivity's parents to the stack,
+                                // followed by DetailsActivity itself
+                                .addNextIntentWithParentStack(intent)
+                                .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+                builder.setContentIntent(pendingIntent);
+                startActivity(intent);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
     }
 }
 

@@ -1,5 +1,41 @@
 package com.example.nmarcantonio.flysys2;
 
+/**
+ * Created by Nicolas on 11/25/2016.
+ */
+
+import android.app.Activity;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.os.AsyncTask;
+import android.support.v7.widget.CardView;
+import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
+
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+
+import org.json.JSONObject;
+
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Type;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+
+
+
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -35,23 +71,22 @@ import java.util.ArrayList;
  * Created by Nicolas on 11/21/2016.
  */
 
-public class GetFlickrPhotoTask extends AsyncTask<String, Void, String> {
+public class GetPhotosToCache extends AsyncTask<String, Void, String> {
 
 
-    private Context context;
-    private String id;
+    private Activity act;
+    private ArrayList<Deal> dealList;
+    private OnMapReadyCallback callback;
 
-
-
-    public GetFlickrPhotoTask(Context context, CardView cardView) {
-        this.context = context;
-        this.cardView = cardView;
+    public GetPhotosToCache(Activity act,OnMapReadyCallback callback, ArrayList<Deal> dealList, int times) {
+        this.act = act;
+        this.dealList = dealList;
+        this.times = times;
+        this.callback = callback;
     }
 
+    private int times;
 
-
-
-    private CardView cardView;
 
 
 
@@ -61,11 +96,12 @@ public class GetFlickrPhotoTask extends AsyncTask<String, Void, String> {
         HttpURLConnection conn = null;
         String ret = null, order;
         try {
-            id = strings[1];
-            if(OfferImages.getInstance().getImagesMap().get(id) != null){
+
+            if(OfferImages.getInstance().getImagesMap().get(dealList.get(times).getId()) != null){
                 return null;
             }
-            URL url = new URL("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=e3dae01fb6981aeab9b4b352ceb8a59a&tags=landscape&text="+strings[0]+"&sort=interestingness-desc&format=json&nojsoncallback=1");
+        String city = dealList.get(times).getName().split(",")[0].replaceAll(" ","");
+            URL url = new URL("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=e3dae01fb6981aeab9b4b352ceb8a59a&tags=landscape&text="+city+"&sort=interestingness-desc&format=json&nojsoncallback=1");
 
             conn = (HttpURLConnection) new URL(url.toString()).openConnection();
 
@@ -85,10 +121,17 @@ public class GetFlickrPhotoTask extends AsyncTask<String, Void, String> {
     protected void onPostExecute(String result) {
         try {
 
+
             if(result == null){
-                if(cardView != null)
-                 cardView.setBackground(new BitmapDrawable(OfferImages.getInstance().getImagesMap().get(id) ));
+                if(times+1 < dealList.size())
+                    new GetPhotosToCache(act,callback,dealList,times+1).execute();
+                else{
+                    MapFragment mapFragment = (MapFragment) act.getFragmentManager()
+                            .findFragmentById(R.id.map);
+                    mapFragment.getMapAsync(callback);
+                }
                 return;
+
             }
             JSONObject obj = new JSONObject(result);
             if (!obj.has("photos")) {
@@ -101,8 +144,8 @@ public class GetFlickrPhotoTask extends AsyncTask<String, Void, String> {
                 }.getType();
 
                 String jsonFragment = obj.getString("photos");
-                 obj = new JSONObject(jsonFragment);
-                 jsonFragment = obj.getString("photo");
+                obj = new JSONObject(jsonFragment);
+                jsonFragment = obj.getString("photo");
 
                 ArrayList<FlickrImg> imgs = gson.fromJson(jsonFragment, listType);
 
@@ -112,26 +155,33 @@ public class GetFlickrPhotoTask extends AsyncTask<String, Void, String> {
                         .showImageOnLoading(R.drawable.ic_loading)
                         .showImageOnFail(R.drawable.ic_error)     //bajar iconos
                         .build();
-                ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context)
+                ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(act)
                         .defaultDisplayImageOptions(defaultOptions)
                         .build();
                 ImageLoader imageLoader = ImageLoader.getInstance();
                 if(!imageLoader.isInited())
-                     imageLoader.init(config);
+                    imageLoader.init(config);
                 FlickrImg item = imgs.get(0);
 
 
-                        imageLoader.loadImage("http://farm" + item.getFarm() + ".static.flickr.com/" + item.getServer() + "/" + item.getId() + "_" + item.getSecret() + "_m.jpg", new SimpleImageLoadingListener() {
+                imageLoader.loadImage("http://farm" + item.getFarm() + ".static.flickr.com/" + item.getServer() + "/" + item.getId() + "_" + item.getSecret() + "_m.jpg", new SimpleImageLoadingListener() {
 
-                            @Override
-                            public void onLoadingComplete(String imageUri, View view,
-                                                          Bitmap loadedImage) {
-                                super.onLoadingComplete(imageUri, view, loadedImage);
-                                OfferImages.getInstance().getImagesMap().put(id, loadedImage);
-                                cardView.setBackground(new BitmapDrawable(loadedImage));
-                            }
+                    @Override
+                    public void onLoadingComplete(String imageUri, View view,
+                                                  Bitmap loadedImage) {
+                        super.onLoadingComplete(imageUri, view, loadedImage);
+                        OfferImages.getInstance().getImagesMap().put(dealList.get(times).getId(), loadedImage);
+                    }
 
-                        });
+                });
+                if(times+1 < dealList.size()){
+                    new GetPhotosToCache(act,callback,dealList,times+1).execute();
+                }else{
+                    MapFragment mapFragment = (MapFragment) act.getFragmentManager()
+                            .findFragmentById(R.id.map);
+                    mapFragment.getMapAsync(callback);
+
+                }
 
 
 
@@ -165,3 +215,4 @@ public class GetFlickrPhotoTask extends AsyncTask<String, Void, String> {
                 .setText(str);
     }
 }
+

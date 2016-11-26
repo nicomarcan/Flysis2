@@ -77,6 +77,13 @@ public class CommentDialogFragment extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            thumbs_up = new AtomicBoolean(savedInstanceState.getBoolean("thumbs_up"));
+            ratingsArray = savedInstanceState.getFloatArray("ratingsArray");
+            airline = savedInstanceState.getString("airline");
+            number = savedInstanceState.getString("number");
+            comment = savedInstanceState.getString("comment");
+        }
         if (getArguments() != null && thumbs_up == null) {
             thumbs_up = new AtomicBoolean(getArguments().getBoolean("thumbs"));
             airline = getArguments().getString("airline");
@@ -139,7 +146,18 @@ public class CommentDialogFragment extends DialogFragment {
         }
         view = inflater.inflate(R.layout.fragment_comment_dialog, container, false);
         initView(view);
+
         return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putFloatArray("ratingsArray", ratingsArray);
+        savedInstanceState.putBoolean("thumbs_up", thumbs_up.get());
+        savedInstanceState.putString("comment", comment);
+        savedInstanceState.putString("airline", airline);
+        savedInstanceState.putString("number", number);
+        super.onSaveInstanceState(savedInstanceState);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -176,6 +194,29 @@ public class CommentDialogFragment extends DialogFragment {
             }
         });
         final Button sendButton = (Button) view.findViewById(R.id.flight_comment_dialog_send_button);
+
+        RatingBar.OnRatingBarChangeListener ratingListener = new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                if (rating < 0.5) {
+                    ratingBar.setRating(0.5f);
+                }
+            }
+        };
+
+        RatingBar friendliness = (RatingBar) view.findViewById(R.id.flight_comment_dialog_friendliness);
+        friendliness.setOnRatingBarChangeListener(ratingListener);
+        RatingBar food = (RatingBar) view.findViewById(R.id.flight_comment_dialog_food);
+        food.setOnRatingBarChangeListener(ratingListener);
+        RatingBar punctuality = (RatingBar) view.findViewById(R.id.flight_comment_dialog_puntctuality);
+        punctuality.setOnRatingBarChangeListener(ratingListener);
+        RatingBar mileage_programe = (RatingBar) view.findViewById(R.id.flight_comment_dialog_mileage_programe);
+        mileage_programe.setOnRatingBarChangeListener(ratingListener);
+        RatingBar comfort = (RatingBar) view.findViewById(R.id.flight_comment_dialog_comfort);
+        comfort.setOnRatingBarChangeListener(ratingListener);
+        RatingBar quality_price = (RatingBar) view.findViewById(R.id.flight_comment_dialog_quality_price);
+        quality_price.setOnRatingBarChangeListener(ratingListener);
+
         sendButton.setOnClickListener(new View.OnClickListener() {
 
             CommentDialogFragment context = contextOuter;
@@ -197,6 +238,15 @@ public class CommentDialogFragment extends DialogFragment {
                 dismiss();
             }
         });
+
+        Button closeButton = (Button) view.findViewById(R.id.flight_comment_dialog_close_button);
+        closeButton.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
         if (thumbs_up.get()) {
             thumbsUpButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_thumb_up_green_24dp));
             thumbsDownButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_thumb_down_black_24dp));
@@ -205,6 +255,7 @@ public class CommentDialogFragment extends DialogFragment {
             thumbsUpButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_thumb_up_black_24dp));
             thumbsDownButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_thumb_down_red_24dp));
         }
+
     }
 
     @Override
@@ -224,18 +275,18 @@ public class CommentDialogFragment extends DialogFragment {
     }
 
     private void updateRatings() {
-        RatingBar friendliness = (RatingBar) view.findViewById(R.id.flight_comment_dialog_friendliness);
-        ratingsArray[0] = friendliness.getRating();
-        RatingBar food = (RatingBar) view.findViewById(R.id.flight_comment_dialog_food);
-        ratingsArray[1] = food.getRating();
-        RatingBar punctuality = (RatingBar) view.findViewById(R.id.flight_comment_dialog_puntctuality);
-        ratingsArray[2] = punctuality.getRating();
-        RatingBar mileage_programe = (RatingBar) view.findViewById(R.id.flight_comment_dialog_mileage_programe);
-        ratingsArray[3] = mileage_programe.getRating();
-        RatingBar comfort = (RatingBar) view.findViewById(R.id.flight_comment_dialog_comfort);
-        ratingsArray[4] = comfort.getRating();
-        RatingBar quality_price = (RatingBar) view.findViewById(R.id.flight_comment_dialog_quality_price);
-        ratingsArray[5] = quality_price.getRating();
+            RatingBar friendliness = (RatingBar) view.findViewById(R.id.flight_comment_dialog_friendliness);
+            ratingsArray[0] = friendliness.getRating();
+            RatingBar food = (RatingBar) view.findViewById(R.id.flight_comment_dialog_food);
+            ratingsArray[1] = food.getRating();
+            RatingBar punctuality = (RatingBar) view.findViewById(R.id.flight_comment_dialog_puntctuality);
+            ratingsArray[2] = punctuality.getRating();
+            RatingBar mileage_programe = (RatingBar) view.findViewById(R.id.flight_comment_dialog_mileage_programe);
+            ratingsArray[3] = mileage_programe.getRating();
+            RatingBar comfort = (RatingBar) view.findViewById(R.id.flight_comment_dialog_comfort);
+            ratingsArray[4] = comfort.getRating();
+            RatingBar quality_price = (RatingBar) view.findViewById(R.id.flight_comment_dialog_quality_price);
+            ratingsArray[5] = quality_price.getRating();
 
     }
     @Override

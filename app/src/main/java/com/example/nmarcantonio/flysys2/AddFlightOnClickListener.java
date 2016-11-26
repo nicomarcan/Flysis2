@@ -36,13 +36,13 @@ public class AddFlightOnClickListener implements View.OnClickListener {
         fab.show();
     }
 
-    private void setFabSubscribed() {
+    public void setFabSubscribed() {
         fab.setImageResource(R.drawable.ic_clear_black_24dp);
         fab.setColorFilter(0x000000);
         fab.setBackgroundTintList(ColorStateList.valueOf(0xffffffff));
     }
 
-    private void setFabUnsubscribed() {
+    public void setFabUnsubscribed() {
         fab.setImageResource(R.drawable.ic_add_black_24dp);
         fab.setColorFilter(0xffffffff);
         fab.setBackgroundTintList(ColorStateList.valueOf(0xffcc0000));
@@ -62,6 +62,8 @@ public class AddFlightOnClickListener implements View.OnClickListener {
             setFabUnsubscribed();
         }
         else {
+            BinPreferencesHelper.deleteFlight(new FlightShort(flight.airline.id,flight.number,flight.airline,
+                    flight.departure.airport,flight.arrival.airport),context);
             isSubscribed = true;
             flights.add(flight);
             PreferencesHelper.updatePreferences(flights, context);

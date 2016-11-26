@@ -29,9 +29,11 @@ public class OfferResults  extends AppCompatActivity{
         GetOfferInfo.values.clear();
 
         if(getIntent().getDoubleExtra("offerPrice",-1.0)==-1.0) {
+            //Toast.makeText(this, getIntent().getStringExtra("currentCity")+" "+getIntent().getStringExtra("destCity")+" "+getIntent().getDoubleExtra("offerPrice",-1)+" "+getIntent().getDoubleExtra("ratio",1), Toast.LENGTH_SHORT).show();
             new GetOffersToDestTask(this, new Integer(getIntent().getStringExtra("filter")),getIntent().getDoubleExtra("ratio",1)).execute(getIntent().getStringExtra("currentCity"), getIntent().getStringExtra("destCity"));
         }else {
          //   Toast.makeText(this, "JEJE", Toast.LENGTH_SHORT).show();
+           // Toast.makeText(this, getIntent().getStringExtra("currentCity")+" "+getIntent().getStringExtra("destCity")+" "+getIntent().getDoubleExtra("offerPrice",-1)+" "+getIntent().getDoubleExtra("ratio",1), Toast.LENGTH_SHORT).show();
             new GetOfferInfo(this, getIntent().getStringExtra("currentCity"), getIntent().getStringExtra("destCity"), getIntent().getDoubleExtra("offerPrice",-1),getIntent().getDoubleExtra("ratio",1)).execute(2, 8);
         }
 

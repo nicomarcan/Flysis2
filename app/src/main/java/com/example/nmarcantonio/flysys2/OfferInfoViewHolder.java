@@ -1,5 +1,6 @@
 package com.example.nmarcantonio.flysys2;
 
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 /**
@@ -7,11 +8,11 @@ import android.widget.TextView;
  */
 
 public class OfferInfoViewHolder {
-    public TextView idView;
-    public TextView numberView;
+    public TextView flightView;
     public TextView srcAirView;
     public TextView dstAirView;
     public TextView priceView;
     public TextView depDateView;
     public TextView arrDateView;
+    public RatingBar rating;
 }

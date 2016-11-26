@@ -1,13 +1,13 @@
 package com.example.nmarcantonio.flysys2;
 
 public class Product {
-    private int id;
+    private String id;
     private String name;
     private Double price;
     private Double latitude;
     private Double longitude;
 
-    public Product(int id, String name, Double price,Double latitude, Double longitude) {
+    public Product(String id, String name, Double price,Double latitude, Double longitude) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -15,11 +15,9 @@ public class Product {
         this.longitude = longitude;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
 
-    public int getId() {
+
+    public String getId() {
         return this.id;
     }
 

@@ -185,41 +185,12 @@ public class MainActivity extends AppCompatActivity
 
         }
         if(id == R.id.offer_search){
-            MenuItem searchItem = mMenu.findItem(R.id.offer_search);
-            SearchView searchView =
-                    (SearchView) MenuItemCompat.getActionView(searchItem);
+
 
             if(currentSect == R.id.nav_offers){
                     return false;
             }else if(currentSect == R.id.nav_flights){
-                searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener(){
 
-                    @Override
-                    public boolean onQueryTextSubmit(String query) {
-                        String id = query.split(" ")[0];
-                        String number = query.split(" ")[1];
-                        Intent intent = new Intent(context, FlightActivity.class);
-                        intent.putExtra("id",id);
-                        intent.putExtra("number",number);
-
-                        PendingIntent pendingIntent =
-                                TaskStackBuilder.create(context)
-                                        // add all of DetailsActivity's parents to the stack,
-                                        // followed by DetailsActivity itself
-                                        .addNextIntentWithParentStack(intent)
-                                        .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-
-                        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-                        builder.setContentIntent(pendingIntent);
-                        startActivity(intent);
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onQueryTextChange(String newText) {
-                        return false;
-                    }
-                });
 
 
             }else{
@@ -263,7 +234,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_conversor) {
 
         } else if (id == R.id.nav_bin) {
-
+            fragmentManager.beginTransaction().replace(R.id.content_frame,new BinFragment()).addToBackStack(null).commit();
         } else if (id == R.id.nav_configuration) {
             Intent intent = new Intent(this, SettingsActivity.class);
 

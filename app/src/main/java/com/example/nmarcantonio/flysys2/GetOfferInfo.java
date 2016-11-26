@@ -1,10 +1,17 @@
 package com.example.nmarcantonio.flysys2;
 
 import android.app.Activity;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
+import android.support.v4.app.NotificationCompat;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -113,7 +120,7 @@ public class GetOfferInfo extends AsyncTask<Integer, Void, String> {
 
                 Flight f = flightList.get(0);
 
-                values.add( new OfferInfo(f.getId(),f.getNumber(),f.getsrcAir() ,f.getdstAir(),f.getPrice()*ratio ,f.getDepDate(),f.getArrDate() ));
+                values.add( new OfferInfo(f.getId(),f.getNumber(),f.getsrcAir() ,f.getdstAir(),f.getPrice()*ratio ,f.getDepDate(),f.getArrDate() ,f.getRating()/2));
 
 
 
@@ -126,7 +133,29 @@ public class GetOfferInfo extends AsyncTask<Integer, Void, String> {
                     OfferInfoAdapter adapter = new OfferInfoAdapter(act, values.toArray(new OfferInfo[values.size()]));
 
                     listView.setAdapter(adapter);
+                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                            Intent intent = new Intent(act, FlightActivity.class);
+                            String id = ((TextView)view.findViewById(R.id.offer_info_flight)).getText().toString().split(" ")[0];
+                            String number =((TextView)view.findViewById(R.id.offer_info_flight)).getText().toString().split(" ")[1];
+                            intent.putExtra("id",id);
+                            intent.putExtra("number",number);
+
+                            PendingIntent pendingIntent =
+                                    TaskStackBuilder.create(act)
+                                            // add all of DetailsActivity's parents to the stack,
+                                            // followed by DetailsActivity itself
+                                            .addNextIntentWithParentStack(intent)
+                                            .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                            NotificationCompat.Builder builder = new NotificationCompat.Builder(act);
+                            builder.setContentIntent(pendingIntent);
+                            act.startActivity(intent);
+                        }
+                    });
                 }
+
 
 
 

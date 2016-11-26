@@ -106,7 +106,9 @@ public class FlightActivity extends Activity{
     @Override
     protected void onCreate(Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
-
+        if (savedInstanceState != null) {
+            dialogFragment = (DialogFragment) getFragmentManager().getFragment(savedInstanceState, "CommentDialogFragment");
+        }
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             airline = bundle.getString("id");
@@ -126,11 +128,11 @@ public class FlightActivity extends Activity{
 
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                                                 @Override
-                                                 public void onClick(View view) {
-                                                     finish();
-                                                 }
-                                             }
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        }
         );
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.add_flight_fab);
         fab.hide();
@@ -218,7 +220,16 @@ public class FlightActivity extends Activity{
                 dialogFragment = CommentDialogFragment.newInstance(thumbs, airline, number );
             }
             ((CommentDialogFragment) dialogFragment).setThumbs(thumbs);
+            dialogFragment.setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme);
             dialogFragment.show(fragmentTransaction, "dialog");
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle bundle) {
+        super.onSaveInstanceState(bundle);
+        if (dialogFragment != null && dialogFragment.isResumed()) {
+            getFragmentManager().putFragment(bundle, "CommentDialogFragment", dialogFragment);
         }
     }
 }

@@ -47,12 +47,12 @@ public class OfferDateFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         myView = inflater.inflate(R.layout.offer_search_date, container, false);
         setHasOptionsMenu(true);
-         //currentCity = (City)(getArguments().getSerializable("currentCity"));
+        OfferSearch.filter = 0;
+        //currentCity = (City)(getArguments().getSerializable("currentCity"));
 
-       // nameToId = (HashMap<String,String>)(getArguments().getSerializable("nameToId"));
+        // nameToId = (HashMap<String,String>)(getArguments().getSerializable("nameToId"));
         Bundle b = getArguments();
-       // Toast.makeText(getActivity(), currentCity.getName(), Toast.LENGTH_SHORT).show();
-        OffersFragment.filter =0;
+        // Toast.makeText(getActivity(), currentCity.getName(), Toast.LENGTH_SHORT).show();
         return myView;
     }
 
@@ -74,41 +74,59 @@ public class OfferDateFragment extends Fragment {
                 public void onClick(View v) {
                     CharSequence text = ((TextView)(((TableRow)v).getChildAt(1))).getText();
                     if(text.toString().equals("Dentro de 1 mes")){
-                        OffersFragment.filter = 1;
+                        OfferSearch.filter = 1;
                     }else if(text.toString().equals("Dentro de 3 meses")){
-                        OffersFragment.filter = 3;
+                        OfferSearch.filter = 3;
                     }else if(text.toString().equals("Dentro de 6 meses")){
-                        OffersFragment.filter = 6;
+                        OfferSearch.filter = 6;
                     }else if(text.toString().equals("Dentro de 1 año")){
-                        OffersFragment.filter = 12;
+                        OfferSearch.filter = 12;
                     }else if(text.toString().equals("Después de 1 año")){
-                        OffersFragment.filter = 13;
+                        OfferSearch.filter = 13;
                     }
                     Bundle bundle = new Bundle();
                     bundle.putString("Text",text.toString());
                     Fragment frag = new OfferFilterFragment();
                     frag.setArguments(bundle);
-                    getFragmentManager().popBackStack();
                     getFragmentManager().beginTransaction()
-                            .replace(R.id.content_frame, frag)
+                            .replace(R.id.content_frame_search, frag)
                             .addToBackStack(null)
                             .commit();
 
                 }
             });
 
-            }
 
 
+        }
+
+            setHasOptionsMenu(true);
 
 
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        MenuItem searchItem = menu.findItem(R.id.offer_search);
+        final  SearchView searchView =
+                (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+            @Override
+            public void onViewAttachedToWindow(View view) {
 
+            }
+
+            @Override
+            public void onViewDetachedFromWindow(View view) {
+                if(OfferSearch.filter ==0)
+                    context.onBackPressed();
+            }
+        });
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-       int id = item.getItemId();
+        int id = item.getItemId();
 
 
         return true;

@@ -6,7 +6,7 @@
     tools:context="com.example.nmarcantonio.flysys2.CommentDialogFragment">
     <LinearLayout
         android:id="@+id/flight_comment_dialog"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:orientation="vertical"
         android:textAlignment="center"
@@ -17,13 +17,13 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="20dp"
             android:clickable="true"
             android:background="?attr/selectableItemBackground"
             android:id="@+id/flight_post_comment"
             android:gravity="center_horizontal"
             android:paddingStart="24dp"
             android:paddingEnd="24dp"
+            android:paddingTop="24dp"
             >
             <TextView
                 android:layout_width="match_parent"
@@ -191,22 +191,42 @@
             android:layout_height="wrap_content"
             android:id="@+id/flight_comment_dialog_comment"
             android:inputType="textMultiLine"
-            android:maxLength="255"
+            android:maxLength="250"
             android:layout_marginStart="24dp"
             android:layout_marginEnd="24dp"
             android:hint="@string/comentario"/>
-        <Button
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/flight_comment_dialog_send"
-            style="@style/AppTheme"
-            android:layout_gravity="end"
-            android:textColor="@color/md_blue_700"
-            android:layout_margin="8dp"
-            android:elevation="0dp"
-            android:hint="@string/flight_comment_dialog_send"
-            android:background="?attr/selectableItemBackground"
-            android:id="@+id/flight_comment_dialog_send_button"
-            />
+            android:layout_gravity="end">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/flight_comment_dialog_send"
+                style="@style/AppTheme"
+                android:layout_gravity="end"
+                android:textColor="@color/md_blue_700"
+                android:layout_margin="8dp"
+                android:elevation="0dp"
+                android:hint="@string/flight_comment_dialog_send"
+                android:background="?attr/selectableItemBackground"
+                android:id="@+id/flight_comment_dialog_send_button"
+                android:layout_alignParentRight="true"
+                />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/flight_comment_dialog_close"
+                android:textColor="@color/md_blue_700"
+                android:layout_margin="8dp"
+                android:elevation="0dp"
+                android:hint="@string/flight_comment_dialog_send"
+                android:background="?attr/selectableItemBackground"
+                android:id="@+id/flight_comment_dialog_close_button"
+                android:layout_toStartOf="@id/flight_comment_dialog_send_button"
+                style="@style/AppTheme"
+                />
+        </RelativeLayout>
     </LinearLayout>
 </ScrollView>

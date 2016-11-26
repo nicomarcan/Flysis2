@@ -100,7 +100,7 @@ public class AirportsFragment extends Fragment  {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
-
+        inflater.inflate(R.menu.searchview,menu);
         MenuItem searchItem = menu.findItem(R.id.offer_search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
 
@@ -147,6 +147,9 @@ public class AirportsFragment extends Fragment  {
         }
 
         loc = locmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        if(loc == null){
+            loc = locmanager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        }
 
         new GetNearbyAirportsAsync().execute();
 
@@ -160,6 +163,10 @@ public class AirportsFragment extends Fragment  {
     public void afterLocationRequest(){
         try {
             loc = locmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if(loc == null){
+                loc = locmanager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            }
+            new GetNearbyAirportsAsync().execute();
         }catch (SecurityException e){
 
         }
