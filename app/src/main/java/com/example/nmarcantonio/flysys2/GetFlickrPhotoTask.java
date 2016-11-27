@@ -4,7 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.View;
@@ -39,13 +43,15 @@ public class GetFlickrPhotoTask extends AsyncTask<String, Void, String> {
     private Activity context;
     private String id;
     private ProgressBar bar;
+    private View view;
 
 
 
-    public GetFlickrPhotoTask(Activity context, CardView cardView,ProgressBar bar) {
+    public GetFlickrPhotoTask(Activity context, CardView cardView,ProgressBar bar,View view) {
         this.context = context;
         this.cardView = cardView;
         this.bar = bar;
+        this.view = view;
     }
 
 
@@ -61,8 +67,11 @@ public class GetFlickrPhotoTask extends AsyncTask<String, Void, String> {
         HttpURLConnection conn = null;
         String ret = null, order;
         try {
+            ConnectivityManager connMgr = (ConnectivityManager)
+                    context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
             id = strings[1];
-            if(CacheImages.getInstance().getImagesMap().get(id) != null){
+            if(CacheImages.getInstance().getImagesMap().get(id) != null  || (networkInfo == null || !networkInfo.isConnected())){
                 return null;
             }
             URL url = new URL("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=e3dae01fb6981aeab9b4b352ceb8a59a&tags=city,relax,hd,landscape&tag_mode=any&text="+strings[0]+"&sort=relevance&format=json&nojsoncallback=1&per_page=1");
@@ -84,6 +93,16 @@ public class GetFlickrPhotoTask extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String result) {
         try {
+            ConnectivityManager connMgr = (ConnectivityManager)
+                    context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
+            if (networkInfo == null || !networkInfo.isConnected()){
+                final SwipeRefreshLayout l = (SwipeRefreshLayout)context.findViewById(R.id.offer_refresh) ;
+                l.setRefreshing(false);
+                Snackbar.make(view, R.string.no_internet_msg, Snackbar.LENGTH_LONG).show();
+                return;
+            }
 
             if(result == null){
                 if(cardView != null)

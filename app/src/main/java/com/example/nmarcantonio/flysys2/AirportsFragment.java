@@ -146,7 +146,7 @@ public class AirportsFragment extends Fragment  {
 
         context = (AppCompatActivity)getActivity();
         if(context.getSupportActionBar() != null) {
-            context.getSupportActionBar().setTitle("Aeropuertos");
+            context.getSupportActionBar().setTitle(R.string.title_activity_airports);
         }
 
 

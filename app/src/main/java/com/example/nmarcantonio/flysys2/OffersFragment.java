@@ -14,11 +14,14 @@ import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.MenuItemCompat;
@@ -108,7 +111,7 @@ public class OffersFragment extends Fragment {
         context = (AppCompatActivity) getActivity();
         ((MainActivity)getActivity()).setCurrentSect(R.id.nav_offers);
         if (context.getSupportActionBar() != null) {
-            context.getSupportActionBar().setTitle("Ofertas");
+            context.getSupportActionBar().setTitle(R.string.title_activity_offers);
         }
 
         if(savedInstanceState != null && savedInstanceState.getBoolean("check")){
@@ -145,8 +148,10 @@ public class OffersFragment extends Fragment {
             }
         }
 
-        if(savedInstanceState == null)
-         new GetRatiosTask().execute();
+
+        if(savedInstanceState == null){
+            new GetRatiosTask().execute();
+        }
         else{
 
             dealList = (ArrayList<Deal>)savedInstanceState.getSerializable("dealList");
@@ -176,7 +181,7 @@ public class OffersFragment extends Fragment {
                 values[j] = new Product(dealList.get(j).getId(), dealList.get(j).getName(), dealList.get(j).getPrice()*ratio  ,dealList.get(j).getLatitude(),dealList.get(j).getLongitude());
                 nameToId.put(dealList.get(j).getName().toLowerCase(),dealList.get(j).getId());
             }
-            ProductArrayAdapter adapter = new ProductArrayAdapter(context  , values);
+            ProductArrayAdapter adapter = new ProductArrayAdapter(context  , values,myView);
             listView.setAdapter(adapter);
         }
 
@@ -188,6 +193,10 @@ public class OffersFragment extends Fragment {
 
         int id = item.getItemId();
         if(id == R.id.action_search_offer) {
+            if(currentCity == null) {
+                Snackbar.make(myView, R.string.no_internet_msg, Snackbar.LENGTH_LONG).show();
+                return true;
+            }
             Intent intent = new Intent(context, OfferSearch.class);
             intent.putExtra("ratio",ratio);
             intent.putExtra("scrId",currentCity.getId());
@@ -206,6 +215,11 @@ public class OffersFragment extends Fragment {
         if(id == R.id.action_map) {
             Intent intent = new Intent(context, OffersMap.class);
             intent.putExtra("ratio",ratio);
+            if(currentCity == null) {
+                Snackbar.make(myView, R.string.no_internet_msg, Snackbar.LENGTH_LONG).show();
+                return true;
+            }
+
             intent.putExtra("srcId",currentCity.getId());
             PendingIntent pendingIntent =
                     TaskStackBuilder.create(context)
@@ -237,7 +251,7 @@ public class OffersFragment extends Fragment {
             values[j] = new Product(dealList.get(j).getId(), dealList.get(j).getName(), dealList.get(j).getPrice()*ratio  ,dealList.get(j).getLatitude(),dealList.get(j).getLongitude());
             nameToId.put(dealList.get(j).getName().toLowerCase(),dealList.get(j).getId());
         }
-        ProductArrayAdapter adapter = new ProductArrayAdapter(context  , values);
+        ProductArrayAdapter adapter = new ProductArrayAdapter(context  , values,myView);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
@@ -251,6 +265,11 @@ public class OffersFragment extends Fragment {
                 offerPrice = values[position].getPrice();
 
                 Intent intent = new Intent(context, OfferResults.class);
+
+                if(currentCity == null) {
+                    Snackbar.make(myView, R.string.no_internet_msg, Snackbar.LENGTH_LONG).show();
+                    return ;
+                }
 
                 intent.putExtra("currentCity", currentCity.getId());
                 intent.putExtra("destCity", destId);
@@ -301,6 +320,13 @@ public class OffersFragment extends Fragment {
 
             try {
 
+                ConnectivityManager connMgr = (ConnectivityManager)
+                        context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
+                if (networkInfo == null || !networkInfo.isConnected())
+                    return null;
+
                 //URL url= new URL("hci.it.itba.edu.ar/v1/api/geo.groovy?method=getcitiesbyposition&latitude="+loc.getLatitude()+"&longitude="+loc.getLongitude()+"&radius=100");
                 URL url = new URL("http://hci.it.itba.edu.ar/v1/api/booking.groovy?method=getlastminuteflightdeals&from="+currentCity.getId());
                 urlConnection = (HttpURLConnection) url.openConnection();
@@ -321,6 +347,12 @@ public class OffersFragment extends Fragment {
             //Toast.makeText(context,loc.getLatitude()+" "+loc.getLongitude(),Toast.LENGTH_LONG).show();
 
             try {
+                if(result == null) {
+                    final SwipeRefreshLayout l = (SwipeRefreshLayout)getActivity().findViewById(R.id.offer_refresh) ;
+                    l.setRefreshing(false);
+                    Snackbar.make(myView, R.string.no_internet_msg, Snackbar.LENGTH_LONG).show();
+                    return;
+                }
                 JSONObject obj = new JSONObject(result);
                 if (!obj.has(OffersFragment.DEALS_NAME))
                     return ;
@@ -351,7 +383,7 @@ public class OffersFragment extends Fragment {
 
 
 
-                    ProductArrayAdapter adapter = new ProductArrayAdapter(context  , values);
+                    ProductArrayAdapter adapter = new ProductArrayAdapter(context  , values,myView);
                     listView.setAdapter(adapter);
                     final SwipeRefreshLayout l = (SwipeRefreshLayout)getActivity().findViewById(R.id.offer_refresh) ;
                     l.setRefreshing(false);
@@ -429,6 +461,12 @@ public class OffersFragment extends Fragment {
             HttpURLConnection urlConnection = null;
 
             try {
+                ConnectivityManager connMgr = (ConnectivityManager)
+                        context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
+                if (networkInfo == null || !networkInfo.isConnected())
+                    return null;
 
                 URL url= new URL("http://hci.it.itba.edu.ar/v1/api/geo.groovy?method=getcitiesbyposition&latitude="+loc.getLatitude()+"&longitude="+loc.getLongitude()+"&radius=100");
                 urlConnection = (HttpURLConnection) url.openConnection();
@@ -447,6 +485,13 @@ public class OffersFragment extends Fragment {
         protected void onPostExecute(String result) {
 
             try {
+
+                if(result == null) {
+                    final SwipeRefreshLayout l = (SwipeRefreshLayout)getActivity().findViewById(R.id.offer_refresh) ;
+                    l.setRefreshing(false);
+                    Snackbar.make(myView, R.string.no_internet_msg, Snackbar.LENGTH_LONG).show();
+                    return;
+                }
                 JSONObject obj = new JSONObject(result);
                 if (!obj.has(OffersFragment.CITIES_NAME))
                     return ;
@@ -510,6 +555,12 @@ public class OffersFragment extends Fragment {
             HttpURLConnection conn = null;
             String ret = null, order;
             try {
+                ConnectivityManager connMgr = (ConnectivityManager)
+                        context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
+                if (networkInfo == null || !networkInfo.isConnected())
+                    return null;
 
                 URL url = new URL("http://hci.it.itba.edu.ar/v1/api/misc.groovy?method=getcurrencies");
                 conn = (HttpURLConnection) new URL(url.toString()).openConnection();
@@ -517,11 +568,12 @@ public class OffersFragment extends Fragment {
                 InputStream in = new BufferedInputStream(conn.getInputStream());
                 ret = readStream(in);
             } catch (Exception e) {
-                e.printStackTrace();
+              return null;
             } finally {
                 if (conn != null) {
                     conn.disconnect();
                 }
+
             }
             return ret;
         }
@@ -529,6 +581,10 @@ public class OffersFragment extends Fragment {
         @Override
         protected void onPostExecute(String result) {
             try {
+                if(result == null) {
+                    Snackbar.make(myView, R.string.no_internet_msg, Snackbar.LENGTH_LONG).show();
+                    return;
+                }
 
                 JSONObject obj = new JSONObject(result);
                 if (!obj.has("currencies")) {

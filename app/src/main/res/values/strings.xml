@@ -14,7 +14,7 @@
     <string name="bin">Bin</string>
     <string name="toBin">"moved to Bin"</string>
     <string name="eliminated">"deleted"</string>
-    <string name="undo">"moved to Flights"</string>
+    <string name="undo">\"moved to My Flights\"</string>
     <string name="action_settings">Settings</string>
     <string name="action_offer_search">Offers search</string>
     <string name="search_title">Search offers</string>
@@ -99,4 +99,18 @@
     <string name="comments_refresh">Update</string>
     <string name="comments_sort_asc">Sort in ascending order</string>
     <string name="comments_sort_desc">Sort in descending order</string>
+    <string name="approximate_date">Approximate Date</string>
+    <string name="within_1_month">Within 1 month</string>
+    <string name="within_3_months">Within 3 months</string>
+    <string name="within_6_months">Within 6 months</string>
+    <string name="after_1_year">After 1 year</string>
+    <string name="within_1_year">Within 1 year</string>
+    <string name="motto">Flying is our passion</string>
+    <string name="title_activity_airports">Airports</string>
+    <string name="title_activity_offers">Offers</string>
+    <string name="title_activity_flights">My Flights</string>
+    <string name="offers_to">Offers to</string>
+    <string name="flight_number">Flight Number</string>
+    <string name="airline_identifier">Airline Identifier</string>
+    <string name="no_internet_msg">Please check your internet connection</string>
 </resources>

@@ -83,7 +83,7 @@ public class OfferSearch extends AppCompatActivity {
        srcId = getIntent().getStringExtra("scrId");
         android.app.FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content_frame_search,new OfferDateFragment()).commit();
-        getSupportActionBar().setTitle("Búsqueda De Ofertas");
+        getSupportActionBar().setTitle(R.string.action_offer_search);
 
 
 

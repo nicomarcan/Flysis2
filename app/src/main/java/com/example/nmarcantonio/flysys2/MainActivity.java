@@ -90,8 +90,6 @@ public class MainActivity extends AppCompatActivity
         } else if (currentSect == R.id.nav_offers) {
             //  fragmentManager.beginTransaction().replace(R.id.content_frame,new OffersFragment()).addToBackStack("HOLA").commit();
         } else if (currentSect == R.id.nav_airports) {
-        } else if (currentSect == R.id.nav_conversor) {
-
         } else if (currentSect == R.id.nav_bin) {
 
          } else if (currentSect == R.id.nav_configuration) {
@@ -180,8 +178,6 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_airports) {
             af = new AirportsFragment();
             fragmentManager.beginTransaction().replace(R.id.content_frame,af).addToBackStack(null).commit();
-        } else if (id == R.id.nav_conversor) {
-
         } else if (id == R.id.nav_bin) {
             fragmentManager.beginTransaction().replace(R.id.content_frame,new BinFragment()).addToBackStack(null).commit();
         } else if (id == R.id.nav_configuration) {
