@@ -83,6 +83,7 @@ public class OfferSearch extends AppCompatActivity {
        srcId = getIntent().getStringExtra("scrId");
         android.app.FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content_frame_search,new OfferDateFragment()).commit();
+        getSupportActionBar().setTitle("Búsqueda De Ofertas");
 
 
 
@@ -115,11 +116,17 @@ public class OfferSearch extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 destId = nameToId.get(query.toLowerCase());
+                String [] aux = query.toLowerCase().split(" ");
+                String dest="";
+                for(int i = 0; i < aux.length;i++){
+                    dest +=" "+ aux[i].substring(0, 1).toUpperCase() + aux[i].substring(1);
+                }
                 Intent intent = new Intent(context, OfferResults.class);
                 intent.putExtra("filter", filter.toString());
                 intent.putExtra("currentCity", srcId);
                 intent.putExtra("destCity", destId);
                 intent.putExtra("ratio",ratio);
+                intent.putExtra("dest",dest);
                 //Toast.makeText(context, filter.toString()+" "+srcId+" "+destId+" "+ratio.toString(), Toast.LENGTH_SHORT).show();
                 PendingIntent pendingIntent =
                         TaskStackBuilder.create(context)

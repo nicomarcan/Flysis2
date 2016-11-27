@@ -10,6 +10,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -129,7 +130,7 @@ public class GetOfferInfo extends AsyncTask<Integer, Void, String> {
                 if(days < maxDays)
                     new GetOfferInfo(act,currentCity,destId,offerPrice,ratio).execute(days+1,maxDays);
             else {
-                    final ListView listView = (ListView) act.findViewById(R.id.offer_list_view);
+                    final GridView listView = (GridView) act.findViewById(R.id.offer_list_view);
                     OfferInfoAdapter adapter = new OfferInfoAdapter(act, values.toArray(new OfferInfo[values.size()]));
 
                     listView.setAdapter(adapter);
@@ -154,6 +155,7 @@ public class GetOfferInfo extends AsyncTask<Integer, Void, String> {
                             act.startActivity(intent);
                         }
                     });
+                    act.findViewById(R.id.results_progress_bar).setVisibility(View.GONE);
                 }
 
 

@@ -85,7 +85,6 @@ public class AirportsFragment extends Fragment  {
     private Map<String,CityInfo_2> citiesMap;
     private AirportsFragment ap = this;
     private Integer selected;
-    private String searchRadius = "100";
 
 
 
@@ -314,7 +313,7 @@ public class AirportsFragment extends Fragment  {
 
             try {
                 URL url = new URL("http://hci.it.itba.edu.ar/v1/api/geo.groovy?method=getairportsbyposition&" + "" +
-                                  "latitude=" + loc.getLatitude() + "&longitude=" + loc.getLongitude() + "&radius=" + searchRadius);
+                                  "latitude=" + loc.getLatitude() + "&longitude=" + loc.getLongitude() + "&radius=" + FlysysSettings.rangeSetting);
                 urlConnection = (HttpURLConnection) url.openConnection();
                 InputStream in = new BufferedInputStream(urlConnection.getInputStream());
                 return readStream(in);
@@ -400,7 +399,17 @@ public class AirportsFragment extends Fragment  {
                 locb.setLongitude(a.getLongitude());
                 lat =   new LatLng(a.getLatitude(),a.getLongitude());
                 String splitdesc[] = a.getDescription().split(", ");
-                String snippet = getString(R.string.airport_distance) +": " + (int)Math.round(loc.distanceTo(locb)/1000) + " km";
+                String snippet = getString(R.string.airport_distance) +": ";
+                switch (FlysysSettings.distanceSetting){
+                    case METRIC:
+                        snippet += Math.round(loc.distanceTo(locb)/1000) + " km";
+                        break;
+                    case IMPERIAL:
+                        snippet += (int)Math.round(loc.distanceTo(locb)/1609.34) + " mi";
+                        break;
+                    default:
+                        break;
+                }
                 markers.add(i,map.addMarker(new MarkerOptions().position(lat).title(splitdesc[0] + ", " + splitdesc[1]+'\n').snippet(snippet)));
                 map.moveCamera(CameraUpdateFactory.newLatLng(lat));
                 i++;

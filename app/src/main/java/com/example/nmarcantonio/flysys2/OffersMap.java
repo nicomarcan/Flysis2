@@ -250,6 +250,7 @@ public class OffersMap extends AppCompatActivity  {
                             intent.putExtra("destCity", destId);
                             intent.putExtra("offerPrice",offerPrice);
                             intent.putExtra("ratio",ratio);
+                            intent.putExtra("dest",marker.getTitle().split("&")[0]);
                            // Toast.makeText(context, srcId+" "+destId+" "+offerPrice+" "+ratio, Toast.LENGTH_SHORT).show();
                             PendingIntent pendingIntent =
                                     TaskStackBuilder.create(context)

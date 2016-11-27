@@ -46,6 +46,7 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -80,10 +81,13 @@ public class OffersFragment extends Fragment {
     private Double ratio;
     private Menu menu;
     private String prevBadge;
+    public static Integer a=0;
 
     private HashMap<String,Double> stringToRatio = new HashMap<String,Double>();
 
     private HashMap<String,String> nameToId = new HashMap<>();
+
+    private ArrayList<Deal> dealList = new ArrayList<Deal>();
 
 
 
@@ -96,7 +100,6 @@ public class OffersFragment extends Fragment {
         myView = inflater.inflate(R.layout.offers_layout, container, false);
         setHasOptionsMenu(true);
 
-
         return myView;
     }
 
@@ -104,7 +107,6 @@ public class OffersFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         context = (AppCompatActivity) getActivity();
-
         ((MainActivity)getActivity()).setCurrentSect(R.id.nav_offers);
         if (context.getSupportActionBar() != null) {
             context.getSupportActionBar().setTitle("Ofertas");
@@ -166,6 +168,8 @@ public class OffersFragment extends Fragment {
     }
 
 
+
+
     @Override
     public void onResume() {
        super.onResume();
@@ -173,7 +177,14 @@ public class OffersFragment extends Fragment {
         if(prevBadge != prefs.getString("money_list","USD")) {
             ratio = stringToRatio.get(prefs.getString("money_list", "USD"));
             prevBadge = prefs.getString("money_list","USD");
-            new GetCityGPS().execute();
+            Product[] values = new Product[dealList.size()];
+            final GridView listView = (GridView) myView.findViewById(R.id.list_view);
+            for (int j = 0; j <dealList.size(); j++) {
+                values[j] = new Product(dealList.get(j).getId(), dealList.get(j).getName(), dealList.get(j).getPrice()*ratio  ,dealList.get(j).getLatitude(),dealList.get(j).getLongitude());
+                nameToId.put(dealList.get(j).getName().toLowerCase(),dealList.get(j).getId());
+            }
+            ProductArrayAdapter adapter = new ProductArrayAdapter(context  , values);
+            listView.setAdapter(adapter);
         }
 
     }
@@ -264,26 +275,25 @@ public class OffersFragment extends Fragment {
                 String jsonFragment = obj.getString(OffersFragment.DEALS_NAME);
 
 
-                ArrayList<Deal> dealList = gson.fromJson(jsonFragment, listType);
                 final GridView listView = (GridView) myView.findViewById(R.id.list_view);
                 // Toast.makeText(context,"HOLAAA",Toast.LENGTH_LONG).show();
                 if (listView != null) {
-                    final Product[] values = new Product[dealList.size()];
+
 
                     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
                     ratio = stringToRatio.get(prefs.getString("money_list","USD"));
                     prevBadge= prefs.getString("money_list","USD");
-
+                    dealList = gson.fromJson(jsonFragment, listType);
                     long seed = System.nanoTime();
                     Collections.shuffle(dealList, new Random(seed));
-
+                    final Product[] values = new Product[dealList.size()];
 
                     for (int j = 0; j <dealList.size(); j++) {
                         values[j] = new Product(dealList.get(j).getId(), dealList.get(j).getName(), dealList.get(j).getPrice()*ratio  ,dealList.get(j).getLatitude(),dealList.get(j).getLongitude());
                         nameToId.put(dealList.get(j).getName().toLowerCase(),dealList.get(j).getId());
                     }
 
-                    ;
+
 
                     ProductArrayAdapter adapter = new ProductArrayAdapter(context  , values);
                     listView.setAdapter(adapter);
@@ -307,6 +317,7 @@ public class OffersFragment extends Fragment {
                             intent.putExtra("destCity", destId);
                             intent.putExtra("offerPrice",offerPrice);
                             intent.putExtra("ratio",ratio);
+                            intent.putExtra("dest",text.toString().split(",")[0]);
                             PendingIntent pendingIntent =
                                     TaskStackBuilder.create(context)
                                             // add all of DetailsActivity's parents to the stack,
@@ -508,6 +519,8 @@ public class OffersFragment extends Fragment {
 
 
     }
+
+
     @Override
     public void onDestroy() {
         super.onDestroy();

@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -38,9 +39,9 @@ public class ProductArrayAdapter extends ArrayAdapter<Product> {
 
 
         Product product = getItem(position);
-        holder.imageView.setBackground(ContextCompat.getDrawable(act, R.drawable.ic_loading));
+       // holder.imageView.setBackground(ContextCompat.getDrawable(act, R.drawable.ic_loading));
         try {
-            new GetFlickrPhotoTask(convertView.getContext(), (CardView) convertView.findViewById(R.id.card_view)).execute(product.getName().replace(","," ").replace(" ","+"), product.getId());
+            new GetFlickrPhotoTask(act, (CardView) convertView.findViewById(R.id.card_view),(ProgressBar)convertView.findViewById(R.id.offers_progress_bar)).execute(product.getName().replace(","," ").replace(" ","+"), product.getId());
         }catch(Exception e){
             ;
         }
