@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
@@ -76,12 +77,10 @@ public class OffersFragment extends Fragment {
     private City currentCity;
     private String destId;
     private Double offerPrice;
-    public static int times = 0;
     public static Integer filter=0;
     private Double ratio;
     private Menu menu;
     private String prevBadge;
-    public static Integer a=0;
 
     private HashMap<String,Double> stringToRatio = new HashMap<String,Double>();
 
@@ -162,7 +161,17 @@ public class OffersFragment extends Fragment {
        if((loc = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER))==null)
            loc = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
-        new GetRatiosTask().execute();
+        if(savedInstanceState == null)
+         new GetRatiosTask().execute();
+        else{
+
+            dealList = (ArrayList<Deal>)savedInstanceState.getSerializable("dealList");
+            ratio = (Double)savedInstanceState.getSerializable("ratio");
+            stringToRatio = (HashMap<String, Double>)  savedInstanceState.getSerializable("stringToRatio");
+            currentCity = (City)savedInstanceState.getSerializable("currentCity");
+            nameToId =(HashMap<String, String>) savedInstanceState.getSerializable("nameToId");
+            putSameOffers();
+        }
 
 
     }
@@ -235,6 +244,61 @@ public class OffersFragment extends Fragment {
         this.menu = menu;
 
     }
+
+
+    private void putSameOffers(){
+        final Product[] values = new Product[dealList.size()];
+        final GridView listView = (GridView) myView.findViewById(R.id.list_view);
+        for (int j = 0; j <dealList.size(); j++) {
+            values[j] = new Product(dealList.get(j).getId(), dealList.get(j).getName(), dealList.get(j).getPrice()*ratio  ,dealList.get(j).getLatitude(),dealList.get(j).getLongitude());
+            nameToId.put(dealList.get(j).getName().toLowerCase(),dealList.get(j).getId());
+        }
+        ProductArrayAdapter adapter = new ProductArrayAdapter(context  , values);
+        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> listView, View itemView, int position, long itemId)
+            {
+                CharSequence text = values[position].getName();
+
+
+                destId = nameToId.get(text.toString().toLowerCase());
+                offerPrice = values[position].getPrice();
+
+                Intent intent = new Intent(context, OfferResults.class);
+
+                intent.putExtra("currentCity", currentCity.getId());
+                intent.putExtra("destCity", destId);
+                intent.putExtra("offerPrice",offerPrice);
+                intent.putExtra("ratio",ratio);
+                intent.putExtra("dest",text.toString().split(",")[0]);
+                PendingIntent pendingIntent =
+                        TaskStackBuilder.create(context)
+                                // add all of DetailsActivity's parents to the stack,
+                                // followed by DetailsActivity itself
+                                .addNextIntentWithParentStack(intent)
+                                .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+                builder.setContentIntent(pendingIntent);
+                startActivity(intent);
+                // Toast.makeText(context,currentCity.getId() +" "+ nameToId.get(text), Toast.LENGTH_LONG).show();
+
+            }
+        });
+
+    }
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putSerializable("dealList",dealList);
+        outState.putSerializable("nameToId",nameToId);
+        outState.putSerializable("currentCity",currentCity);
+        outState.putSerializable("ratio",ratio);
+        outState.putSerializable("stringToRatio",stringToRatio);
+        super.onSaveInstanceState(outState);
+    }
+
 
     //LLena las fotos y ofertas
     private class HttpGetOffersTask extends AsyncTask<Void, Void, String> {
