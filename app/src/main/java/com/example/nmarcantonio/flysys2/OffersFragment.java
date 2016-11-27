@@ -111,6 +111,12 @@ public class OffersFragment extends Fragment {
             context.getSupportActionBar().setTitle("Ofertas");
         }
 
+        if(savedInstanceState != null && savedInstanceState.getBoolean("check")){
+            loc = new Location("dummyprovider");
+            loc.setLatitude(savedInstanceState.getDouble("latitude"));
+            loc.setLongitude(savedInstanceState.getDouble("longitude"));
+        }
+
         final SwipeRefreshLayout l = (SwipeRefreshLayout)getActivity().findViewById(R.id.offer_refresh) ;
         l.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -118,48 +124,26 @@ public class OffersFragment extends Fragment {
                 new GetCityGPS().execute();
             }
         });
-        //setHasOptionsMenu(true);
 
-        mLocationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(final Location location) {
-               // Toast.makeText(context,"HOLAA",Toast.LENGTH_LONG).show();
-                //Toast.makeText(context,location.getLatitude()+" "+location.getLongitude(),Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-
-            }
-
-            @Override
-            public void onProviderEnabled(String provider) {
-
-            }
-
-            @Override
-            public void onProviderDisabled(String provider) {
-
-            }
-        };
          mLocationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
 
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            Toast.makeText(context,"HOL",Toast.LENGTH_LONG).show();
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(context,new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION},1);
             return;
-        }//VER QUE ES
+        }
 
-        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mLocationListener);
-        mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, mLocationListener);
-       if((loc = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER))==null)
-           loc = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        if(loc == null) {
+            loc =  mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if (loc == null) {
+                loc =  mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            }
+            if (loc == null){
+                loc = new Location("dummyprovider");
+                loc.setLongitude(-58.381592);
+                loc.setLatitude(-34.603722);
+            }
+        }
 
         if(savedInstanceState == null)
          new GetRatiosTask().execute();
@@ -296,6 +280,14 @@ public class OffersFragment extends Fragment {
         outState.putSerializable("currentCity",currentCity);
         outState.putSerializable("ratio",ratio);
         outState.putSerializable("stringToRatio",stringToRatio);
+
+        if(loc != null) {
+            outState.putBoolean("check",true);
+            outState.putDouble("latitude", loc.getLatitude());
+            outState.putDouble("longitude", loc.getLongitude());
+        } else {
+            outState.putBoolean("check",false);
+        }
         super.onSaveInstanceState(outState);
     }
 
