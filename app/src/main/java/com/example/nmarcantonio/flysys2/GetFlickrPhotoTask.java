@@ -62,7 +62,7 @@ public class GetFlickrPhotoTask extends AsyncTask<String, Void, String> {
             if(CacheImages.getInstance().getImagesMap().get(id) != null){
                 return null;
             }
-            URL url = new URL("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=e3dae01fb6981aeab9b4b352ceb8a59a&tags=city,hd,vacation&tag_mode=any&text="+strings[0]+"&sort=interestingness-desc&format=json&nojsoncallback=1&per_page=1");
+            URL url = new URL("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=e3dae01fb6981aeab9b4b352ceb8a59a&tags=city,relax,hd,landscape&tag_mode=any&text="+strings[0]+"&sort=relevance&format=json&nojsoncallback=1&per_page=1");
 
             conn = (HttpURLConnection) new URL(url.toString()).openConnection();
 

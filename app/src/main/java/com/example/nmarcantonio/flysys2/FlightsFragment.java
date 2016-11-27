@@ -49,6 +49,8 @@ public class FlightsFragment extends Fragment {
     ArrayList<FlightStatus> flights;
     FlightStatusArrayAdapter flightAdapter;
     CountDownLatch countDownLatch = null;
+    public static  FlightSearchFragment flightSearchFragment;
+    public static boolean searching=false;
 
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -150,6 +152,14 @@ public class FlightsFragment extends Fragment {
         GridView listView = (GridView) myView.findViewById(R.id.flights_list_view);
         flightAdapter = new FlightStatusArrayAdapter(context, flights);
         listView.setAdapter(flightAdapter);
+
+        if(savedInstanceState != null && savedInstanceState.getBoolean("searching")) {
+            ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+            android.app.FragmentManager fragmentManager = getFragmentManager();
+            flightSearchFragment = new FlightSearchFragment();
+            fragmentManager.beginTransaction().add(R.id.frame_search, flightSearchFragment).commit();
+            searching = true;
+        }
     }
 
     public void updateFlightStatus(final Bundle bundle) {
@@ -188,12 +198,13 @@ public class FlightsFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-       inflater.inflate(R.menu.searchview,menu);
-        MenuItem searchItem = menu.findItem(R.id.offer_search);
-        SearchView searchView =
-                (SearchView) MenuItemCompat.getActionView(searchItem);
+       inflater.inflate(R.menu.flights_menu,menu);
+        //MenuItem searchItem = menu.findItem(R.id.action_search_flight);
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener(){
+        //SearchView searchView =
+            //    (SearchView) MenuItemCompat.getActionView(searchItem);
+
+       /* searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener(){
 
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -224,7 +235,27 @@ public class FlightsFragment extends Fragment {
             public boolean onQueryTextChange(String newText) {
                 return false;
             }
-        });
+        });*/
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if(id ==R.id.action_search_flight){
+            ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+            android.app.FragmentManager fragmentManager = getFragmentManager();
+             flightSearchFragment = new FlightSearchFragment();
+            fragmentManager.beginTransaction().add(R.id.frame_search,flightSearchFragment).commit();
+            searching=true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putBoolean("searching",searching);
+        super.onSaveInstanceState(outState);
     }
 }
 

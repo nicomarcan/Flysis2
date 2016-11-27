@@ -27,7 +27,6 @@ public class OfferResults  extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.offer_results);
         GetOfferInfo.values.clear();
-
         if(getIntent().getDoubleExtra("offerPrice",-1.0)==-1.0) {
             //Toast.makeText(this, getIntent().getStringExtra("currentCity")+" "+getIntent().getStringExtra("destCity")+" "+getIntent().getDoubleExtra("offerPrice",-1)+" "+getIntent().getDoubleExtra("ratio",1), Toast.LENGTH_SHORT).show();
             new GetOffersToDestTask(this, new Integer(getIntent().getStringExtra("filter")),getIntent().getDoubleExtra("ratio",1)).execute(getIntent().getStringExtra("currentCity"), getIntent().getStringExtra("destCity"));

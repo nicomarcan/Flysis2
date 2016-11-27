@@ -65,8 +65,8 @@ public class GetPhotosToCache extends AsyncTask<String, Void, String> {
             if(CacheImages.getInstance().getImagesMap().get(dealList.get(times).getId()) != null){
                 return null;
             }
-        String city = URLEncoder.encode(dealList.get(times).getName().split(",")[0], "UTF-8");
-            URL url = new URL("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=e3dae01fb6981aeab9b4b352ceb8a59a&tags=city,hd,vacation&tag_mode=any&text="+city+"&sort=interestingness-desc&format=json&nojsoncallback=1&per_page=1");
+        String city = dealList.get(times).getName().replace(","," ").replace(" ","+");
+            URL url = new URL("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=e3dae01fb6981aeab9b4b352ceb8a59a&tags=city,relax,hd,landscape&tag_mode=any&text="+city+"&sort=interestingness-desc&format=json&nojsoncallback=1&per_page=1");
 
             conn = (HttpURLConnection) new URL(url.toString()).openConnection();
 
