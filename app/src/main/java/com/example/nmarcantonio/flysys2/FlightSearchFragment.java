@@ -34,7 +34,7 @@ public class FlightSearchFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getActivity().findViewById(R.id.back_button).setOnClickListener(new View.OnClickListener() {
+        getActivity().findViewById(R.id.back_search_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ( (AppCompatActivity)getActivity()).getSupportActionBar().show();
@@ -43,6 +43,7 @@ public class FlightSearchFragment extends Fragment {
                 //close keyboard
                 InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                getActivity().findViewById(R.id.back_search_button).setOnClickListener(null);
 
                 FlightsFragment.searching=false;
             }
@@ -87,5 +88,9 @@ public class FlightSearchFragment extends Fragment {
 
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
 
+    }
 }
