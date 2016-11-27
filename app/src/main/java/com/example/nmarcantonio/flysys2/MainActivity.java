@@ -84,7 +84,18 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         context = this;
+        android.app.FragmentManager fragmentManager = getFragmentManager();
+         if (currentSect == R.id.nav_flights) {
+             fragmentManager.beginTransaction().replace(R.id.content_frame,new FlightsFragment()).commit();
+        } else if (currentSect == R.id.nav_offers) {
+            //  fragmentManager.beginTransaction().replace(R.id.content_frame,new OffersFragment()).addToBackStack("HOLA").commit();
+        } else if (currentSect == R.id.nav_airports) {
+        } else if (currentSect == R.id.nav_conversor) {
 
+        } else if (currentSect == R.id.nav_bin) {
+
+         } else if (currentSect == R.id.nav_configuration) {
+         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
