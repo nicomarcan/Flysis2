@@ -33,17 +33,19 @@
         <item>Dólares</item>
         <item>Reales</item>
     </string-array>
-
-
-    <string-array name="measure_titles">
-        <item>Sistema Métrico</item>
-        <item>Dólares</item>
-        <item>Reales</item>
-    </string-array>
-    <string-array name="pref_example_list_values">
+    <string-array name="money_values">
         <item>ARS</item>
         <item>USD</item>
         <item>BRL</item>
+    </string-array>
+
+    <string-array name="measure_titles">
+        <item>Kilómetros</item>
+        <item>Millas</item>
+    </string-array>
+    <string-array name="measure_values">
+        <item>KM</item>
+        <item>MI</item>
     </string-array>
 
     <string-array name="interval_titles">
@@ -54,11 +56,12 @@
         <item>Nunca(Manual)</item>
     </string-array>
     <string-array name="interval_values">
-        <item>1</item>
-        <item>6</item>
-        <item>12</item>
-        <item>24</item>
-        <item>0</item>
+        <item>1h</item>
+        <item>6h</item>
+        <item>12h</item>
+        <item>24h</item>
+        <item>0h</item>
+        <item>5m</item>
     </string-array>
 
 
