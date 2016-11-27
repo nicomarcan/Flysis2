@@ -40,7 +40,7 @@ public class ProductArrayAdapter extends ArrayAdapter<Product> {
         Product product = getItem(position);
         holder.imageView.setBackground(ContextCompat.getDrawable(act, R.drawable.ic_loading));
         try {
-            new GetFlickrPhotoTask(convertView.getContext(), (CardView) convertView.findViewById(R.id.card_view)).execute(URLEncoder.encode(product.getName().split(",")[0], "UTF-8"), product.getId());
+            new GetFlickrPhotoTask(convertView.getContext(), (CardView) convertView.findViewById(R.id.card_view)).execute(product.getName().replace(","," ").replace(" ","+"), product.getId());
         }catch(Exception e){
             ;
         }
