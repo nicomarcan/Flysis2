@@ -19,6 +19,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -37,6 +38,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by nmarcantonio on 17/11/16.
@@ -51,6 +53,7 @@ public class FlightsFragment extends Fragment {
     CountDownLatch countDownLatch = null;
     public static  FlightSearchFragment flightSearchFragment;
     public static boolean searching=false;
+    public SwipeRefreshLayout swipeRefreshLayout = null;
 
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -69,7 +72,7 @@ public class FlightsFragment extends Fragment {
         ((MainActivity)getActivity()).setCurrentSect(R.id.nav_flights);
 
         final FlightsFragment fragment = this;
-        SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) myView.findViewById(R.id.flights_refresh);
+        swipeRefreshLayout = (SwipeRefreshLayout) myView.findViewById(R.id.flights_refresh);
         if (swipeRefreshLayout != null) {
             swipeRefreshLayout.setOnRefreshListener(
                     new SwipeRefreshLayout.OnRefreshListener() {
@@ -99,12 +102,14 @@ public class FlightsFragment extends Fragment {
                     intent.putExtra(FlightsIntentService.FLIGHT, String.valueOf(flight.number));
                     context.startService(intent);
                 }
+                /*
                 try {
                     countDownLatch.await(10, TimeUnit.SECONDS);
                 }
                 catch (InterruptedException e) {
 
                 }
+                */
                 countDownLatch = null;
                 activity.runOnUiThread(new Runnable() {
                     @Override
@@ -150,7 +155,7 @@ public class FlightsFragment extends Fragment {
         setHasOptionsMenu(true);
         flights = PreferencesHelper.getFlights(context);
         GridView listView = (GridView) myView.findViewById(R.id.flights_list_view);
-        flightAdapter = new FlightStatusArrayAdapter(context, flights);
+        flightAdapter = new FlightStatusArrayAdapter(context, flights, swipeRefreshLayout);
         listView.setAdapter(flightAdapter);
 
         if(savedInstanceState != null && savedInstanceState.getBoolean("searching")) {
@@ -167,9 +172,16 @@ public class FlightsFragment extends Fragment {
             @Override
             public void run() {
                 FlightStatus flightStatus = (FlightStatus) bundle.get(FlightsIntentService.FLIGHT_STATUS);
-                flights.clear();
-                flights.addAll(PreferencesHelper.getFlights(context));
+                flights.set(flights.indexOf(flightStatus), flightStatus);
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        flightAdapter.notifyDataSetChanged();
+                    }
+                });
+                PreferencesHelper.updatePreferences(flights, context);
 
+                /*
                 for(int i=0; i<flights.size() ; i++){
                     FlightStatus f = flights.get(i);
                     if(f.airline.id.equals(flightStatus.airline.getId()) && f.number == flightStatus.number){
@@ -179,20 +191,17 @@ public class FlightsFragment extends Fragment {
                     }
                 }
                 PreferencesHelper.updatePreferences(flights, context);
-
+                */
                 /*
                 Old Variant
                  */
 
-//                FlightStatus flightStatus = (FlightStatus) bundle.get(FlightsIntentService.FLIGHT_STATUS);
-//                flights.set(flights.indexOf(flightStatus), flightStatus);
-//                flightAdapter.notifyDataSetChanged();
-//                PreferencesHelper.updatePreferences(flights, context);
+//
             }
         };
 
-        Handler handle = new Handler();
-        handle.post(r);
+        Thread thread = new Thread(r);
+        thread.start();
     }
 
 

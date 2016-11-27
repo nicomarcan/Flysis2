@@ -223,7 +223,7 @@ public class MainActivity extends AppCompatActivity
         alarmManager.setInexactRepeating(
                 AlarmManager.ELAPSED_REALTIME,
                 SystemClock.elapsedRealtime() + 10000,
-                6000,
+                60000,
                 pi
         );
         Log.d("aaa", "onReceive: ");
