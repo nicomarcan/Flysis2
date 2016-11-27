@@ -9,15 +9,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.MenuItemCompat;
@@ -76,12 +80,10 @@ public class OffersFragment extends Fragment {
     private City currentCity;
     private String destId;
     private Double offerPrice;
-    public static int times = 0;
     public static Integer filter=0;
     private Double ratio;
     private Menu menu;
     private String prevBadge;
-    public static Integer a=0;
 
     private HashMap<String,Double> stringToRatio = new HashMap<String,Double>();
 
@@ -109,7 +111,13 @@ public class OffersFragment extends Fragment {
         context = (AppCompatActivity) getActivity();
         ((MainActivity)getActivity()).setCurrentSect(R.id.nav_offers);
         if (context.getSupportActionBar() != null) {
-            context.getSupportActionBar().setTitle("Ofertas");
+            context.getSupportActionBar().setTitle(R.string.title_activity_offers);
+        }
+
+        if(savedInstanceState != null && savedInstanceState.getBoolean("check")){
+            loc = new Location("dummyprovider");
+            loc.setLatitude(savedInstanceState.getDouble("latitude"));
+            loc.setLongitude(savedInstanceState.getDouble("longitude"));
         }
 
         final SwipeRefreshLayout l = (SwipeRefreshLayout)getActivity().findViewById(R.id.offer_refresh) ;
@@ -119,50 +127,40 @@ public class OffersFragment extends Fragment {
                 new GetCityGPS().execute();
             }
         });
-        //setHasOptionsMenu(true);
 
-        mLocationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(final Location location) {
-               // Toast.makeText(context,"HOLAA",Toast.LENGTH_LONG).show();
-                //Toast.makeText(context,location.getLatitude()+" "+location.getLongitude(),Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-
-            }
-
-            @Override
-            public void onProviderEnabled(String provider) {
-
-            }
-
-            @Override
-            public void onProviderDisabled(String provider) {
-
-            }
-        };
          mLocationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
 
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            Toast.makeText(context,"HOL",Toast.LENGTH_LONG).show();
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(context,new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION},1);
             return;
-        }//VER QUE ES
+        }
 
-        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mLocationListener);
-        mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, mLocationListener);
-       if((loc = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER))==null)
-           loc = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        if(loc == null) {
+            loc =  mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if (loc == null) {
+                loc =  mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            }
+            if (loc == null){
+                loc = new Location("dummyprovider");
+                loc.setLongitude(-58.381592);
+                loc.setLatitude(-34.603722);
+            }
+        }
 
-        new GetRatiosTask().execute();
+
+        if(savedInstanceState == null){
+            new GetRatiosTask().execute();
+        }
+        else{
+
+            dealList = (ArrayList<Deal>)savedInstanceState.getSerializable("dealList");
+            ratio = (Double)savedInstanceState.getSerializable("ratio");
+            stringToRatio = (HashMap<String, Double>)  savedInstanceState.getSerializable("stringToRatio");
+            currentCity = (City)savedInstanceState.getSerializable("currentCity");
+            nameToId =(HashMap<String, String>) savedInstanceState.getSerializable("nameToId");
+            putSameOffers();
+        }
 
 
     }
@@ -183,7 +181,7 @@ public class OffersFragment extends Fragment {
                 values[j] = new Product(dealList.get(j).getId(), dealList.get(j).getName(), dealList.get(j).getPrice()*ratio  ,dealList.get(j).getLatitude(),dealList.get(j).getLongitude());
                 nameToId.put(dealList.get(j).getName().toLowerCase(),dealList.get(j).getId());
             }
-            ProductArrayAdapter adapter = new ProductArrayAdapter(context  , values);
+            ProductArrayAdapter adapter = new ProductArrayAdapter(context  , values,myView);
             listView.setAdapter(adapter);
         }
 
@@ -195,6 +193,10 @@ public class OffersFragment extends Fragment {
 
         int id = item.getItemId();
         if(id == R.id.action_search_offer) {
+            if(currentCity == null) {
+                Snackbar.make(myView, R.string.no_internet_msg, Snackbar.LENGTH_LONG).show();
+                return true;
+            }
             Intent intent = new Intent(context, OfferSearch.class);
             intent.putExtra("ratio",ratio);
             intent.putExtra("scrId",currentCity.getId());
@@ -213,6 +215,11 @@ public class OffersFragment extends Fragment {
         if(id == R.id.action_map) {
             Intent intent = new Intent(context, OffersMap.class);
             intent.putExtra("ratio",ratio);
+            if(currentCity == null) {
+                Snackbar.make(myView, R.string.no_internet_msg, Snackbar.LENGTH_LONG).show();
+                return true;
+            }
+
             intent.putExtra("srcId",currentCity.getId());
             PendingIntent pendingIntent =
                     TaskStackBuilder.create(context)
@@ -236,6 +243,74 @@ public class OffersFragment extends Fragment {
 
     }
 
+
+    private void putSameOffers(){
+        final Product[] values = new Product[dealList.size()];
+        final GridView listView = (GridView) myView.findViewById(R.id.list_view);
+        for (int j = 0; j <dealList.size(); j++) {
+            values[j] = new Product(dealList.get(j).getId(), dealList.get(j).getName(), dealList.get(j).getPrice()*ratio  ,dealList.get(j).getLatitude(),dealList.get(j).getLongitude());
+            nameToId.put(dealList.get(j).getName().toLowerCase(),dealList.get(j).getId());
+        }
+        ProductArrayAdapter adapter = new ProductArrayAdapter(context  , values,myView);
+        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> listView, View itemView, int position, long itemId)
+            {
+                CharSequence text = values[position].getName();
+
+
+                destId = nameToId.get(text.toString().toLowerCase());
+                offerPrice = values[position].getPrice();
+
+                Intent intent = new Intent(context, OfferResults.class);
+
+                if(currentCity == null) {
+                    Snackbar.make(myView, R.string.no_internet_msg, Snackbar.LENGTH_LONG).show();
+                    return ;
+                }
+
+                intent.putExtra("currentCity", currentCity.getId());
+                intent.putExtra("destCity", destId);
+                intent.putExtra("offerPrice",offerPrice);
+                intent.putExtra("ratio",ratio);
+                intent.putExtra("dest",text.toString().split(",")[0]);
+                PendingIntent pendingIntent =
+                        TaskStackBuilder.create(context)
+                                // add all of DetailsActivity's parents to the stack,
+                                // followed by DetailsActivity itself
+                                .addNextIntentWithParentStack(intent)
+                                .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+                builder.setContentIntent(pendingIntent);
+                startActivity(intent);
+                // Toast.makeText(context,currentCity.getId() +" "+ nameToId.get(text), Toast.LENGTH_LONG).show();
+
+            }
+        });
+
+    }
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putSerializable("dealList",dealList);
+        outState.putSerializable("nameToId",nameToId);
+        outState.putSerializable("currentCity",currentCity);
+        outState.putSerializable("ratio",ratio);
+        outState.putSerializable("stringToRatio",stringToRatio);
+
+        if(loc != null) {
+            outState.putBoolean("check",true);
+            outState.putDouble("latitude", loc.getLatitude());
+            outState.putDouble("longitude", loc.getLongitude());
+        } else {
+            outState.putBoolean("check",false);
+        }
+        super.onSaveInstanceState(outState);
+    }
+
+
     //LLena las fotos y ofertas
     private class HttpGetOffersTask extends AsyncTask<Void, Void, String> {
         @Override
@@ -244,6 +319,13 @@ public class OffersFragment extends Fragment {
             HttpURLConnection urlConnection = null;
 
             try {
+
+                ConnectivityManager connMgr = (ConnectivityManager)
+                        context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
+                if (networkInfo == null || !networkInfo.isConnected())
+                    return null;
 
                 //URL url= new URL("hci.it.itba.edu.ar/v1/api/geo.groovy?method=getcitiesbyposition&latitude="+loc.getLatitude()+"&longitude="+loc.getLongitude()+"&radius=100");
                 URL url = new URL("http://hci.it.itba.edu.ar/v1/api/booking.groovy?method=getlastminuteflightdeals&from="+currentCity.getId());
@@ -265,6 +347,12 @@ public class OffersFragment extends Fragment {
             //Toast.makeText(context,loc.getLatitude()+" "+loc.getLongitude(),Toast.LENGTH_LONG).show();
 
             try {
+                if(result == null) {
+                    final SwipeRefreshLayout l = (SwipeRefreshLayout)getActivity().findViewById(R.id.offer_refresh) ;
+                    l.setRefreshing(false);
+                    Snackbar.make(myView, R.string.no_internet_msg, Snackbar.LENGTH_LONG).show();
+                    return;
+                }
                 JSONObject obj = new JSONObject(result);
                 if (!obj.has(OffersFragment.DEALS_NAME))
                     return ;
@@ -295,7 +383,7 @@ public class OffersFragment extends Fragment {
 
 
 
-                    ProductArrayAdapter adapter = new ProductArrayAdapter(context  , values);
+                    ProductArrayAdapter adapter = new ProductArrayAdapter(context  , values,myView);
                     listView.setAdapter(adapter);
                     final SwipeRefreshLayout l = (SwipeRefreshLayout)getActivity().findViewById(R.id.offer_refresh) ;
                     l.setRefreshing(false);
@@ -373,6 +461,12 @@ public class OffersFragment extends Fragment {
             HttpURLConnection urlConnection = null;
 
             try {
+                ConnectivityManager connMgr = (ConnectivityManager)
+                        context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
+                if (networkInfo == null || !networkInfo.isConnected())
+                    return null;
 
                 URL url= new URL("http://hci.it.itba.edu.ar/v1/api/geo.groovy?method=getcitiesbyposition&latitude="+loc.getLatitude()+"&longitude="+loc.getLongitude()+"&radius=100");
                 urlConnection = (HttpURLConnection) url.openConnection();
@@ -391,6 +485,13 @@ public class OffersFragment extends Fragment {
         protected void onPostExecute(String result) {
 
             try {
+
+                if(result == null) {
+                    final SwipeRefreshLayout l = (SwipeRefreshLayout)getActivity().findViewById(R.id.offer_refresh) ;
+                    l.setRefreshing(false);
+                    Snackbar.make(myView, R.string.no_internet_msg, Snackbar.LENGTH_LONG).show();
+                    return;
+                }
                 JSONObject obj = new JSONObject(result);
                 if (!obj.has(OffersFragment.CITIES_NAME))
                     return ;
@@ -454,6 +555,12 @@ public class OffersFragment extends Fragment {
             HttpURLConnection conn = null;
             String ret = null, order;
             try {
+                ConnectivityManager connMgr = (ConnectivityManager)
+                        context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
+                if (networkInfo == null || !networkInfo.isConnected())
+                    return null;
 
                 URL url = new URL("http://hci.it.itba.edu.ar/v1/api/misc.groovy?method=getcurrencies");
                 conn = (HttpURLConnection) new URL(url.toString()).openConnection();
@@ -461,11 +568,12 @@ public class OffersFragment extends Fragment {
                 InputStream in = new BufferedInputStream(conn.getInputStream());
                 ret = readStream(in);
             } catch (Exception e) {
-                e.printStackTrace();
+              return null;
             } finally {
                 if (conn != null) {
                     conn.disconnect();
                 }
+
             }
             return ret;
         }
@@ -473,6 +581,10 @@ public class OffersFragment extends Fragment {
         @Override
         protected void onPostExecute(String result) {
             try {
+                if(result == null) {
+                    Snackbar.make(myView, R.string.no_internet_msg, Snackbar.LENGTH_LONG).show();
+                    return;
+                }
 
                 JSONObject obj = new JSONObject(result);
                 if (!obj.has("currencies")) {

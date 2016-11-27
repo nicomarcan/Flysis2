@@ -152,7 +152,7 @@ public class FlightsFragment extends Fragment {
 
         ((MainActivity)getActivity()).setCurrentSect(R.id.nav_flights);
         if(context.getSupportActionBar() != null) {
-            context.getSupportActionBar().setTitle("Vuelos");
+            context.getSupportActionBar().setTitle(R.string.title_activity_flights);
         }
         setHasOptionsMenu(true);
         flights = PreferencesHelper.getFlights(context);

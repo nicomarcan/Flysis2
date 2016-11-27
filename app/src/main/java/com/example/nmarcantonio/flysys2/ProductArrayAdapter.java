@@ -22,9 +22,11 @@ import java.net.URLEncoder;
 public class ProductArrayAdapter extends ArrayAdapter<Product> {
 
     private Activity act;
-    public ProductArrayAdapter(Activity context, Product[] objects) {
+    private View view;
+    public ProductArrayAdapter(Activity context, Product[] objects,View view) {
         super(context, R.layout.list_view_item, objects);
         act = context;
+        this.view = view;
     }
 
     @Override
@@ -41,7 +43,7 @@ public class ProductArrayAdapter extends ArrayAdapter<Product> {
         Product product = getItem(position);
        // holder.imageView.setBackground(ContextCompat.getDrawable(act, R.drawable.ic_loading));
         try {
-            new GetFlickrPhotoTask(act, (CardView) convertView.findViewById(R.id.card_view),(ProgressBar)convertView.findViewById(R.id.offers_progress_bar)).execute(product.getName().replace(","," ").replace(" ","+"), product.getId());
+            new GetFlickrPhotoTask(act, (CardView) convertView.findViewById(R.id.card_view),(ProgressBar)convertView.findViewById(R.id.offers_progress_bar),view).execute(product.getName().replace(","," ").replace(" ","+"), product.getId());
         }catch(Exception e){
             ;
         }

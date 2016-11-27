@@ -1,2 +1,116 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="app_name">Flysys</string>
+    <string name="menu_icon">menu icon</string>
+    <string name="joke">Fotito</string>
+    <string name="offer_info">Info del vuelo</string>
+    <string name="offer_price">Precio del vuelo</string>
+    <string name="airport_info">Aeropuerto</string>
+    <string name="airport_info_2">Ciudad</string>
+    <string name="airport_distance">Distancia</string>
+    <string name="load_data">Data</string>
+    <string name="navigation_drawer_open">Abrir navigation drawer</string>
+    <string name="navigation_drawer_close">Cerrar navigation drawer</string>
+    <string name="you">Usted</string>
+    <string name="bin">Papelera</string>
+    <string name="toBin">"movido a la Papelera"</string>
+    <string name="eliminated">"eliminado"</string>
+    <string name="undo">\"movido a Mis Vuelos\"</string>
+    <string name="action_settings">Ajustes</string>
+    <string name="action_offer_search">Búsqueda de Ofertas</string>
+    <string name="search_title">Buscar una Oferta</string>
+    <string name="title_activity_flight">FlightActivity</string>
+    <string name="title_activity_settings">Ajustes</string>
+    <string name="loading_offers">Cargando las mejores ofertas</string>
+
+    <!-- Strings related to Settings -->
+
+    <!-- Example General settings -->
+    <string name="pref_header_general">General</string>
+
+
+    <string-array name="money_titles">
+        <item>Pesos Argentinos</item>
+        <item>Dólares</item>
+        <item>Reales</item>
+    </string-array>
+    <string-array name="money_values">
+        <item>ARS</item>
+        <item>USD</item>
+        <item>BRL</item>
+    </string-array>
+
+    <string-array name="measure_titles">
+        <item>Kilómetros</item>
+        <item>Millas</item>
+    </string-array>
+    <string-array name="measure_values">
+        <item>KM</item>
+        <item>MI</item>
+    </string-array>
+
+    <string-array name="interval_titles">
+        <item>Cada 1 hora</item>
+        <item>Cada 6 horas</item>
+        <item>Cada 12 horas</item>
+        <item>Una vez al día</item>
+        <item>Nunca(Manual)</item>
+    </string-array>
+    <string-array name="interval_values">
+        <item>1h</item>
+        <item>6h</item>
+        <item>12h</item>
+        <item>24h</item>
+        <item>0h</item>
+        <item>5m</item>
+    </string-array>
+
+
+    <!-- Example settings for Notifications -->
+    <string name="pref_header_notifications">Notificaciones</string>
+
+
+    <string name="pref_title_ringtone">Ringtone</string>
+    <string name="pref_ringtone_silent">Silent</string>
+
+    <string name="pref_title_vibrate">Vibrate</string>
+    <string name="geo_summary">Aquí no se que carajo poner</string>
+    <string name="geo_msg">Activar geolocalización</string>
+    <string name="money_type">Divisa</string>
+    <string name="measure_type">Unidad de Medida</string>
+    <string name="notif_activ">Activar notificaciones</string>
+    <string name="offers_active">Activar Alertas de Ofertas</string>
+    <string name="update_interval">Frecuencia de actualización</string>
+    <string name="offer_results">Resultados</string>
+    <string name="map_status_text">Buscar vuelo</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="fragment_comment_dialog_header">Opine sobre el vuelo</string>
+    <string name="fragment_comment_dialog_friendliness">Amabilidad</string>
+    <string name="fragment_comment_dialog_food">Comida</string>
+    <string name="fragment_comment_dialog_punctuality">Puntualidad</string>
+    <string name="fragment_comment_dialog_mileage_programe">Programa de pasajeros frecuentes</string>
+    <string name="fragment_comment_dialog_comfort">Comfort</string>
+    <string name="fragment_comment_dialog_quality_price">Relacion precio/calidad</string>
+    <string name="flight_comment_dialog_send">ENVIAR</string>
+    <string name="comentario">Comentario</string>
+    <string name="cerrar">CERRAR</string>
+    <string name="flight_comment_dialog_close">CERRAR</string>
+    <string name="comments_refresh">Actualizar</string>
+    <string name="comments_sort_asc">Ordenar ascendentemente</string>
+    <string name="comments_sort_desc">Ordenar descendentemente</string>
+    <string name="approximate_date">Fecha Aproximada</string>
+    <string name="within_1_month">Dentro de 1 mes</string>
+    <string name="within_3_months">Dentro de 3 meses</string>
+    <string name="within_6_months">Dentro de 6 meses</string>
+    <string name="after_1_year">Después de 1 año</string>
+    <string name="within_1_year">Dentro de 1 año</string>
+    <string name="motto">Volar es nuestra pasión</string>
+    <string name="title_activity_airports">Aeropuertos</string>
+    <string name="title_activity_flights">Mis vuelos</string>
+    <string name="title_activity_offers">Ofertas</string>
+    <string name="offers_to">Ofertas a</string>
+    <string name="airline_identifier">Identificador de la Aerolinea</string>
+    <string name="flight_number">Número de Vuelo</string>
+    <string name="no_internet_msg">Porfavor chequee su conexión a internet</string>
+</resources>

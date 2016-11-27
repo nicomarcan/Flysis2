@@ -158,7 +158,7 @@ public class OffersMap extends AppCompatActivity  {
                    view.setAdapter(adapter);
 */
 
-                new GetPhotosToCache(context,this,dealList,0).execute();
+                new GetPhotosToCache(context,this,dealList,0,findViewById(android.R.id.content)).execute();
 
 
 

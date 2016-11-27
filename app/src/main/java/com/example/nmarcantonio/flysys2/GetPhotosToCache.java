@@ -5,8 +5,12 @@ package com.example.nmarcantonio.flysys2;
  */
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -42,12 +46,14 @@ public class GetPhotosToCache extends AsyncTask<String, Void, String> {
     private Activity act;
     private ArrayList<Deal> dealList;
     private OnMapReadyCallback callback;
+    private View view;
 
-    public GetPhotosToCache(Activity act,OnMapReadyCallback callback, ArrayList<Deal> dealList, int times) {
+    public GetPhotosToCache(Activity act,OnMapReadyCallback callback, ArrayList<Deal> dealList, int times,View view) {
         this.act = act;
         this.dealList = dealList;
         this.times = times;
         this.callback = callback;
+        this.view = view;
     }
 
     private int times;
@@ -61,8 +67,10 @@ public class GetPhotosToCache extends AsyncTask<String, Void, String> {
         HttpURLConnection conn = null;
         String ret = null, order;
         try {
-
-            if(CacheImages.getInstance().getImagesMap().get(dealList.get(times).getId()) != null){
+            ConnectivityManager connMgr = (ConnectivityManager)
+                    act.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+            if(CacheImages.getInstance().getImagesMap().get(dealList.get(times).getId()) != null  || (networkInfo == null || !networkInfo.isConnected())){
                 return null;
             }
         String city = dealList.get(times).getName().replace(","," ").replace(" ","+");
@@ -85,11 +93,19 @@ public class GetPhotosToCache extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String result) {
         try {
+            ConnectivityManager connMgr = (ConnectivityManager)
+                    act.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
+            if (networkInfo == null || !networkInfo.isConnected()){
+                Snackbar.make(view, R.string.no_internet_msg, Snackbar.LENGTH_LONG).show();
+                return;
+            }
 
 
             if(result == null){
                 if(times+1 < dealList.size())
-                    new GetPhotosToCache(act,callback,dealList,times+1).execute();
+                    new GetPhotosToCache(act,callback,dealList,times+1,view).execute();
                 else{
                     MapFragment mapFragment = (MapFragment) act.getFragmentManager()
                             .findFragmentById(R.id.map);
@@ -140,7 +156,7 @@ public class GetPhotosToCache extends AsyncTask<String, Void, String> {
 
                 });
                 if(times+1 < dealList.size()){
-                    new GetPhotosToCache(act,callback,dealList,times+1).execute();
+                    new GetPhotosToCache(act,callback,dealList,times+1,view).execute();
                 }else{
                     MapFragment mapFragment = (MapFragment) act.getFragmentManager()
                             .findFragmentById(R.id.map);

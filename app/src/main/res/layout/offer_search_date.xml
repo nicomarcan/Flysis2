@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:padding="3dip"
         android:textSize="20sp"
-        android:text="Fecha Aproximada" />
+        android:text="@string/approximate_date" />
 
 
 
@@ -35,8 +35,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
                     android:padding="3dip"
-                    android:text="Dentro de 1 mes" />
-            </TableRow>
+                    android:text="@string/within_1_month" />
+        </TableRow>
 
             <TableRow
                 android:background="?android:attr/selectableItemBackground">
@@ -53,7 +53,7 @@
                     android:layout_height="wrap_content"
                     android:padding="3dip"
                     android:layout_marginTop="15dp"
-                    android:text="Dentro de 3 meses" />
+                    android:text="@string/within_3_months" />
             </TableRow>
 
             <TableRow
@@ -71,7 +71,7 @@
                     android:layout_height="wrap_content"
                     android:padding="3dip"
                     android:layout_marginTop="15dp"
-                    android:text="Dentro de 6 meses" />
+                    android:text="@string/within_6_months" />
             </TableRow>
 
             <TableRow
@@ -89,7 +89,7 @@
                     android:layout_height="wrap_content"
                     android:padding="3dip"
                     android:layout_marginTop="15dp"
-                    android:text="Dentro de 1 año" />
+                    android:text="@string/within_1_year" />
             </TableRow>
 
             <TableRow
@@ -107,7 +107,7 @@
                     android:layout_height="wrap_content"
                     android:padding="3dip"
                     android:layout_marginTop="15dp"
-                    android:text="Después de 1 año" />
+                    android:text="@string/after_1_year" />
             </TableRow>
 
         </TableLayout>

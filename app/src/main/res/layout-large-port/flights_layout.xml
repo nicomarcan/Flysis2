@@ -9,7 +9,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v4.widget.SwipeRefreshLayout
+    <com.example.nmarcantonio.flysys2.CustomSwipeToRefresh
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/flights_refresh">
@@ -19,7 +19,7 @@
             android:numColumns="2"
             android:id="@+id/flights_list_view"
             android:orientation="vertical"/>
-    </android.support.v4.widget.SwipeRefreshLayout>
+    </com.example.nmarcantonio.flysys2.CustomSwipeToRefresh>
 </FrameLayout>
     <FrameLayout
         xmlns:android="http://schemas.android.com/apk/res/android"

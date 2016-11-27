@@ -5,19 +5,15 @@
         <item
             android:id="@+id/nav_flights"
             android:icon="@drawable/ic_local_airport_black_24dp"
-            android:title="Vuelos" />
+            android:title="@string/title_activity_flights" />
         <item
             android:id="@+id/nav_offers"
             android:icon="@drawable/ic_label_black_24dp"
-            android:title="Ofertas" />
+            android:title="@string/title_activity_offers" />
         <item
             android:id="@+id/nav_airports"
             android:icon="@drawable/ic_location_on_black_24dp"
-            android:title="Aeropuertos" />
-        <item
-            android:id="@+id/nav_conversor"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Conversor" />
+            android:title="@string/title_activity_airports" />
     </group>
 
     <item android:title="Communicate">
@@ -25,15 +21,11 @@
             <item
                 android:id="@+id/nav_bin"
                 android:icon="@drawable/ic_delete_black_24dp"
-                android:title="Papelera" />
+                android:title="@string/bin" />
             <item
                 android:id="@+id/nav_configuration"
                 android:icon="@drawable/ic_build_black_24dp"
-                android:title="Configuración" />
-            <item
-                android:id="@+id/nav_help"
-                android:icon="@drawable/ic_help_outline_black_24dp"
-                android:title="Ayuda" />
+                android:title="@string/title_activity_settings" />
         </menu>
     </item>
 
