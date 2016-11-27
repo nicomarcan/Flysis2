@@ -26,6 +26,7 @@ public class UpdateIntervalTimerTask extends TimerTask {
 
     @Override
     public void run() {
+        /*
         context.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -33,11 +34,11 @@ public class UpdateIntervalTimerTask extends TimerTask {
                     TextView textView = e.getKey();
                     FlightActivity.Tuple tuple = e.getValue();
                     Date currentDate = new Date();
-                    String dateString = CustomDateInterval.longInterval(tuple.date, currentDate);
+                    String dateString = CustomDateInterval.longInterval(tuple.date,  currentDate);
                     textView.setText(tuple.header + dateString);
                 }
             }
         });
-
+        */
     }
 }

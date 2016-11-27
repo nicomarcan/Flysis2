@@ -8,8 +8,8 @@ import java.util.Date;
  */
 
 public class CustomDateInterval {
-    private static long[] interval(Date from, Date to) {
-        long diff = Math.abs(to.getTime() - from.getTime());
+    private static long[] interval(Date from, long fromTimeZone,  Date to, long toTimeZone) {
+        long diff = Math.abs(to.getTime() - toTimeZone - (from.getTime() - fromTimeZone));
         long days = diff / (24 * 60 * 60 * 1000);
         diff = diff % (24 * 60 * 60 * 1000);
         long hours = diff / (60 * 60 * 1000);
@@ -22,8 +22,8 @@ public class CustomDateInterval {
         return interval;
     }
 
-    public static String longInterval(Date from, Date to) {
-        long[] interval = interval(from, to);
+    public static String longInterval(Date from, long fromTimeZone, Date to, long toTimeZone) {
+        long[] interval = interval(from, fromTimeZone, to, toTimeZone);
         String ret = "";
         if (interval[0] > 0) {
             ret += " " + interval[0] + " dia";
@@ -59,8 +59,8 @@ public class CustomDateInterval {
         return ret;
     }
 
-    public static SignificantTimeInterval significantInterval(Date from, Date to) {
-        long[] interval = interval(from, to);
+    public static SignificantTimeInterval significantInterval(Date from, long fromTimeZone, Date to, long toTimeZone) {
+        long[] interval = interval(from, fromTimeZone, to, toTimeZone);
         SignificantTimeInterval ret = SignificantTimeInterval.ZERO;
 
         if (interval[0] > 0) {
