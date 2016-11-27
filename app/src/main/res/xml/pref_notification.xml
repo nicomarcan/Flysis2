@@ -7,23 +7,14 @@
         android:key="notifications_active"
         android:title="@string/notif_activ" />
 
-
-
-    <!-- NOTE: This preference will be enabled only when the checkbox above is checked. -->
-    <SwitchPreference
-        android:defaultValue="true"
-        android:dependency="notifications_active"
-        android:key="offers_active"
-        android:title="@string/offers_active" />
-
     <ListPreference
-        android:defaultValue="-1"
+        android:defaultValue="1h"
         android:entries="@array/interval_titles"
         android:entryValues="@array/interval_values"
         android:key="interval_list"
         android:negativeButtonText="@null"
         android:positiveButtonText="@null"
-        android:dependency="offers_active"
+        android:dependency="notifications_active"
         android:title="@string/update_interval" />
 
 </PreferenceScreen>

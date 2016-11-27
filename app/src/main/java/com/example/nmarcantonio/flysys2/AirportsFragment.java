@@ -9,6 +9,7 @@ import android.app.SearchManager;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
@@ -31,6 +32,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import android.os.Parcel;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
@@ -47,6 +49,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 import org.json.JSONObject;
 import java.io.BufferedInputStream;
@@ -61,6 +64,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static android.content.Context.LOCATION_SERVICE;
+import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
 /**
  * Created by saques on 19/11/16.
@@ -69,7 +73,7 @@ public class AirportsFragment extends Fragment  {
     private static final String LATITUDE_BUND = "Latitude";
     private static final String LONGITUDE_BUND = "Longitude";
 
-
+    private FlysysSettings.DistanceSetting setting = FlysysSettings.DistanceSetting.METRIC;
     final static String AIRPORTS_NAME = "airports";
     final static String CITIES_NAME = "cities";
     private AppCompatActivity context;
@@ -313,7 +317,7 @@ public class AirportsFragment extends Fragment  {
 
             try {
                 URL url = new URL("http://hci.it.itba.edu.ar/v1/api/geo.groovy?method=getairportsbyposition&" + "" +
-                                  "latitude=" + loc.getLatitude() + "&longitude=" + loc.getLongitude() + "&radius=" + FlysysSettings.rangeSetting);
+                                  "latitude=" + loc.getLatitude() + "&longitude=" + loc.getLongitude() + "&radius=" + 100);
                 urlConnection = (HttpURLConnection) url.openConnection();
                 InputStream in = new BufferedInputStream(urlConnection.getInputStream());
                 return readStream(in);
@@ -400,7 +404,8 @@ public class AirportsFragment extends Fragment  {
                 lat =   new LatLng(a.getLatitude(),a.getLongitude());
                 String splitdesc[] = a.getDescription().split(", ");
                 String snippet = getString(R.string.airport_distance) +": ";
-                switch (FlysysSettings.distanceSetting){
+                setting = FlysysSettings.getDistanceSetting(context);
+                switch (setting){
                     case METRIC:
                         snippet += Math.round(loc.distanceTo(locb)/1000) + " km";
                         break;
@@ -430,6 +435,9 @@ public class AirportsFragment extends Fragment  {
         super.onResume();
         if(mapView != null){
             mapView.onResume();
+            if(FlysysSettings.getDistanceSetting(context) != setting){
+                new GetNearbyAirportsAsync().execute();
+            }
         }
     }
 

@@ -4,6 +4,7 @@ package com.example.nmarcantonio.flysys2;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -197,18 +198,23 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             // updated to reflect the new value, per the Android Design
             // guidelines.
 
-            bindPreferenceSummaryToValue(findPreference("money_list"));
-            bindPreferenceSummaryToValue(findPreference("measure_list"));
+            ListPreference moneyPreference = (ListPreference)findPreference("money_list");
+            ListPreference measurePreference = (ListPreference)findPreference("measure_list");
+
+            bindPreferenceSummaryToValue(moneyPreference);
+            bindPreferenceSummaryToValue(measurePreference);
+
+
         }
 
 
 
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // TODO Add your menu entries here
-        super.onCreateOptionsMenu(menu, inflater);
-    }
+        @Override
+        public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+            // TODO Add your menu entries here
+            super.onCreateOptionsMenu(menu, inflater);
+        }
 
         @Override
         public boolean onOptionsItemSelected(MenuItem item) {
