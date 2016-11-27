@@ -132,7 +132,7 @@ public class FlightStatusArrayAdapter extends BaseSwipeAdapter{
                 //when user's hand released.
             }
         });
-        
+
         ViewTreeObserver.OnGlobalLayoutListener swipeGlobalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {

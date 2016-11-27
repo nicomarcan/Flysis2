@@ -110,7 +110,7 @@ public class FlightInfoCallback implements TaskCallback, OnMapReadyCallback {
                         statusColor = flightView.getResources().getColor(R.color.colorGreen);
                         break;
                     case BOARDING:
-                        statusString = "Aterrizado";
+                        statusString = "Abordando";
                         statusColor = flightView.getResources().getColor(R.color.colorGreen);
                         break;
                     case FLYING:

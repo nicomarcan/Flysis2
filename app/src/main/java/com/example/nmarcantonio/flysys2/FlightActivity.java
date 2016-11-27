@@ -227,8 +227,10 @@ public class FlightActivity extends Activity{
                 dialogFragment = CommentDialogFragment.newInstance(thumbs, airline, number );
             }
             ((CommentDialogFragment) dialogFragment).setThumbs(thumbs);
-            dialogFragment.setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme);
+
+
             dialogFragment.show(fragmentTransaction, "dialog");
+
         }
     }
 

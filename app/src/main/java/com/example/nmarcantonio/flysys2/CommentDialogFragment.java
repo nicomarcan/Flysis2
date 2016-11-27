@@ -60,6 +60,8 @@ public class CommentDialogFragment extends DialogFragment {
         builder.setView(view);
         Dialog dialog = builder.create();
         initView(view);
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.CustomDialog);
+        dialog.setCanceledOnTouchOutside(true);
         return dialog;
     }
 
@@ -146,7 +148,8 @@ public class CommentDialogFragment extends DialogFragment {
         }
         view = inflater.inflate(R.layout.fragment_comment_dialog, container, false);
         initView(view);
-
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.CustomDialog);
+        getDialog().setCanceledOnTouchOutside(true);
         return view;
     }
 
@@ -261,12 +264,6 @@ public class CommentDialogFragment extends DialogFragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
     }
 
     private String getComment() {

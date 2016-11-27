@@ -19,7 +19,7 @@ import java.util.concurrent.ThreadFactory;
 public class PreferencesHelper {
     private static final String TAG = "PreferencesHelper";
 
-    public static ArrayList<FlightStatus> getFlights(Context context) {
+    public static synchronized ArrayList<FlightStatus> getFlights(Context context) {
 
         Gson gson = new Gson();
         Type listType = new TypeToken<ArrayList<FlightStatus>>() {
@@ -37,7 +37,7 @@ public class PreferencesHelper {
         return flights;
     }
 
-    public static void updatePreferences(ArrayList<FlightStatus> list, Context context) {
+    public static synchronized void updatePreferences(ArrayList<FlightStatus> list, Context context) {
         Gson gson = new Gson();
         Type listType = new TypeToken<ArrayList<FlightStatus>>() {
         }.getType();
@@ -48,7 +48,7 @@ public class PreferencesHelper {
         editor.apply();
     }
 
-    public static void updatePreferences(FlightStatus flightStatus, Context context) {
+    public static synchronized void updatePreferences(FlightStatus flightStatus, Context context) {
         Gson gson = new Gson();
         Type listType = new TypeToken<ArrayList<FlightStatus>>() {
         }.getType();
@@ -72,7 +72,7 @@ public class PreferencesHelper {
         editor.apply();
     }
 
-    public static FlightStatus getFlight(FlightStatus flightStatus, Context context) {
+    public static synchronized FlightStatus getFlight(FlightStatus flightStatus, Context context) {
         Gson gson = new Gson();
         Type listType = new TypeToken<ArrayList<FlightStatus>>() {
         }.getType();

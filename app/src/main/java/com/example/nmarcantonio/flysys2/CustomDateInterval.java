@@ -59,50 +59,48 @@ public class CustomDateInterval {
         return ret;
     }
 
-    public static SignificantTimeInterval significantInterval(Date from, long fromTimeZone, Date to, long toTimeZone) {
+    public static String significantInterval(Date from, long fromTimeZone, Date to, long toTimeZone) {
         long[] interval = interval(from, fromTimeZone, to, toTimeZone);
-        SignificantTimeInterval ret = SignificantTimeInterval.ZERO;
+        String ret = ZERO;
 
         if (interval[0] > 0) {
-            ret = SignificantTimeInterval.ONE_DAY_PLUS;
+            ret = ONE_DAY_PLUS;
         }
         else if (interval[0] == 0){
             if (interval[1] >= 12) {
-                ret = SignificantTimeInterval.ONE_DAY;
+                ret = ONE_DAY;
             }
             if (interval[1] >= 6) {
-                ret = SignificantTimeInterval.TWELVE_HOURS;
+                ret = TWELVE_HOURS;
             }
             else if (interval[1] >= 3) {
-                ret = SignificantTimeInterval.SIX_HOURS;
+                ret = SIX_HOURS;
             }
             else if (interval[1] >= 1) {
-                ret = SignificantTimeInterval.THREE_HOURS;
+                ret = THREE_HOURS;
             }
             else if (interval[1] == 0) {
                 if (interval[2] >= 30) {
-                    ret = SignificantTimeInterval.ONE_HOUR;
+                    ret = ONE_HOUR;
                 }
                 else if (interval[2] >= 10) {
-                    ret = SignificantTimeInterval.THIRTY_MINUTES;
+                    ret = THIRTY_MINUTES;
                 }
                 else if (interval[2] >= 0) {
-                    ret = SignificantTimeInterval.TEN_MINUTES;
+                    ret = TEN_MINUTES;
                 }
             }
         }
         return ret;
     }
 
-    public enum SignificantTimeInterval implements Serializable {
-        ONE_DAY_PLUS,
-        ONE_DAY,
-        TWELVE_HOURS,
-        SIX_HOURS,
-        THREE_HOURS,
-        ONE_HOUR,
-        THIRTY_MINUTES,
-        TEN_MINUTES,
-        ZERO
-    }
+    public static String ONE_DAY_PLUS = "ONE_DAY_PLUS";
+    public static String ONE_DAY = "ONE_DAY";
+    public static String TWELVE_HOURS = "TWELVE_HOURS";
+    public static String SIX_HOURS = "SIX_HOURS";
+    public static String THREE_HOURS = "THREE_HOURS";
+    public static String ONE_HOUR = "ONE_HOUR";
+    public static String THIRTY_MINUTES = "THIRTY_MINUTES";
+    public static String TEN_MINUTES = "TEN_MINUTES";
+    public static String ZERO = "ZERO";
 }

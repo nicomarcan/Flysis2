@@ -11,7 +11,7 @@ import java.util.TimeZone;
  */
 
 public class FlightStatusDescription implements Serializable {
-    CustomDateInterval.SignificantTimeInterval timeInterval;
+    String timeInterval;
     FlightStatus.FlightStatusState state;
     Date nextRelevantDate;
     long nextTimeZone;
@@ -39,7 +39,7 @@ public class FlightStatusDescription implements Serializable {
                         /* NO Hay DELAY EN ABORDAJE */
                         departureTime = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss", new Locale("es", "arg")).parse(fi.departure.scheduled_gate_time);
                     }
-                    if (currentTime.compareTo(departureTime) < 0) {
+                    if (currentTime.getTime() - currentTimeZone < departureTime.getTime() - departureTimeZone) {
                         /* TODAVIA NO SE ABORDO */
                         state = FlightStatus.FlightStatusState.SCHEDULED;
                         descriptionHeader = "Abordaje comienza en ";
@@ -122,7 +122,7 @@ public class FlightStatusDescription implements Serializable {
                     descriptionHeader = "El vuelo se cancelo.";
                     nextRelevantDate = null;
                     nextTimeZone = 0;
-                    timeInterval = CustomDateInterval.SignificantTimeInterval.ZERO;
+                    timeInterval = CustomDateInterval.ZERO;
                     break;
             }
         }
