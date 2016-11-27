@@ -8,6 +8,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static android.R.attr.id;
+import static android.R.attr.singleUser;
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
 
@@ -93,7 +95,6 @@ public class FlightStatusArrayAdapter extends BaseSwipeAdapter{
             @Override
             public void onUpdate(SwipeLayout layout, int leftOffset, int topOffset) {
                 //you are swiping.
-                //swiping.setEnabled(false);
             }
 
             @Override
@@ -129,10 +130,9 @@ public class FlightStatusArrayAdapter extends BaseSwipeAdapter{
             @Override
             public void onHandRelease(SwipeLayout layout, float xvel, float yvel) {
                 //when user's hand released.
-                //swiping.setEnabled(true);
             }
         });
-
+        
         ViewTreeObserver.OnGlobalLayoutListener swipeGlobalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {

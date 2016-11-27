@@ -51,6 +51,7 @@ public class FlightsFragment extends Fragment {
     ArrayList<FlightStatus> flights;
     FlightStatusArrayAdapter flightAdapter;
     CountDownLatch countDownLatch = null;
+    int updateCount;
     public static  FlightSearchFragment flightSearchFragment;
     public static boolean searching=false;
     public SwipeRefreshLayout swipeRefreshLayout = null;
@@ -102,14 +103,14 @@ public class FlightsFragment extends Fragment {
                     intent.putExtra(FlightsIntentService.FLIGHT, String.valueOf(flight.number));
                     context.startService(intent);
                 }
-                /*
+
                 try {
                     countDownLatch.await(10, TimeUnit.SECONDS);
                 }
                 catch (InterruptedException e) {
 
                 }
-                */
+
                 countDownLatch = null;
                 activity.runOnUiThread(new Runnable() {
                     @Override
@@ -141,6 +142,7 @@ public class FlightsFragment extends Fragment {
     public void onPause() {
         super.onPause();
         context.unregisterReceiver(broadcastReceiver);
+        PreferencesHelper.updatePreferences(flights, context);
     }
 
     @Override
@@ -173,14 +175,23 @@ public class FlightsFragment extends Fragment {
             public void run() {
                 FlightStatus flightStatus = (FlightStatus) bundle.get(FlightsIntentService.FLIGHT_STATUS);
                 flights.set(flights.indexOf(flightStatus), flightStatus);
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        flightAdapter.notifyDataSetChanged();
+                if (countDownLatch != null) {
+                    countDownLatch.countDown();
+                }
+                else {
+                    if (updateCount == flights.size()) {
+                        updateCount = 0;
+                        context.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                flightAdapter.notifyDataSetChanged();
+                            }
+                        });
                     }
-                });
-                PreferencesHelper.updatePreferences(flights, context);
-
+                    else {
+                        updateCount++;
+                    }
+                }
                 /*
                 for(int i=0; i<flights.size() ; i++){
                     FlightStatus f = flights.get(i);
