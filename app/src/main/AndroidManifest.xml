@@ -27,6 +27,7 @@
             android:name=".OffersMap"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme">
+
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
@@ -67,7 +68,6 @@
             android:label="@string/title_activity_settings" />
         <activity
             android:name=".OfferResults"
-            android:label="@string/offer_results"
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

@@ -155,6 +155,7 @@ public class GetOfferInfo extends AsyncTask<Integer, Void, String> {
                             act.startActivity(intent);
                         }
                     });
+                    act.findViewById(R.id.results_progress_bar).setVisibility(View.GONE);
                 }
 
 

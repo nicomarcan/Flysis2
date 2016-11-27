@@ -69,12 +69,13 @@ public class MainActivity extends AppCompatActivity
     private Menu mMenu;
     private AirportsFragment af;
 
+    private OffersFragment of = new OffersFragment();
+
 
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
 
 
         super.onCreate(savedInstanceState);
@@ -83,27 +84,6 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         context = this;
-
-
-      //  resultTextView = (TextView) findViewById(R.id.result);
-
-        android.app.FragmentManager fragmentManager = getFragmentManager();
-
-        if (currentSect == R.id.nav_flights) {
-           // Toast.makeText(this,"CABE",Toast.LENGTH_LONG).show();
-            fragmentManager.beginTransaction().replace(R.id.content_frame,new FlightsFragment()).commit();
-        } else if (currentSect == R.id.nav_offers) {
-            fragmentManager.beginTransaction().replace(R.id.content_frame,new OffersFragment()).addToBackStack("HOLA").commit();
-        } else if (currentSect == R.id.nav_airports) {
-
-        } else if (currentSect == R.id.nav_conversor) {
-
-        } else if (currentSect == R.id.nav_bin) {
-
-        } else if (currentSect == R.id.nav_configuration) {
-
-        }
-;
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -185,7 +165,7 @@ public class MainActivity extends AppCompatActivity
             fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             fragmentManager.beginTransaction().replace(R.id.content_frame,new FlightsFragment()).commit();
         } else if (id == R.id.nav_offers) {
-            fragmentManager.beginTransaction().replace(R.id.content_frame,new OffersFragment()).addToBackStack("HOLA").commit();
+            fragmentManager.beginTransaction().replace(R.id.content_frame,of).addToBackStack("HOLA").commit();
         } else if (id == R.id.nav_airports) {
             af = new AirportsFragment();
             fragmentManager.beginTransaction().replace(R.id.content_frame,af).addToBackStack(null).commit();

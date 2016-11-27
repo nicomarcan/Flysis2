@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -35,14 +36,16 @@ import java.util.ArrayList;
 public class GetFlickrPhotoTask extends AsyncTask<String, Void, String> {
 
 
-    private Context context;
+    private Activity context;
     private String id;
+    private ProgressBar bar;
 
 
 
-    public GetFlickrPhotoTask(Context context, CardView cardView) {
+    public GetFlickrPhotoTask(Activity context, CardView cardView,ProgressBar bar) {
         this.context = context;
         this.cardView = cardView;
+        this.bar = bar;
     }
 
 
@@ -85,6 +88,7 @@ public class GetFlickrPhotoTask extends AsyncTask<String, Void, String> {
             if(result == null){
                 if(cardView != null)
                  cardView.setBackground(new BitmapDrawable(CacheImages.getInstance().getImagesMap().get(id) ));
+                bar.setVisibility(View.GONE);
                 return;
             }
             JSONObject obj = new JSONObject(result);
@@ -106,7 +110,6 @@ public class GetFlickrPhotoTask extends AsyncTask<String, Void, String> {
 
                 DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
                         .cacheOnDisk(true)
-                        .showImageOnLoading(R.drawable.ic_loading)
                         .showImageOnFail(R.drawable.ic_error)     //bajar iconos
                         .build();
                 ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context)
@@ -126,6 +129,8 @@ public class GetFlickrPhotoTask extends AsyncTask<String, Void, String> {
                                 super.onLoadingComplete(imageUri, view, loadedImage);
                                 CacheImages.getInstance().getImagesMap().put(id, loadedImage);
                                 cardView.setBackground(new BitmapDrawable(loadedImage));
+                                bar.setVisibility(View.GONE);
+
                             }
 
                         });

@@ -70,7 +70,7 @@ public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.MyViewHolder
 
         CardView cardView = (CardView)   holder.cardView;
         cardView.setBackground(ContextCompat.getDrawable(act, R.drawable.ic_loading));
-        new GetFlickrPhotoTask(holder.cardView.getContext(),  cardView).execute(prod.getName().split(",")[0].replaceAll(" ",""),prod.getId());
+        //new GetFlickrPhotoTask(act, cardView,bar).execute(prod.getName().split(",")[0].replaceAll(" ",""),prod.getId());
         // Comentar la línea anterior y descomentar la siguiente para ver de que manera el framework muestra una imagen alternativa al no encontrar la solicitada.
         //imageLoader.displayImage("http://itba.edu.ar/sites/default/themes/itba/assets/images/back2.jpg", imageView);
     }
