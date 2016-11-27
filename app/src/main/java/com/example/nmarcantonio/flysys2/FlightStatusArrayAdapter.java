@@ -5,8 +5,10 @@ import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -21,8 +23,10 @@ import com.daimajia.swipe.adapters.BaseSwipeAdapter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static android.R.attr.id;
+import static android.R.attr.singleUser;
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
 
@@ -34,10 +38,11 @@ public class FlightStatusArrayAdapter extends BaseSwipeAdapter{
     private Context context;
     private List<FlightStatus> flights;
     private BaseSwipeAdapter adapter = this;
-
-    public FlightStatusArrayAdapter(Context context, List<FlightStatus> objects) {
+    private SwipeRefreshLayout swiping;
+    public FlightStatusArrayAdapter(Context context, List<FlightStatus> objects, SwipeRefreshLayout swiping) {
         this.flights=objects;
         this.context = context;
+        this.swiping = swiping;
     }
 
     @Override
@@ -84,6 +89,7 @@ public class FlightStatusArrayAdapter extends BaseSwipeAdapter{
             @Override
             public void onClose(SwipeLayout layout) {
                 //when the SurfaceView totally cover the BottomView.
+                //;
             }
 
             @Override
@@ -93,6 +99,7 @@ public class FlightStatusArrayAdapter extends BaseSwipeAdapter{
 
             @Override
             public void onStartOpen(SwipeLayout layout) {
+                //
             }
 
             @Override
@@ -125,7 +132,7 @@ public class FlightStatusArrayAdapter extends BaseSwipeAdapter{
                 //when user's hand released.
             }
         });
-
+        
         ViewTreeObserver.OnGlobalLayoutListener swipeGlobalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {

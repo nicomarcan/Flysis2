@@ -209,7 +209,6 @@
                             android:layout_height="wrap_content"
                             android:id="@+id/flight_origin_content"
                             android:clipToPadding="false"
-                            android:text="Buenos Aires"
                             android:textSize="16dp"
                             android:textColor="#424242"
                             android:layout_centerHorizontal="false"
@@ -239,7 +238,6 @@
                                 android:layout_height="wrap_content"
                                 android:id="@+id/flight_destination_content_2"
                                 android:clipToPadding="false"
-                                android:text="Miami"
                                 android:textSize="16dp"
                                 android:textColor="#424242"
                                 android:layout_centerHorizontal="false"
@@ -255,7 +253,6 @@
                         android:clipToPadding="false"
                         android:text="Ver mas"
                         android:textSize="20dp"
-                        android:textColor="#022cff"
                         android:layout_centerHorizontal="true"
                         android:textAlignment="center"
                         android:layout_below="@id/flight_info_detail_wrapper"
@@ -318,62 +315,31 @@
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"
                         />
-                    <RelativeLayout
+                    <LinearLayout
                         android:id="@+id/flight_comments"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:clickable="true"
                         android:background="?attr/selectableItemBackground"
-                        android:padding="20dp"
+                        android:padding="10dp"
                         android:orientation="vertical"
                         >
-                        <RelativeLayout
+                        <ListView
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:id="@+id/flight_comment_stars">
-                                <ImageView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:src="@drawable/ic_star_black_24dp"
-                                    />
-                                <ImageView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:src="@drawable/ic_star_black_24dp"/>
-                                <ImageView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:src="@drawable/ic_star_black_24dp"/>
-                                <ImageView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:src="@drawable/ic_star_black_24dp"/>
-                                <ImageView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:src="@drawable/ic_star_black_24dp"/>
-
-                            </LinearLayout>
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:src="@drawable/ic_thumb_up_green_24dp"
-                                android:gravity="right"
-                                android:layout_alignParentRight="true"
-                                />
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="700dp"
-                                android:text="Bueno vuelo!!!"
-                                android:textSize="16dp"
-                                android:textColor="@android:color/black"
-                                android:layout_below="@id/flight_comment_stars"/>
-                        </RelativeLayout>
-                    </RelativeLayout>
+                            android:layout_height="wrap_content"
+                            android:id="@+id/flight_comments_preview_list"
+                            android:orientation="vertical"
+                            android:clickable="false"
+                            android:focusable="false"
+                            />
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Ver mas comentarios"
+                            android:textSize="20dp"
+                            android:gravity="center_horizontal"
+                            />
+                    </LinearLayout>
                 </LinearLayout>
             </android.support.v7.widget.CardView>
         </FrameLayout>

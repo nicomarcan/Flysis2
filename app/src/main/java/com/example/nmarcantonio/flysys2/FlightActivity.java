@@ -150,6 +150,9 @@ public class FlightActivity extends Activity{
                 new GetFlightInfoTask(
                         new FlightInfoCallback(findViewById(R.id.flight_info_coordination), mapFragment, context, flights)
                 ).execute(airline, number);
+
+                new GetFlightCommentsPreviewTask(findViewById(R.id.flight_comments_preview_list), context).execute(airline, number);
+
             }
         };
         new Handler().post(r);

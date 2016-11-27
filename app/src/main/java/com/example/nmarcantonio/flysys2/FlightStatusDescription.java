@@ -29,14 +29,14 @@ public class FlightStatusDescription implements Serializable {
                     /* PROGRAMADO */
                     Date departureTime;
                     if (fi.departure.actual_gate_time != null && !fi.departure.scheduled_gate_time.equals(fi.departure.actual_gate_time)) {
-                        /* HAY DELAY EN ABORDAJE*/
-                        departureTime = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss", new Locale("es", "arg")).parse(fi.departure.scheduled_gate_time);
-
-                        posDateDescription = "(hay un retraso de " + CustomDateInterval.longInterval(departureTime, departureTimeZone, currentTime, currentTimeZone) + ")";
+                        /* Hay DELAY EN ABORDAJE*/
+                        departureTime = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss", new Locale("es", "arg")).parse(fi.departure.actual_gate_time);
+                        Date departureScheduled = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss", new Locale("es", "arg")).parse(fi.departure.scheduled_gate_time);
+                        posDateDescription = "(Hay un retraso de " + CustomDateInterval.longInterval(departureTime, departureTimeZone, departureScheduled, departureTimeZone) + ")";
 
                     }
                     else {
-                        /* NO HAY DELAY EN ABORDAJE */
+                        /* NO Hay DELAY EN ABORDAJE */
                         departureTime = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss", new Locale("es", "arg")).parse(fi.departure.scheduled_gate_time);
                     }
                     if (currentTime.compareTo(departureTime) < 0) {
@@ -47,11 +47,12 @@ public class FlightStatusDescription implements Serializable {
                     else {
                         state = FlightStatus.FlightStatusState.BOARDING;
                         if (fi.departure.actual_time != null && !fi.departure.actual_time.equals(fi.departure.scheduled_time)) {
-                            departureTime = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss", new Locale("es", "arg")).parse(fi.departure.scheduled_time);
-                            posDateDescription = "(hay un retraso de " + CustomDateInterval.longInterval(departureTime, departureTimeZone, currentTime, currentTimeZone) + ")";
+                            departureTime = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss", new Locale("es", "arg")).parse(fi.departure.actual_time);
+                            Date departureScheduled = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss", new Locale("es", "arg")).parse(fi.departure.scheduled_time);
+                            posDateDescription = "(Hay un retraso de " + CustomDateInterval.longInterval(departureTime, departureTimeZone, departureScheduled, departureTimeZone) + ")";
                         }
                         else {
-                            departureTime = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss", new Locale("es", "arg")).parse(fi.departure.scheduled_gate_time);
+                            departureTime = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss", new Locale("es", "arg")).parse(fi.departure.scheduled_time);
                         }
                         descriptionHeader = "Despega en ";
 
@@ -63,12 +64,14 @@ public class FlightStatusDescription implements Serializable {
                 case "A":
                     /* ACTIVO */
                     Date arrivalTime;
-                    if (fi.arrival.actual_time != null) {
-                        /* HAY DELAY EN ABORDAJE*/
+                    if (fi.arrival.actual_time != null && !fi.arrival.actual_time.equals(fi.arrival.scheduled_time)) {
+                        /* Hay DELAY EN ABORDAJE*/
                         arrivalTime = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss", new Locale("es", "arg")).parse(fi.arrival.actual_time);
+                        Date arrivalScheduled = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss", new Locale("es", "arg")).parse(fi.arrival.scheduled_time);
+                        posDateDescription = "(Hay un retraso de " + CustomDateInterval.longInterval(arrivalTime, arrivalTimeZone, arrivalScheduled, arrivalTimeZone) + ")";
                     }
                     else {
-                        /* NO HAY DELAY EN ABORDAJE */
+                        /* NO Hay DELAY EN ABORDAJE */
                         arrivalTime = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss", new Locale("es", "arg")).parse(fi.arrival.scheduled_time);
                     }
                     state = FlightStatus.FlightStatusState.FLYING;
@@ -80,12 +83,14 @@ public class FlightStatusDescription implements Serializable {
                 case "R":
                     /* DESVIO */
                     Date atime;
-                    if (fi.arrival.actual_time != null) {
-                        /* HAY DELAY EN ABORDAJE*/
+                    if (fi.arrival.actual_time != null && !fi.arrival.actual_time.equals(fi.arrival.scheduled_time)) {
+                        /* Hay DELAY EN ABORDAJE*/
                         atime = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss", new Locale("es", "arg")).parse(fi.arrival.actual_time);
+                        Date arrivalScheduled = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss", new Locale("es", "arg")).parse(fi.arrival.scheduled_time);
+                        posDateDescription = "(Hay un retraso de " + CustomDateInterval.longInterval(atime, arrivalTimeZone, arrivalScheduled, arrivalTimeZone) + ")";
                     }
                     else {
-                        /* NO HAY DELAY EN ABORDAJE */
+                        /* NO Hay DELAY EN ABORDAJE */
                         atime = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss", new Locale("es", "arg")).parse(fi.arrival.scheduled_time);
                     }
                     state = FlightStatus.FlightStatusState.DIVERT;
@@ -98,11 +103,11 @@ public class FlightStatusDescription implements Serializable {
                     /* Aterrizado*/
                     Date landTime;
                     if (fi.arrival.actual_time != null) {
-                        /* HAY DELAY EN ABORDAJE*/
+                        /* Hay DELAY EN ABORDAJE*/
                         landTime = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss", new Locale("es", "arg")).parse(fi.arrival.actual_time);
                     }
                     else {
-                        /* NO HAY DELAY EN ABORDAJE */
+                        /* NO Hay DELAY EN ABORDAJE */
                         landTime = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss", new Locale("es", "arg")).parse(fi.arrival.scheduled_time);
                     }
                     state = FlightStatus.FlightStatusState.LANDED;
@@ -133,7 +138,7 @@ public class FlightStatusDescription implements Serializable {
         if (!state.equals(FlightStatus.FlightStatusState.CANCELLED)) {
             ret += CustomDateInterval.longInterval(currentDate, currentTimeZone, nextRelevantDate, nextTimeZone);
             if (posDateDescription != null) {
-                ret += posDateDescription;
+                ret += "\n " + posDateDescription;
             }
         }
         return ret;
