@@ -15,6 +15,8 @@ import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -34,6 +36,7 @@ import com.google.gson.reflect.TypeToken;
 import android.os.Parcel;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.MenuItemCompat;
@@ -89,6 +92,7 @@ public class AirportsFragment extends Fragment  {
     private Map<String,CityInfo_2> citiesMap;
     private AirportsFragment ap = this;
     private Integer selected;
+    private boolean noInternet = false;
 
 
 
@@ -123,10 +127,23 @@ public class AirportsFragment extends Fragment  {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-
-                if (!citiesMap.containsKey(query)) return true;
-                loc.setLongitude(citiesMap.get(query).getLongitude());
-                loc.setLatitude(citiesMap.get(query).getLatitude());
+                if(noInternet){
+                    Toast.makeText(context, R.string.no_internet_msg, Toast.LENGTH_LONG).show();
+                    return true;
+                }
+                String[] split = query.split(" ");
+                String city = "";
+                for(int i = 0;i<split.length;i++){
+                    city+= split[i].substring(0,1).toUpperCase()+split[i].substring(1).toLowerCase();
+                    if(i != split.length -1)
+                        city+=" ";
+                }
+                if (!citiesMap.containsKey(city)){
+                    Toast.makeText(getActivity(), R.string.wrong_city_msg, Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                loc.setLongitude(citiesMap.get(city).getLongitude());
+                loc.setLatitude(citiesMap.get(city).getLatitude());
                 new GetNearbyAirportsAsync().execute();
                 return false;
             }
@@ -217,6 +234,13 @@ public class AirportsFragment extends Fragment  {
             HttpURLConnection urlConnection = null;
 
             try {
+
+                ConnectivityManager connMgr = (ConnectivityManager)
+                        context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
+                if (networkInfo == null || !networkInfo.isConnected())
+                    return null;
                 URL url = new URL("http://hci.it.itba.edu.ar/v1/api/geo.groovy?method=getcities&" +"page_size=1000");
                 urlConnection = (HttpURLConnection) url.openConnection();
                 InputStream in = new BufferedInputStream(urlConnection.getInputStream());
@@ -252,6 +276,12 @@ public class AirportsFragment extends Fragment  {
         protected void onPostExecute(String result) {
 
             try {
+
+                if(result == null) {
+                    noInternet =true;
+                    Snackbar.make(getActivity().findViewById(android.R.id.content), R.string.no_internet_msg, Snackbar.LENGTH_LONG).show();
+                    return;
+                }
                 JSONObject obj = new JSONObject(result);
                 if (!obj.has(AirportsFragment.CITIES_NAME)) {
                     return;
@@ -316,6 +346,13 @@ public class AirportsFragment extends Fragment  {
             HttpURLConnection urlConnection = null;
 
             try {
+
+                ConnectivityManager connMgr = (ConnectivityManager)
+                        context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
+                if (networkInfo == null || !networkInfo.isConnected())
+                    return null;
                 URL url = new URL("http://hci.it.itba.edu.ar/v1/api/geo.groovy?method=getairportsbyposition&" + "" +
                                   "latitude=" + loc.getLatitude() + "&longitude=" + loc.getLongitude() + "&radius=" + 100);
                 urlConnection = (HttpURLConnection) url.openConnection();
@@ -334,6 +371,11 @@ public class AirportsFragment extends Fragment  {
         protected void onPostExecute(String result) {
 
             try {
+
+                if(result == null) {
+                    Snackbar.make(getActivity().findViewById(android.R.id.content), R.string.no_internet_msg, Snackbar.LENGTH_LONG).show();
+                    return;
+                }
                 JSONObject obj = new JSONObject(result);
                 if (!obj.has(AirportsFragment.AIRPORTS_NAME))
                     return ;

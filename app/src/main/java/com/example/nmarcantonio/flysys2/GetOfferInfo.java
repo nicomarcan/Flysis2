@@ -3,10 +3,14 @@ package com.example.nmarcantonio.flysys2;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.NotificationCompat;
 import android.view.View;
 import android.widget.AdapterView;
@@ -45,15 +49,17 @@ public class GetOfferInfo extends AsyncTask<Integer, Void, String> {
     private Integer days;
     private Integer maxDays;
     private Double ratio;
+    private View view;
     public static ArrayList<OfferInfo> values = new ArrayList<OfferInfo>();
 
 
-    public GetOfferInfo(Activity act, String currentCity, String destId, Double offerPrice,Double ratio) {
+    public GetOfferInfo(Activity act, String currentCity, String destId, Double offerPrice,Double ratio,View view) {
         this.act = act;
         this.currentCity = currentCity;
         this.destId = destId;
         this.offerPrice = offerPrice;
         this.ratio = ratio;
+        this.view = view;
     }
 
 
@@ -73,6 +79,13 @@ public class GetOfferInfo extends AsyncTask<Integer, Void, String> {
 
 
         try {
+
+            ConnectivityManager connMgr = (ConnectivityManager)
+                    act.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
+            if (networkInfo == null || !networkInfo.isConnected())
+                return null;
             URL url;
             url= new URL("http://hci.it.itba.edu.ar/v1/api/booking.groovy?method=getonewayflights&from="+currentCity+"&to="+destId+"&dep_date="+formattedDate+"&adults=1&children=0&infants=0&min_price="+offerPrice/ratio+"&max_price="+offerPrice/ratio);
             urlConnection = (HttpURLConnection) url.openConnection();
@@ -90,6 +103,12 @@ public class GetOfferInfo extends AsyncTask<Integer, Void, String> {
     @Override
     protected void onPostExecute(String result) {
         try {
+
+            if(result == null) {
+                Snackbar.make(view, R.string.no_internet_msg, Snackbar.LENGTH_LONG).show();
+                act.findViewById(R.id.results_progress_bar).setVisibility(View.GONE);
+                return;
+            }
             JSONObject obj = new JSONObject(result);
           //  Toast.makeText(act, currentCity+" "+destId+" "+offerPrice*ratio, Toast.LENGTH_SHORT).show();
 
@@ -128,7 +147,7 @@ public class GetOfferInfo extends AsyncTask<Integer, Void, String> {
             }
 
                 if(days < maxDays)
-                    new GetOfferInfo(act,currentCity,destId,offerPrice,ratio).execute(days+1,maxDays);
+                    new GetOfferInfo(act,currentCity,destId,offerPrice,ratio,view).execute(days+1,maxDays);
             else {
                     final GridView listView = (GridView) act.findViewById(R.id.offer_list_view);
                     OfferInfoAdapter adapter = new OfferInfoAdapter(act, values.toArray(new OfferInfo[values.size()]));

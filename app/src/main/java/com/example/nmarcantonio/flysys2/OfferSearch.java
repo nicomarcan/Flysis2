@@ -7,14 +7,18 @@ import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
@@ -25,6 +29,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -62,6 +67,7 @@ public class OfferSearch extends AppCompatActivity {
     private String srcId;
     private String destId;
     public static Integer filter=0;
+    private boolean noInternet=false;
 
 
 
@@ -114,15 +120,21 @@ public class OfferSearch extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextSubmit(String query) {
+                if(noInternet){
+                    Toast.makeText(context, R.string.no_internet_msg, Toast.LENGTH_SHORT).show();
+                    return true;
+                }
                 destId = nameToId.get(query.toLowerCase());
                 if(destId == null){
                     Toast.makeText(context, R.string.wrong_city_msg, Toast.LENGTH_SHORT).show();
-                    return false;
+                    return true;
                 }
                 String [] aux = query.toLowerCase().split(" ");
                 String dest="";
                 for(int i = 0; i < aux.length;i++){
-                    dest +=" "+ aux[i].substring(0, 1).toUpperCase() + aux[i].substring(1);
+                    dest +=aux[i].substring(0, 1).toUpperCase() + aux[i].substring(1);
+                    if(i != aux.length-1)
+                        dest+=" ";
                 }
                 Intent intent = new Intent(context, OfferResults.class);
                 intent.putExtra("filter", filter.toString());
@@ -196,6 +208,13 @@ public class OfferSearch extends AppCompatActivity {
             String ret = null, order;
             try {
 
+
+                ConnectivityManager connMgr = (ConnectivityManager)
+                        context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
+                if (networkInfo == null || !networkInfo.isConnected())
+                    return null;
                 URL url = new URL("http://hci.it.itba.edu.ar/v1/api/geo.groovy?method=getcities&page_size=1000");
                 conn = (HttpURLConnection) new URL(url.toString()).openConnection();
 
@@ -214,6 +233,12 @@ public class OfferSearch extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             try {
+
+                if(result == null) {
+                    noInternet = true;
+                    Toast.makeText(context, R.string.no_internet_msg, Toast.LENGTH_LONG).show();
+                    return;
+                }
 
                 JSONObject obj = new JSONObject(result);
                 if (!obj.has("cities")) {

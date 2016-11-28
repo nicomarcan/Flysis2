@@ -12,9 +12,9 @@
     <string name="navigation_drawer_close">Cerrar navigation drawer</string>
     <string name="you">Usted</string>
     <string name="bin">Papelera</string>
-    <string name="toBin">"movido a la Papelera"</string>
+    <string name="toBin">movido a la Papelera</string>
     <string name="eliminated">"eliminado"</string>
-    <string name="undo">\"movido a Mis Vuelos\"</string>
+    <string name="undo">movido a Mis Vuelos</string>
     <string name="action_settings">Ajustes</string>
     <string name="action_offer_search">Búsqueda de Ofertas</string>
     <string name="search_title">Buscar una Oferta</string>
@@ -157,4 +157,5 @@
     <string name="hour">hora</string>
     <string name="minute">minuto</string>
     <string name="flight_description_delay">(Hay un retraso de %1$s)</string>
+    <string name="results_error">No se encontraron ofertas</string>
 </resources>
