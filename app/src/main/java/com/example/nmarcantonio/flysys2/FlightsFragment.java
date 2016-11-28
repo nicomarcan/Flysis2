@@ -116,7 +116,9 @@ public class FlightsFragment extends Fragment {
                     @Override
                     public void run() {
                         if(flights.size() != 0){
-                            activity.findViewById(R.id.flights_empty_error).setVisibility(View.GONE);
+                            if(activity.findViewById(R.id.flights_empty_error)!= null) {
+                                activity.findViewById(R.id.flights_empty_error).setVisibility(View.GONE);
+                            }
                         }
                         SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) activity.findViewById(R.id.flights_refresh);
                         if (swipeRefreshLayout != null) {
