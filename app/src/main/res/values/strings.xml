@@ -138,12 +138,23 @@
     <string name="flight_info_status_cancelled">Cancelled</string>
     <string name="flight_info_status_unknown">Unknown</string>
     <string name="flight">Flight</string>
-    <string name="flight_info_not_found">No se encontro el vuelo</string>
+    <string name="flight_info_not_found">Flight not found</string>
     <string name="title_activity_map">Map</string>
     <string name="wrong_city_msg">Enter a valid city</string>
     <string name="air_identifier_missing">Enter the airline identifier</string>
     <string name="air_identifier_error">The airline identifier must have only two letters and no numbers</string>
     <string name="flight_missing">Enter the flight number</string>
     <string name="flight_error">The flight number should only contain numbers</string>
->>>>>>> 7dcb4838b7c5a542bf5fdcd0bf74e41fbbf932c4
+    <string name="flight_info_more">Read more info</string>
+    <string name="flight_comments_more">Read more comments</string>
+    <string name="flight_info_status_flying">Flying</string>
+    <string name="flight_description_header_boarding">Departing in %1$s.</string>
+    <string name="flight_description_header_scheduled">Boarding in %1$s.</string>
+    <string name="flight_description_header_flying">Landing in %1$s</string>
+    <string name="flight_description_header_landed">Landed %1$s ago.</string>
+    <string name="flight_descriptin_header_cancelled">The flight was cancelled.</string>
+    <string name="day">day</string>
+    <string name="hour">hour</string>
+    <string name="minute">minute</string>
+    <string name="flight_description_delay">(There is a %1$s delay)</string>
 </resources>

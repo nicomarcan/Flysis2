@@ -1,5 +1,7 @@
 package com.example.nmarcantonio.flysys2;
 
+import android.content.Context;
+
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -27,8 +29,8 @@ public class FlightStatus implements Serializable {
         this.departure = departure;
     }
 
-    public void setDescription() {
-        flightStatusDescription = new FlightStatusDescription(this);
+    public void setDescription(Context context) {
+        flightStatusDescription = new FlightStatusDescription(this, context);
     }
     @Override
     public boolean equals(Object obj) {

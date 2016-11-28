@@ -1,5 +1,7 @@
 package com.example.nmarcantonio.flysys2;
 
+import android.content.Context;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -22,11 +24,11 @@ public class CustomDateInterval {
         return interval;
     }
 
-    public static String longInterval(Date from, long fromTimeZone, Date to, long toTimeZone) {
+    public static String longInterval(Date from, long fromTimeZone, Date to, long toTimeZone, Context context) {
         long[] interval = interval(from, fromTimeZone, to, toTimeZone);
         String ret = "";
         if (interval[0] > 0) {
-            ret += " " + interval[0] + " dia";
+            ret += " " + interval[0] + " " + context.getString(R.string.day);
             if (interval[0] > 1) {
                 ret += "s";
             }
@@ -38,7 +40,7 @@ public class CustomDateInterval {
             }
         }
         if (interval[1] > 0) {
-            ret += " " + interval[1] + " hora";
+            ret += " " + interval[1] + " " + context.getString(R.string.hour);
             if (interval[1] > 1) {
                 ret += "s";
             }
@@ -50,14 +52,13 @@ public class CustomDateInterval {
             }
         }
         if (interval[2] > 0) {
-            ret += " " + interval[2] + " minuto";
+            ret += " " + interval[2] + " "+  context.getString(R.string.minute);
             if (interval[2] > 1) {
                 ret += "s";
             }
-            ret += ".";
         }
         if (interval[0] <= 0 && interval[1] <= 0 && interval[2] <= 0) {
-            ret += "0 minutos.";
+            ret += "0 "+ context.getString(R.string.minute) + "s";
         }
         return ret;
     }

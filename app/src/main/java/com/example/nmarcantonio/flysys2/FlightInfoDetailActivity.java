@@ -18,7 +18,7 @@ public class FlightInfoDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.flight_info_detail_activity);
         FlightStatus fi = (FlightStatus) getIntent().getSerializableExtra("flight_info");
-        fi.setDescription();
+        fi.setDescription(this);
         String statusString;
         switch (fi.flightStatusDescription.state) {
             case LANDED:
@@ -31,7 +31,7 @@ public class FlightInfoDetailActivity extends AppCompatActivity {
                 statusString = getResources().getString(R.string.flight_info_status_scheduled);
                 break;
             case FLYING:
-                statusString = getResources().getString(R.string.flight_info_status_scheduled);
+                statusString = getResources().getString(R.string.flight_info_status_flying);
                 break;
             case DIVERT:
                 statusString = getResources().getString(R.string.flight_info_status_divert);;

@@ -24,7 +24,7 @@ public class NotificationBroadcastReceiver extends BroadcastReceiver {
             if (flightStatus == null) {
                 return;
             }
-            flightStatus.setDescription();
+            flightStatus.setDescription(context);
             /*
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, resultIntent, 0);
             */
@@ -54,7 +54,7 @@ public class NotificationBroadcastReceiver extends BroadcastReceiver {
                 Notification notification = new Notification.Builder(context)
                         .setSmallIcon(R.drawable.ic_flight_black_24dp)
                         .setContentTitle("Vuelo "+ flightStatus.airline.id + " " + String.valueOf(flightStatus.number))
-                        .setContentText(flightStatus.flightStatusDescription.buildDescription(new Date()))
+                        .setContentText(flightStatus.flightStatusDescription.buildDescription(new Date(), context))
                         .setContentIntent(pendingIntent)
                         .setAutoCancel(true)
                         .build();

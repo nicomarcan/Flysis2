@@ -171,7 +171,7 @@ public class FlightStatusArrayAdapter extends BaseSwipeAdapter{
             }
         });
 
-        holder.header.setText("Vuelo " + flightStatus.number);
+        holder.header.setText(context.getString(R.string.flight) + " " + flightStatus.number);
         holder.origin.setText(flightStatus.departure.airport.id);
         holder.destintation.setText(flightStatus.arrival.airport.id);
         DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
@@ -196,39 +196,39 @@ public class FlightStatusArrayAdapter extends BaseSwipeAdapter{
             }
 
         });
-        flightStatus.setDescription();
+        flightStatus.setDescription(context);
         if (flightStatus.flightStatusDescription != null) {
-            holder.description.setText(flightStatus.flightStatusDescription.buildDescription(new Date()));
+            holder.description.setText(flightStatus.flightStatusDescription.buildDescription(new Date(), context));
             String statusString;
             int statusColor;
 
             switch (flightStatus.flightStatusDescription.state) {
                 case SCHEDULED:
-                    statusString = "Programado";
+                    statusString = context.getString(R.string.flight_info_status_scheduled);
                     statusColor = context.getResources().getColor(R.color.colorGreen);
                     break;
                 case BOARDING:
-                    statusString = "Abordando";
+                    statusString = context.getString(R.string.flight_info_status_boarding);
                     statusColor = context.getResources().getColor(R.color.colorGreen);
                     break;
                 case FLYING:
-                    statusString = "En vuelo";
+                    statusString = context.getString(R.string.flight_info_status_flying);
                     statusColor = context.getResources().getColor(R.color.colorGreen);
                     break;
                 case DIVERT:
-                    statusString = "Desviado";
+                    statusString = context.getString(R.string.flight_info_status_divert);
                     statusColor = context.getResources().getColor(R.color.colorRed);
                     break;
                 case CANCELLED:
-                    statusString = "Cancelado";
+                    statusString = context.getString(R.string.flight_info_status_cancelled);
                     statusColor = context.getResources().getColor(R.color.colorRed);
                     break;
                 case LANDED:
-                    statusString = "Aterrizado";
+                    statusString = context.getString(R.string.flight_info_status_landed);
                     statusColor = context.getResources().getColor(R.color.colorGreen);
                     break;
                 default:
-                    statusString = "Desconocido";
+                    statusString = context.getString(R.string.flight_info_status_unknown);
                     statusColor = context.getResources().getColor(R.color.colorRed);
                     break;
             }

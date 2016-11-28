@@ -101,7 +101,7 @@ public class FlightInfoCallback implements TaskCallback, OnMapReadyCallback {
 
                 String jsonFragment = obj.getString("status");
                 final FlightStatus fi = gson.fromJson(jsonFragment, listType);
-                ((TextView)flightView.findViewById(R.id.flight_info_number)).setText("Vuelo " + fi.number);
+                ((TextView)flightView.findViewById(R.id.flight_info_number)).setText(context.getString(R.string.flight) + " " + fi.number);
                 ((TextView)flightView.findViewById(R.id.flight_origin_content)).setText(fi.departure.airport.city.name.split(",")[0]);
                 ((TextView)flightView.findViewById(R.id.flight_destination_content_2)).setText(fi.arrival.airport.city.name.split(",")[0]);
                 String statusString;
@@ -110,35 +110,35 @@ public class FlightInfoCallback implements TaskCallback, OnMapReadyCallback {
                 Date arrivalTime = null;
                 Date currentTime = new Date();
                 String stringHeader = null;
-                fi.setDescription();
+                fi.setDescription(context);
                 FlightStatusDescription fd = fi.flightStatusDescription;
                 switch (fd.state) {
                     case SCHEDULED:
-                        statusString = "Programado";
+                        statusString = context.getString(R.string.flight_info_status_scheduled);
                         statusColor = flightView.getResources().getColor(R.color.colorGreen);
                         break;
                     case BOARDING:
-                        statusString = "Abordando";
+                        statusString = context.getString(R.string.flight_info_status_boarding);
                         statusColor = flightView.getResources().getColor(R.color.colorGreen);
                         break;
                     case FLYING:
-                        statusString = "En vuelo";
+                        statusString = context.getString(R.string.flight_info_status_flying);
                         statusColor = flightView.getResources().getColor(R.color.colorGreen);
                         break;
                     case DIVERT:
-                        statusString = "Desviado";
+                        statusString = context.getString(R.string.flight_info_status_divert);
                         statusColor = flightView.getResources().getColor(R.color.colorRed);
                         break;
                     case CANCELLED:
-                        statusString = "Cancelado";
+                        statusString = context.getString(R.string.flight_info_status_cancelled);
                         statusColor = flightView.getResources().getColor(R.color.colorRed);
                         break;
                     case LANDED:
-                        statusString = "Aterrizado";
+                        statusString = context.getString(R.string.flight_info_status_landed);
                         statusColor = flightView.getResources().getColor(R.color.colorGreen);
                         break;
                     default:
-                        statusString = "Desconocido";
+                        statusString = context.getString(R.string.flight_info_status_unknown);
                         statusColor = flightView.getResources().getColor(R.color.colorRed);
                         break;
                 }
@@ -147,7 +147,7 @@ public class FlightInfoCallback implements TaskCallback, OnMapReadyCallback {
                 ((TextView)flightView.findViewById(R.id.flight_info_status)).setText(statusString);
                 TextView dateText = (TextView) flightView.findViewById(R.id.flight_info_status_description);
                 if (fi.flightStatusDescription.state != CANCELLED) {
-                    dateText.setText(fi.flightStatusDescription.buildDescription(new Date()));
+                    dateText.setText(fi.flightStatusDescription.buildDescription(new Date(), context));
                 }
 
                 View detailView = flightView.findViewById(R.id.flight_info_detail);

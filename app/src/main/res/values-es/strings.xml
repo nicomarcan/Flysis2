@@ -145,4 +145,16 @@
     <string name="air_identifier_missing">Ingrese el identificador de la aerolinea</string>
     <string name="flight_missing">Ingrese el número de vuelo</string>
     <string name="flight_error">El número de vuelo solo debe contener números</string>
+    <string name="flight_info_more">Ver más información</string>
+    <string name="flight_comments_more">Ver más comentarios</string>
+    <string name="flight_info_status_flying">En vuelo</string>
+    <string name="flight_description_header_boarding">Despegando en %1$s.</string>
+    <string name="flight_description_header_scheduled">Abordando en %1$s.</string>
+    <string name="flight_description_header_flying">Aterrizando en %1$s.</string>
+    <string name="flight_description_header_landed"> Aterrizdo hace %1$s.</string>
+    <string name="flight_descriptin_header_cancelled">El vuelo se cancelo.</string>
+    <string name="day">día</string>
+    <string name="hour">hora</string>
+    <string name="minute">minuto</string>
+    <string name="flight_description_delay">(Hay un retraso de %1$s)</string>
 </resources>
