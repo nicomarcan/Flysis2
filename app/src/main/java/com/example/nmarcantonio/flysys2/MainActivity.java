@@ -171,18 +171,18 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
         android.app.FragmentManager fragmentManager = getFragmentManager();
 
-        if (id == R.id.nav_flights) {
+        if (id == R.id.nav_flights && currentSect !=R.id.nav_flights  ) {
             fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             fragmentManager.beginTransaction().replace(R.id.content_frame,new FlightsFragment()).commit();
-        } else if (id == R.id.nav_offers) {
+        } else if (id == R.id.nav_offers && currentSect !=R.id.nav_offers ) {
             of =  new OffersFragment();
             fragmentManager.beginTransaction().replace(R.id.content_frame,of).addToBackStack("HOLA").commit();
-        } else if (id == R.id.nav_airports) {
+        } else if (id == R.id.nav_airports && currentSect !=R.id.nav_airports) {
             af = new AirportsFragment();
             fragmentManager.beginTransaction().replace(R.id.content_frame,af).addToBackStack(null).commit();
-        } else if (id == R.id.nav_bin) {
+        } else if (id == R.id.nav_bin && currentSect !=R.id.nav_bin ) {
             fragmentManager.beginTransaction().replace(R.id.content_frame,new BinFragment()).addToBackStack(null).commit();
-        } else if (id == R.id.nav_configuration) {
+        } else if (id == R.id.nav_configuration && currentSect !=R.id.nav_configuration ) {
             Intent intent = new Intent(this, SettingsActivity.class);
 
             PendingIntent pendingIntent =

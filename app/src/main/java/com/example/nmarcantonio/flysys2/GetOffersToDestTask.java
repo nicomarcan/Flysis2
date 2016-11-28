@@ -1,7 +1,12 @@
 package com.example.nmarcantonio.flysys2;
 
 import android.app.Activity;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,11 +36,13 @@ public class GetOffersToDestTask extends AsyncTask<String,Void, String> {
     private String currentCity;
     private Integer filter;
     private Double ratio;
+    private View view;
 
-    public GetOffersToDestTask(Activity act,Integer filter,Double ratio) {
+    public GetOffersToDestTask(Activity act,Integer filter,Double ratio,View view) {
         this.act = act;
         this.filter=filter;
         this.ratio = ratio;
+        this.view = view;
     }
 
     @Override
@@ -48,7 +55,12 @@ public class GetOffersToDestTask extends AsyncTask<String,Void, String> {
 
 
         try {
+            ConnectivityManager connMgr = (ConnectivityManager)
+                    act.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 
+            if (networkInfo == null || !networkInfo.isConnected())
+                return null;
             //URL url= new URL("hci.it.itba.edu.ar/v1/api/geo.groovy?method=getcitiesbyposition&latitude="+loc.getLatitude()+"&longitude="+loc.getLongitude()+"&radius=100");
             URL url = new URL("http://hci.it.itba.edu.ar/v1/api/booking.groovy?method=getlastminuteflightdeals&from="+currentCity);
             urlConnection = (HttpURLConnection) url.openConnection();
@@ -69,6 +81,12 @@ public class GetOffersToDestTask extends AsyncTask<String,Void, String> {
         //Toast.makeText(context,loc.getLatitude()+" "+loc.getLongitude(),Toast.LENGTH_LONG).show();
 
         try {
+
+            if(result == null) {
+                Snackbar.make(view, R.string.no_internet_msg, Snackbar.LENGTH_LONG).show();
+                act.findViewById(R.id.results_progress_bar).setVisibility(View.GONE);
+                return;
+            }
             JSONObject obj = new JSONObject(result);
             //Toast.makeText(act,result,Toast.LENGTH_LONG).show();
             if (!obj.has(OffersFragment.DEALS_NAME)) {
@@ -84,7 +102,7 @@ public class GetOffersToDestTask extends AsyncTask<String,Void, String> {
             ArrayList<Deal> dealList = gson.fromJson(jsonFragment, listType);
             for(Deal d : dealList){
                 if(d.getId().equals(destCity)){
-                    new GetOfferInfo(act,currentCity,destCity,d.getPrice()*ratio,ratio).execute(2+filter*30,8+(filter*30));
+                    new GetOfferInfo(act,currentCity,destCity,d.getPrice()*ratio,ratio,view).execute(2+filter*30,8+(filter*30));
                     offers++;
                     return;
                 }

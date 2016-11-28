@@ -31,11 +31,11 @@ public class OfferResults  extends AppCompatActivity{
         this.getSupportActionBar().setTitle(getResources().getString(R.string.offers_to)+" "+getIntent().getStringExtra("dest"));
         if(getIntent().getDoubleExtra("offerPrice",-1.0)==-1.0) {
             //Toast.makeText(this, getIntent().getStringExtra("currentCity")+" "+getIntent().getStringExtra("destCity")+" "+getIntent().getDoubleExtra("offerPrice",-1)+" "+getIntent().getDoubleExtra("ratio",1), Toast.LENGTH_SHORT).show();
-            new GetOffersToDestTask(this, new Integer(getIntent().getStringExtra("filter")),getIntent().getDoubleExtra("ratio",1)).execute(getIntent().getStringExtra("currentCity"), getIntent().getStringExtra("destCity"));
+            new GetOffersToDestTask(this, new Integer(getIntent().getStringExtra("filter")),getIntent().getDoubleExtra("ratio",1),findViewById(android.R.id.content)).execute(getIntent().getStringExtra("currentCity"), getIntent().getStringExtra("destCity"));
         }else {
          //   Toast.makeText(this, "JEJE", Toast.LENGTH_SHORT).show();
            // Toast.makeText(this, getIntent().getStringExtra("currentCity")+" "+getIntent().getStringExtra("destCity")+" "+getIntent().getDoubleExtra("offerPrice",-1)+" "+getIntent().getDoubleExtra("ratio",1), Toast.LENGTH_SHORT).show();
-            new GetOfferInfo(this, getIntent().getStringExtra("currentCity"), getIntent().getStringExtra("destCity"), getIntent().getDoubleExtra("offerPrice",-1),getIntent().getDoubleExtra("ratio",1)).execute(2, 8);
+            new GetOfferInfo(this, getIntent().getStringExtra("currentCity"), getIntent().getStringExtra("destCity"), getIntent().getDoubleExtra("offerPrice",-1),getIntent().getDoubleExtra("ratio",1),findViewById(android.R.id.content)).execute(2, 8);
         }
 
 

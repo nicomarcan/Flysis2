@@ -14,10 +14,7 @@
             android:id="@+id/nav_airports"
             android:icon="@drawable/ic_location_on_black_24dp"
             android:title="@string/title_activity_airports" />
-    </group>
 
-    <item android:title="Communicate">
-        <menu>
             <item
                 android:id="@+id/nav_bin"
                 android:icon="@drawable/ic_delete_black_24dp"
@@ -26,7 +23,7 @@
                 android:id="@+id/nav_configuration"
                 android:icon="@drawable/ic_build_black_24dp"
                 android:title="@string/title_activity_settings" />
-        </menu>
-    </item>
+
+    </group>
 
 </menu>
