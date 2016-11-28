@@ -1,5 +1,6 @@
 package com.example.nmarcantonio.flysys2;
 
+import android.app.Activity;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Context;
@@ -12,6 +13,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -84,9 +86,15 @@ public class FlightInfoCallback implements TaskCallback, OnMapReadyCallback {
         try {
             JSONObject obj = new JSONObject(result);
             if (!obj.has("status")) {
+                FrameLayout frameLayout = (FrameLayout) flightView.findViewById(R.id.flight_info_layout_inflate);
+                ((Activity) context).getLayoutInflater().inflate(R.layout.flight_info_not_found, frameLayout);
                 return;
             }
             else {
+
+                FrameLayout frameLayout = (FrameLayout) flightView.findViewById(R.id.flight_info_layout_inflate);
+                ((Activity) context).getLayoutInflater().inflate(R.layout.flight_info_body, frameLayout);
+
                 Gson gson = new Gson();
                 Type listType = new TypeToken<FlightStatus>() {
                 }.getType();
@@ -138,7 +146,10 @@ public class FlightInfoCallback implements TaskCallback, OnMapReadyCallback {
                 ((TextView)flightView.findViewById(R.id.flight_info_status)).setTextColor(statusColor);
                 ((TextView)flightView.findViewById(R.id.flight_info_status)).setText(statusString);
                 TextView dateText = (TextView) flightView.findViewById(R.id.flight_info_status_description);
-                dateText.setText(statusDescription);
+                if (fi.flightStatusDescription.state != CANCELLED) {
+                    dateText.setText(fi.flightStatusDescription.buildDescription(new Date()));
+                }
+
 
                 if (fd.state != CANCELLED){
                     ((FlightActivity) context).addDate(dateText, fd.descriptionHeader, fd.nextRelevantDate);
@@ -201,6 +212,7 @@ public class FlightInfoCallback implements TaskCallback, OnMapReadyCallback {
                     }
                 });
 
+                new GetFlightCommentsPreviewTask(flightView.findViewById(R.id.flight_comments_preview_list), context).execute(fi.airline.getId(), String.valueOf(fi.number));
 
                 lock.lock();
                 while (!mapInit) {

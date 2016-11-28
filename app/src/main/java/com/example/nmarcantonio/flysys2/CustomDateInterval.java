@@ -9,7 +9,7 @@ import java.util.Date;
 
 public class CustomDateInterval {
     private static long[] interval(Date from, long fromTimeZone,  Date to, long toTimeZone) {
-        long diff = Math.abs(to.getTime() - toTimeZone - (from.getTime() - fromTimeZone));
+        long diff = to.getTime() - toTimeZone - (from.getTime() - fromTimeZone);
         long days = diff / (24 * 60 * 60 * 1000);
         diff = diff % (24 * 60 * 60 * 1000);
         long hours = diff / (60 * 60 * 1000);
@@ -55,6 +55,9 @@ public class CustomDateInterval {
                 ret += "s";
             }
             ret += ".";
+        }
+        if (interval[0] <= 0 && interval[1] <= 0 && interval[2] <= 0) {
+            ret += "0 minutos.";
         }
         return ret;
     }

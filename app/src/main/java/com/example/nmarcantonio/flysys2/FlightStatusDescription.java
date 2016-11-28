@@ -114,7 +114,7 @@ public class FlightStatusDescription implements Serializable {
                     nextRelevantDate = landTime;
                     nextTimeZone = arrivalTimeZone;
                     descriptionHeader = "Aterrizado hace ";
-                    timeInterval = CustomDateInterval.significantInterval(currentTime, currentTimeZone, landTime, arrivalTimeZone);
+                    timeInterval = CustomDateInterval.significantInterval(landTime, arrivalTimeZone, currentTime, currentTimeZone);
                     break;
                 case "C":
                     /* CANCELADO */
@@ -135,7 +135,10 @@ public class FlightStatusDescription implements Serializable {
         String ret = "";
         ret += descriptionHeader;
         long currentTimeZone = TimeZone.getDefault().getRawOffset();
-        if (!state.equals(FlightStatus.FlightStatusState.CANCELLED)) {
+        if (state.equals(FlightStatus.FlightStatusState.LANDED)) {
+            ret += CustomDateInterval.longInterval(nextRelevantDate, nextTimeZone, currentDate, currentTimeZone);
+        }
+        else if (!state.equals(FlightStatus.FlightStatusState.CANCELLED)) {
             ret += CustomDateInterval.longInterval(currentDate, currentTimeZone, nextRelevantDate, nextTimeZone);
             if (posDateDescription != null) {
                 ret += "\n " + posDateDescription;

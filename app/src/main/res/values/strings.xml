@@ -113,4 +113,5 @@
     <string name="flight_number">Flight Number</string>
     <string name="airline_identifier">Airline Identifier</string>
     <string name="no_internet_msg">Please check your internet connection</string>
+    <string name="flight_info_not_found">No se encontro el vuelo</string>
 </resources>

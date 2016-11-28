@@ -86,6 +86,7 @@ public class FlightActivity extends Activity{
         intentFilter.setPriority(2);
         registerReceiver(broadcastReceiver, intentFilter);
 
+        /*
         try {
             Log.d(TAG, "onResume: a");
             timer = new Timer();
@@ -95,13 +96,18 @@ public class FlightActivity extends Activity{
         } catch (IllegalStateException e){
             e.printStackTrace();
         }
+        */
         /* updateAllFlights(); */
+        if (number != null) {
+            CollapsingToolbarLayout ctl = (CollapsingToolbarLayout) findViewById(R.id.flight_info_collapsible_toolbar);
+            ctl.setTitle("Vuelo " + number);
+        }
+
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        timer.cancel();
         unregisterReceiver(broadcastReceiver);
     }
 
@@ -124,7 +130,6 @@ public class FlightActivity extends Activity{
         );
         final MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.flight_info_map);
         CollapsingToolbarLayout ctl = (CollapsingToolbarLayout) findViewById(R.id.flight_info_collapsible_toolbar);
-        ctl.setTitle("Vuelo 1");
         ctl.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.flight_info_toolbar);
@@ -151,7 +156,7 @@ public class FlightActivity extends Activity{
                         new FlightInfoCallback(findViewById(R.id.flight_info_coordination), mapFragment, context, flights)
                 ).execute(airline, number);
 
-                new GetFlightCommentsPreviewTask(findViewById(R.id.flight_comments_preview_list), context).execute(airline, number);
+
 
             }
         };
