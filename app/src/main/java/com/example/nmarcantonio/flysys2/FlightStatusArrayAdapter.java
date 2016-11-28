@@ -4,6 +4,7 @@ import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
@@ -13,12 +14,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.ArraySwipeAdapter;
 import com.daimajia.swipe.adapters.BaseSwipeAdapter;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -72,9 +78,9 @@ public class FlightStatusArrayAdapter extends BaseSwipeAdapter{
 
     @Override
     public void fillValues(final int position, View convertView){
-        FlightStatus flightStatus = (FlightStatus)getItem(position);
+        final FlightStatus flightStatus = (FlightStatus)getItem(position);
         final SwipeLayout swipeLayout = (SwipeLayout)convertView;
-        FlightStatusHolder holder;
+        final FlightStatusHolder holder;
 
         holder = new FlightStatusHolder(flightStatus.airline.id,flightStatus.number,
                 flightStatus.airline,flightStatus.departure.airport,flightStatus.arrival.airport,flightStatus);
@@ -82,6 +88,8 @@ public class FlightStatusArrayAdapter extends BaseSwipeAdapter{
         holder.origin = (TextView) swipeLayout.findViewById(R.id.flights_card_origin);
         holder.destintation = (TextView) swipeLayout.findViewById(R.id.flights_card_destination);
         holder.description = (TextView) swipeLayout.findViewById(R.id.flights_card_description);
+        holder.logo = (ImageView)convertView.findViewById((R.id.logo));
+        holder.state = (TextView) swipeLayout.findViewById(R.id.flight_card_state);
         swipeLayout.setTag(holder);
         swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
         swipeLayout.addSwipeListener(new SwipeLayout.SwipeListener() {
@@ -166,10 +174,66 @@ public class FlightStatusArrayAdapter extends BaseSwipeAdapter{
         holder.header.setText("Vuelo " + flightStatus.number);
         holder.origin.setText(flightStatus.departure.airport.id);
         holder.destintation.setText(flightStatus.arrival.airport.id);
+        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
+                .cacheOnDisk(true)
+                .showImageOnLoading(R.drawable.ic_loading)
+                .showImageOnFail(R.drawable.ic_error)
+                .build();
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context)
+                .defaultDisplayImageOptions(defaultOptions)
+                .build();
+        ImageLoader imageLoader = ImageLoader.getInstance();
+        if(!imageLoader.isInited())
+            imageLoader.init(config);
+
+        imageLoader.loadImage(flightStatus.airline.getLogo(), new SimpleImageLoadingListener() {
+
+            @Override
+            public void onLoadingComplete(String imageUri, View view,
+                                          Bitmap loadedImage) {
+                super.onLoadingComplete(imageUri, view, loadedImage);
+                holder.logo.setImageBitmap(loadedImage);
+            }
+
+        });
         flightStatus.setDescription();
         if (flightStatus.flightStatusDescription != null) {
             holder.description.setText(flightStatus.flightStatusDescription.buildDescription(new Date()));
-        }
+            String statusString;
+            int statusColor;
 
+            switch (flightStatus.flightStatusDescription.state) {
+                case SCHEDULED:
+                    statusString = "Programado";
+                    statusColor = context.getResources().getColor(R.color.colorGreen);
+                    break;
+                case BOARDING:
+                    statusString = "Abordando";
+                    statusColor = context.getResources().getColor(R.color.colorGreen);
+                    break;
+                case FLYING:
+                    statusString = "En vuelo";
+                    statusColor = context.getResources().getColor(R.color.colorGreen);
+                    break;
+                case DIVERT:
+                    statusString = "Desviado";
+                    statusColor = context.getResources().getColor(R.color.colorRed);
+                    break;
+                case CANCELLED:
+                    statusString = "Cancelado";
+                    statusColor = context.getResources().getColor(R.color.colorRed);
+                    break;
+                case LANDED:
+                    statusString = "Aterrizado";
+                    statusColor = context.getResources().getColor(R.color.colorGreen);
+                    break;
+                default:
+                    statusString = "Desconocido";
+                    statusColor = context.getResources().getColor(R.color.colorRed);
+                    break;
+            }
+            holder.state.setText(statusString);
+            holder.state.setTextColor(statusColor);
+        }
     }
 }

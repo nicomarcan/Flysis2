@@ -73,11 +73,6 @@ public class FlightActivity extends Activity{
         }
     }
 
-    public void addDate(TextView textView, String header, Date date) {
-        if (date != null) {
-            map.put(textView, new Tuple(header, date));
-        }
-    }
     @Override
     public void onResume() {
         super.onResume();
@@ -98,10 +93,6 @@ public class FlightActivity extends Activity{
         }
         */
         /* updateAllFlights(); */
-        if (number != null) {
-            CollapsingToolbarLayout ctl = (CollapsingToolbarLayout) findViewById(R.id.flight_info_collapsible_toolbar);
-            ctl.setTitle("Vuelo " + number);
-        }
 
     }
 
@@ -114,16 +105,7 @@ public class FlightActivity extends Activity{
     @Override
     protected void onCreate(Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState != null) {
-            dialogFragment = (DialogFragment) getFragmentManager().getFragment(savedInstanceState, "CommentDialogFragment");
-            airline = savedInstanceState.getString("airline");
-            number = savedInstanceState.getString("number");
-        }
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            airline = bundle.getString("id");
-            number = bundle.getString("number");
-        }
+
         setContentView(R.layout.flight_info_activity);
         getWindow().getDecorView().setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -145,7 +127,18 @@ public class FlightActivity extends Activity{
         );
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.add_flight_fab);
         fab.hide();
-
+        if (savedInstanceState != null) {
+            dialogFragment = (DialogFragment) getFragmentManager().getFragment(savedInstanceState, "CommentDialogFragment");
+            airline = savedInstanceState.getString("airline");
+            number = savedInstanceState.getString("number");
+            ctl.setTitle("Vuelo " + number);
+        }
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            airline = bundle.getString("id");
+            number = bundle.getString("number");
+            ctl.setTitle("Vuelo " + number);
+        }
         final Activity context = this;
         Runnable r = new Runnable() {
             @Override
@@ -215,9 +208,7 @@ public class FlightActivity extends Activity{
         ((TextView)flightView.findViewById(R.id.flight_info_status)).setTextColor(statusColor);
         ((TextView)flightView.findViewById(R.id.flight_info_status)).setText(statusString);
         TextView dateText = (TextView) flightView.findViewById(R.id.flight_info_status_description);
-        dateText.setText(statusDescription);
-
-        addDate(dateText, fd.descriptionHeader, fd.nextRelevantDate);
+        dateText.setText(fi.flightStatusDescription.buildDescription(new Date()));
     }
 
     void showPostCommentDialog(Boolean thumbs, String airline, String number) {

@@ -1,5 +1,6 @@
 package com.example.nmarcantonio.flysys2;
 
+import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
@@ -17,6 +18,8 @@ public class FlightStatusHolder {
     TextView destintation;
     TextView description;
     TextView header;
+    TextView state;
+    ImageView logo;
 
     public FlightStatusHolder(String id, int number, AirlineInfo airlineInfo, AirportInfo departure, AirportInfo arrival, FlightStatus status){
         this.id = id;

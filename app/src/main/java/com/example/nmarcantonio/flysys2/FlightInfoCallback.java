@@ -150,11 +150,6 @@ public class FlightInfoCallback implements TaskCallback, OnMapReadyCallback {
                     dateText.setText(fi.flightStatusDescription.buildDescription(new Date()));
                 }
 
-
-                if (fd.state != CANCELLED){
-                    ((FlightActivity) context).addDate(dateText, fd.descriptionHeader, fd.nextRelevantDate);
-                }
-
                 View detailView = flightView.findViewById(R.id.flight_info_detail);
                 detailView.setOnClickListener(new View.OnClickListener() {
                     @Override

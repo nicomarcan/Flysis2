@@ -20,7 +20,6 @@ public class FlightInfoDetailActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.flight_info_detail_activity);
-        setTitle("Vuelo 1");
         FlightStatus fi = (FlightStatus) getIntent().getSerializableExtra("flight_info");
 
         String statusString;
@@ -34,7 +33,7 @@ public class FlightInfoDetailActivity extends AppCompatActivity {
             case "A":
                 statusString = "En vuelo";
                 break;
-            case "D":
+            case "R":
                 statusString = "Desviado";
                 break;
             case "C":
@@ -59,6 +58,7 @@ public class FlightInfoDetailActivity extends AppCompatActivity {
         setText(this, R.id.flight_info_destination_airport_content, fi.arrival.airport.description.split(",")[0]);
         setText(this, R.id.flight_info_departure_date_content, formatDate(fi.departure.scheduled_time));
         String gate_departure = "", gate_arrival;
+        setTitle("Vuelo " + String.valueOf(fi.number));
         if (fi.departure.airport.terminal == null || fi.departure.airport.gate == null) {
             gate_departure = "-";
         }

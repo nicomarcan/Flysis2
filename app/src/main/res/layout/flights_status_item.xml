@@ -17,15 +17,30 @@
             android:paddingStart="10dp"
             android:paddingBottom="10dp"
             android:background="?attr/selectableItemBackground">
+            <ImageView
+                android:id="@+id/logo"
+                android:layout_width="13dp"
+                android:layout_height="13dp"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="7.7dp"
+                android:layout_marginEnd="5dp"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Vuelo 23"
                 android:gravity="start"
                 android:id="@+id/flights_card_header"
                 android:textSize="10dp"
                 android:layout_marginTop="7.5dp"
-                android:layout_alignParentStart="true"
+                android:layout_toEndOf="@id/logo"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:id="@+id/flight_card_state"
+                android:textSize="10sp"
+                android:layout_marginTop="7.5dp"
+                android:layout_alignParentEnd="true"
                 />
             <RelativeLayout
                 android:layout_width="match_parent"
