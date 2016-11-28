@@ -177,40 +177,38 @@ public class FlightsFragment extends Fragment {
             @Override
             public void run() {
                 FlightStatus flightStatus = (FlightStatus) bundle.get(FlightsIntentService.FLIGHT_STATUS);
-                flights.set(flights.indexOf(flightStatus), flightStatus);
-                if (countDownLatch != null) {
-                    countDownLatch.countDown();
-                }
-                else {
-                    if (updateCount == flights.size()) {
-                        updateCount = 0;
-                        context.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                flightAdapter.notifyDataSetChanged();
-                            }
-                        });
-                    }
-                    else {
-                        updateCount++;
-                    }
-                }
-                /*
+
+//                flights.set(flights.indexOf(flightStatus), flightStatus);
+
+                /**
+                 * Es posible que la instancia de flightStatus que se quiere modificar
+                 * no sea la misma que esta en el array, por eso hay que chequear.
+                 */
                 for(int i=0; i<flights.size() ; i++){
                     FlightStatus f = flights.get(i);
                     if(f.airline.id.equals(flightStatus.airline.getId()) && f.number == flightStatus.number){
                         flights.set(i,flightStatus);
-                        flightAdapter.notifyDataSetChanged();
-
+                        if (countDownLatch != null) {
+                            countDownLatch.countDown();
+                        }
+                        else {
+                            if (updateCount == flights.size()) {
+                                updateCount = 0;
+                                context.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        flightAdapter.notifyDataSetChanged();
+                                    }
+                                });
+                            }
+                            else {
+                                updateCount++;
+                            }
+                        }
                     }
                 }
-                PreferencesHelper.updatePreferences(flights, context);
-                */
-                /*
-                Old Variant
-                 */
+//                PreferencesHelper.updatePreferences(flights, context);
 
-//
             }
         };
 
