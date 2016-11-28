@@ -152,6 +152,7 @@ public class FlightsFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         context = (AppCompatActivity)getActivity();
+        getActivity().findViewById(R.id.flights_empty_error).setVisibility(View.GONE);
 
         ((MainActivity)getActivity()).setCurrentSect(R.id.nav_flights);
         if(context.getSupportActionBar() != null) {
@@ -162,6 +163,10 @@ public class FlightsFragment extends Fragment {
         GridView listView = (GridView) myView.findViewById(R.id.flights_list_view);
         flightAdapter = new FlightStatusArrayAdapter(context, flights, swipeRefreshLayout);
         listView.setAdapter(flightAdapter);
+
+        if(flights.size() == 0){
+            getActivity().findViewById(R.id.flights_empty_error).setVisibility(View.VISIBLE);
+        }
 
         if(savedInstanceState != null && savedInstanceState.getBoolean("searching")) {
             ((AppCompatActivity) getActivity()).getSupportActionBar().hide();

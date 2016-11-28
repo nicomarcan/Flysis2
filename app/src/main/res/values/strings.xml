@@ -142,7 +142,7 @@
     <string name="title_activity_map">Map</string>
     <string name="wrong_city_msg">Enter a valid city</string>
     <string name="air_identifier_missing">Enter the airline identifier</string>
-    <string name="air_identifier_error">The airline identifier must have only two letters and no numbers</string>
+    <string name="air_identifier_error">The airline identifier must have only two alphanumeric characters</string>
     <string name="flight_missing">Enter the flight number</string>
     <string name="flight_error">The flight number should only contain numbers</string>
     <string name="flight_info_more">Read more info</string>
@@ -158,4 +158,8 @@
     <string name="minute">minute</string>
     <string name="flight_description_delay">(There is a %1$s delay)</string>
     <string name="results_error">No offers found</string>
+    <string name="following">Following</string>
+    <string name="unfollowing">Unfollowing</string>
+    <string name="bin_empty">The bin is empty</string>
+    <string name="flights_empty">You are not following any flight</string>
 </resources>

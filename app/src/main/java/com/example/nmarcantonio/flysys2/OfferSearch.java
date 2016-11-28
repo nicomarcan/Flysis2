@@ -124,6 +124,7 @@ public class OfferSearch extends AppCompatActivity {
                     Toast.makeText(context, R.string.no_internet_msg, Toast.LENGTH_SHORT).show();
                     return true;
                 }
+                query= query.replaceAll("^\\s+", "").replaceAll("\\s+$", "");
                 destId = nameToId.get(query.toLowerCase());
                 if(destId == null){
                     Toast.makeText(context, R.string.wrong_city_msg, Toast.LENGTH_SHORT).show();

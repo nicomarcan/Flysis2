@@ -1,5 +1,6 @@
 package com.example.nmarcantonio.flysys2;
 
+import android.app.Activity;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Context;
@@ -122,6 +123,9 @@ public class FlightStatusArrayAdapter extends BaseSwipeAdapter{
                         flights.remove(i);
                         break;
                     }
+                }
+                if(flights.size()==0){
+                    ((Activity)context).findViewById(R.id.flights_empty_error).setVisibility(View.VISIBLE);
                 }
                 notifyDataSetChanged();
                 PreferencesHelper.updatePreferences((ArrayList) flights, context);

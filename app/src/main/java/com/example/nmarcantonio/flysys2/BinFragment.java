@@ -52,6 +52,7 @@ public class BinFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         context = (AppCompatActivity)getActivity();
+        context.findViewById(R.id.bin_empty_error).setVisibility(View.GONE);
 
         ((MainActivity)getActivity()).setCurrentSect(R.id.nav_bin);
         if(context.getSupportActionBar() != null) {
@@ -62,6 +63,8 @@ public class BinFragment extends Fragment {
         GridView listView = (GridView) myView.findViewById(R.id.flights_list_view);
         flightAdapter = new FlightBinArrayAdapter(context, flights);
         listView.setAdapter(flightAdapter);
+        if(flights.size() == 0)
+            context.findViewById(R.id.bin_empty_error).setVisibility(View.VISIBLE);
     }
 
 
