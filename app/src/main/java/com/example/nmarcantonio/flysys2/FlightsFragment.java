@@ -142,7 +142,10 @@ public class FlightsFragment extends Fragment {
     public void onPause() {
         super.onPause();
         context.unregisterReceiver(broadcastReceiver);
-        PreferencesHelper.updatePreferences(flights, context);
+        /**
+         * Here goes boom
+         */
+//        PreferencesHelper.updatePreferences(flights, context);
     }
 
     @Override
