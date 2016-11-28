@@ -17,6 +17,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import org.apache.commons.lang3.math.NumberUtils;
+
 /**
  * Created by Nicolas on 11/26/2016.
  */
@@ -70,6 +72,23 @@ public class FlightSearchFragment extends Fragment {
                 String id = ((EditText)getActivity().findViewById(R.id.airline)).getText().toString().toUpperCase();
                 String number =  ((EditText)getActivity().findViewById(R.id.flight)).getText().toString();
                 Intent intent = new Intent(getActivity(), FlightActivity.class);
+                if(id.equals("")) {
+                    Toast.makeText(getActivity(), R.string.air_identifier_missing, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if(id.length() != 2 ||id.matches(".*\\d+.*")){
+                    Toast.makeText(getActivity(), R.string.air_identifier_error, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if(number.equals("")){
+                    Toast.makeText(getActivity(), R.string.flight_missing, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if(!NumberUtils.isNumber(number)){
+                    Toast.makeText(getActivity(), R.string.flight_error, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 intent.putExtra("id",id);
                 intent.putExtra("number",number);
                 PendingIntent pendingIntent =

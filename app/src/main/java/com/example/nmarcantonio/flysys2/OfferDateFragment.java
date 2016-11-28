@@ -65,7 +65,7 @@ public class OfferDateFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         context = (AppCompatActivity)getActivity();
-        TableLayout tab = (TableLayout)context.findViewById(R.id.on);
+        TableLayout tab = (TableLayout)context.findViewById(R.id.filter_table);
 
 
         int count = tab.getChildCount();
@@ -77,15 +77,15 @@ public class OfferDateFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     CharSequence text = ((TextView)(((TableRow)v).getChildAt(1))).getText();
-                    if(text.toString().equals("Dentro de 1 mes")){
+                    if(text.toString().equals(getResources().getString(R.string.within_1_month))){
                         OfferSearch.filter = 1;
-                    }else if(text.toString().equals("Dentro de 3 meses")){
+                    }else if(text.toString().equals(getResources().getString(R.string.within_3_months))){
                         OfferSearch.filter = 3;
-                    }else if(text.toString().equals("Dentro de 6 meses")){
+                    }else if(text.toString().equals(getResources().getString(R.string.within_6_months))){
                         OfferSearch.filter = 6;
-                    }else if(text.toString().equals("Dentro de 1 año")){
+                    }else if(text.toString().equals(getResources().getString(R.string.within_1_year))){
                         OfferSearch.filter = 12;
-                    }else if(text.toString().equals("Después de 1 año")){
+                    }else if(text.toString().equals(getResources().getString(R.string.after_1_year))){
                         OfferSearch.filter = 13;
                     }
                     Bundle bundle = new Bundle();

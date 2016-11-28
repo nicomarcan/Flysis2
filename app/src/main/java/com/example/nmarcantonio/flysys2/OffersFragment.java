@@ -84,6 +84,7 @@ public class OffersFragment extends Fragment {
     private Double ratio;
     private Menu menu;
     private String prevBadge;
+    private Boolean saved;
 
     private HashMap<String,Double> stringToRatio = new HashMap<String,Double>();
 
@@ -130,6 +131,16 @@ public class OffersFragment extends Fragment {
 
          mLocationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
 
+         saved = savedInstanceState != null;
+
+        if(saved){
+            dealList = (ArrayList<Deal>)savedInstanceState.getSerializable("dealList");
+            ratio = (Double)savedInstanceState.getSerializable("ratio");
+            stringToRatio = (HashMap<String, Double>)  savedInstanceState.getSerializable("stringToRatio");
+            currentCity = (City)savedInstanceState.getSerializable("currentCity");
+            nameToId =(HashMap<String, String>) savedInstanceState.getSerializable("nameToId");
+        }
+
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(context,new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION},1);
@@ -149,16 +160,10 @@ public class OffersFragment extends Fragment {
         }
 
 
-        if(savedInstanceState == null){
+        if(!saved){
             new GetRatiosTask().execute();
         }
         else{
-
-            dealList = (ArrayList<Deal>)savedInstanceState.getSerializable("dealList");
-            ratio = (Double)savedInstanceState.getSerializable("ratio");
-            stringToRatio = (HashMap<String, Double>)  savedInstanceState.getSerializable("stringToRatio");
-            currentCity = (City)savedInstanceState.getSerializable("currentCity");
-            nameToId =(HashMap<String, String>) savedInstanceState.getSerializable("nameToId");
             putSameOffers();
         }
 
@@ -244,20 +249,18 @@ public class OffersFragment extends Fragment {
     }
 
 
-    private void putSameOffers(){
+    private void putSameOffers() {
         final Product[] values = new Product[dealList.size()];
         final GridView listView = (GridView) myView.findViewById(R.id.list_view);
-        for (int j = 0; j <dealList.size(); j++) {
-            values[j] = new Product(dealList.get(j).getId(), dealList.get(j).getName(), dealList.get(j).getPrice()*ratio  ,dealList.get(j).getLatitude(),dealList.get(j).getLongitude());
-            nameToId.put(dealList.get(j).getName().toLowerCase(),dealList.get(j).getId());
+        for (int j = 0; j < dealList.size(); j++) {
+            values[j] = new Product(dealList.get(j).getId(), dealList.get(j).getName(), dealList.get(j).getPrice() * ratio, dealList.get(j).getLatitude(), dealList.get(j).getLongitude());
+            nameToId.put(dealList.get(j).getName().toLowerCase(), dealList.get(j).getId());
         }
-        ProductArrayAdapter adapter = new ProductArrayAdapter(context  , values,myView);
+        ProductArrayAdapter adapter = new ProductArrayAdapter(context, values, myView);
         listView.setAdapter(adapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> listView, View itemView, int position, long itemId)
-            {
+            public void onItemClick(AdapterView<?> listView, View itemView, int position, long itemId) {
                 CharSequence text = values[position].getName();
 
 
@@ -266,16 +269,16 @@ public class OffersFragment extends Fragment {
 
                 Intent intent = new Intent(context, OfferResults.class);
 
-                if(currentCity == null) {
+                if (currentCity == null) {
                     Snackbar.make(myView, R.string.no_internet_msg, Snackbar.LENGTH_LONG).show();
-                    return ;
+                    return;
                 }
 
                 intent.putExtra("currentCity", currentCity.getId());
                 intent.putExtra("destCity", destId);
-                intent.putExtra("offerPrice",offerPrice);
-                intent.putExtra("ratio",ratio);
-                intent.putExtra("dest",text.toString().split(",")[0]);
+                intent.putExtra("offerPrice", offerPrice);
+                intent.putExtra("ratio", ratio);
+                intent.putExtra("dest", text.toString().split(",")[0]);
                 PendingIntent pendingIntent =
                         TaskStackBuilder.create(context)
                                 // add all of DetailsActivity's parents to the stack,
@@ -290,8 +293,35 @@ public class OffersFragment extends Fragment {
 
             }
         });
-
     }
+
+        public void afterLocationRequest(){
+            try {
+                if(loc == null) {
+                    loc = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                    if (loc == null) {
+                        loc = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                    }
+                    if (loc == null){
+                        loc = new Location("dummyprovider");
+                        loc.setLongitude(-58.381592);
+                        loc.setLatitude(-34.603722);
+                    }
+
+                    if(!saved){
+                        new GetRatiosTask().execute();
+                    }
+                    else{
+                        putSameOffers();
+                    }
+                }
+
+            }catch (SecurityException e){
+
+            }
+        }
+
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putSerializable("dealList",dealList);

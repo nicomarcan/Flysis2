@@ -139,4 +139,10 @@
     <string name="flight_info_status_cancelled">Cancelado</string>
     <string name="flight_info_status_unknown">Desconocido</string>
     <string name="flight">Vuelo</string>
+    <string name="title_activity_map">Mapa</string>
+    <string name="wrong_city_msg">Ingrese una ciudad válida</string>
+    <string name="air_identifier_error">El identificador de la aerolinea debe tener solo dos letras y ningún número</string>
+    <string name="air_identifier_missing">Ingrese el identificador de la aerolinea</string>
+    <string name="flight_missing">Ingrese el número de vuelo</string>
+    <string name="flight_error">El número de vuelo solo debe contener números</string>
 </resources>
