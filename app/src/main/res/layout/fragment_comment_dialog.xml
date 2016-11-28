@@ -6,7 +6,7 @@
     tools:context="com.example.nmarcantonio.flysys2.CommentDialogFragment">
     <LinearLayout
         android:id="@+id/flight_comment_dialog"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:orientation="vertical"
         android:textAlignment="center"
@@ -30,8 +30,8 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/flight_comments_dialog_header"
                 android:clipToPadding="false"
-                android:text="Recomendar el vuelo"
-                android:textSize="20dp"
+                android:text="@string/flight_comments_dialog_header"
+                android:textSize="20sp"
                 android:textColor="#000000"
                 android:textColorHint="#ff0000"
                 android:gravity="center_horizontal"
@@ -51,15 +51,17 @@
                     android:id="@+id/flight_comments_dialog_thumbs_up"
                     android:clickable="true"
                     android:backgroundTint="@android:color/white"
+                    android:contentDescription="@string/flight_comment_dialog_thumbs_up"
                     />
                 <ImageButton
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:src="@drawable/ic_thumb_down_black_24dp"
-                    android:layout_toRightOf="@id/flight_comments_dialog_thumbs_up"
+                    android:layout_toEndOf="@id/flight_comments_dialog_thumbs_up"
                     android:clickable="true"
                     android:backgroundTint="@android:color/white"
                     android:id="@+id/flight_comments_dialog_thumbs_down"
+                    android:contentDescription="@string/flight_comments_dialog_thumbs_down"
                     />
             </RelativeLayout>
         </RelativeLayout>
@@ -212,7 +214,7 @@
                 android:hint="@string/flight_comment_dialog_send"
                 android:background="?attr/selectableItemBackground"
                 android:id="@+id/flight_comment_dialog_send_button"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 />
             <Button
                 android:layout_width="wrap_content"

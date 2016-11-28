@@ -69,7 +69,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="start"
                 android:id="@+id/flight_comment_friendliness"
-                android:text="Amabilidad"
+                android:text="@string/fragment_comment_dialog_friendliness"
                 />
             <RatingBar
                 android:layout_width="wrap_content"
@@ -97,7 +97,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="start"
                 android:id="@+id/flight_comment_food"
-                android:text="Comida"
+                android:text="@string/fragment_comment_dialog_food"
                 />
             <RatingBar
                 android:layout_width="wrap_content"
@@ -125,7 +125,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="start"
                 android:id="@+id/flight_comment_punctuality"
-                android:text="Puntualidad"
+                android:text="@string/fragment_comment_dialog_punctuality"
                 />
             <RatingBar
                 android:layout_width="wrap_content"
@@ -153,7 +153,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="start"
                 android:id="@+id/flight_comment_mileage"
-                android:text="Programa de pasajeros frecuentes"
+                android:text="@string/fragment_comment_dialog_mileage_programe"
                 />
             <RatingBar
                 android:layout_width="wrap_content"
@@ -181,7 +181,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="start"
                 android:id="@+id/flight_comment_comfort"
-                android:text="Confort"
+                android:text="@string/fragment_comment_dialog_comfort"
                 />
             <RatingBar
                 android:layout_width="wrap_content"
@@ -209,8 +209,8 @@
                 android:layout_height="wrap_content"
                 android:gravity="start"
                 android:id="@+id/flight_comment_quality"
-                android:text="Relacion precio/calidad"
-                android:layout_gravity="left"
+                android:text="@string/fragment_comment_dialog_quality_price"
+                android:layout_gravity="start"
 
                 />
             <RatingBar

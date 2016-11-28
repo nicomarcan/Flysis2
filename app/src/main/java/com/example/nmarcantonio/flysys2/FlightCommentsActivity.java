@@ -2,6 +2,7 @@ package com.example.nmarcantonio.flysys2;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -131,17 +132,13 @@ public class FlightCommentsActivity extends AppCompatActivity{
                 flightStatus = (FlightStatus) bundle.get("flight_info");
             }
         }
-        setTitle("Vuelo " + flightStatus);
-        final FlightCommentsActivity a = this;
 
+        String flight_descr = getResources().getString(R.string.flight);
+        setTitle(flight_descr + " " + flightStatus.number);
+        final FlightCommentsActivity a = this;
         ListView list = (ListView) findViewById(R.id.flight_comments_list_view);
         this.list = list;
-        adapter = null;
         comments = new ArrayList[2];
-        comments[0] = null;
-        comments[1] = null;
-
-
         list.setOnScrollListener(new EndlessScrollListener(1, 0, 0) {
             FlightCommentsActivity outer = a;
             @Override
@@ -157,13 +154,26 @@ public class FlightCommentsActivity extends AppCompatActivity{
                 return true;
             }
         });
-        new GetCommentsTask(findViewById(R.id.flight_comments_list_view), a).execute(
-            flightStatus.airline.id,
-            String.valueOf(flightStatus.number),
-            "0",
-            getSortOrder()
-        );
+        if (savedInstanceState == null) {
+            adapter = null;
+            comments[0] = null;
+            comments[1] = null;
+            new GetCommentsTask(findViewById(R.id.flight_comments_list_view), a).execute(
+                    flightStatus.airline.id,
+                    String.valueOf(flightStatus.number),
+                    "0",
+                    getSortOrder()
+            );
+        }
+        else {
+            comments[0] = (ArrayList<Comment>) savedInstanceState.getSerializable("comments_sorted_desc");
+            comments[1] = (ArrayList<Comment>) savedInstanceState.getSerializable("comments_sorted_asc");
+            this.sort = (Integer) savedInstanceState.getInt("sort");
+            adapter = new CommentArrayAdapter(this, comments[sort]);
+            list.setAdapter(adapter);
+        }
     }
+
 
     public CommentArrayAdapter getAdapter() {
         return adapter;
@@ -184,5 +194,13 @@ public class FlightCommentsActivity extends AppCompatActivity{
     public String getSortOrder(){ return String.valueOf(sort); }
 
     public void setSort(int sort) { this.sort = sort;}
+
+    @Override
+    public void onSaveInstanceState(Bundle bundle) {
+        bundle.putSerializable("comments_sorted_desc", comments[0]);
+        bundle.putSerializable("comments_sorted_asc", comments[1]);
+        bundle.putInt("sort", sort);
+        super.onSaveInstanceState(bundle);
+    }
 
 }
