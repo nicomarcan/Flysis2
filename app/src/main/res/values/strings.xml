@@ -53,19 +53,17 @@
         <item>Every 6 hours</item>
         <item>Every 12 hours</item>
         <item>Once per day</item>
-        <item>Never(Manual)</item>
         <item>Every 5 minutes</item>
         <item>Every 1 minute</item>
     </string-array>
-    <string-array name="interval_values">
-        <item>1h</item>
-        <item>6h</item>
-        <item>12h</item>
-        <item>24h</item>
-        <item>0h</item>
-        <item>5m</item>
-        <item>1m</item>
-    </string-array>
+    <integer-array name="interval_values">
+        <item>3600000</item>
+        <item>21600000</item>
+        <item>43200000</item>
+        <item>86400000</item>
+        <item>300000</item>
+        <item>60000</item>
+    </integer-array>
 
 
     <!-- Example settings for Notifications -->

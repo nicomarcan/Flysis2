@@ -204,18 +204,22 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void setAlarm() {
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent i = new Intent(context, AlarmNotificationReceiver.class);
-        PendingIntent pi = PendingIntent.getBroadcast(
-                context, 0, i, 0
-        );
-        alarmManager.setInexactRepeating(
-                AlarmManager.ELAPSED_REALTIME,
-                SystemClock.elapsedRealtime() + 10000,
-                60000,
-                pi
-        );
-        Log.d("aaa", "onReceive: ");
+
+        Boolean notifications_active = PreferencesHelper.notificationsActive(this);
+        if (notifications_active) {
+            Long interval = PreferencesHelper.notificationsInterval(this);
+            AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+            Intent i = new Intent(context, AlarmNotificationReceiver.class);
+            PendingIntent pi = PendingIntent.getBroadcast(
+                    context, 0, i, 0
+            );
+            alarmManager.setInexactRepeating(
+                    AlarmManager.ELAPSED_REALTIME,
+                    SystemClock.elapsedRealtime() + 10000,
+                    interval,
+                    pi
+            );
+        }
     }
 
 

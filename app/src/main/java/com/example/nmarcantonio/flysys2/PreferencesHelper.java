@@ -1,7 +1,9 @@
 package com.example.nmarcantonio.flysys2;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -90,5 +92,15 @@ public class PreferencesHelper {
             return flight;
         }
         return null;
+    }
+
+    public static synchronized Boolean notificationsActive(Context context) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return sharedPreferences.getBoolean("notifications_active", true);
+    }
+
+    public static synchronized long notificationsInterval(Context context) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return sharedPreferences.getLong("interval_list",3600000L);
     }
 }
