@@ -5,6 +5,7 @@ import android.content.res.ColorStateList;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.prefs.Preferences;
@@ -60,6 +61,7 @@ public class AddFlightOnClickListener implements View.OnClickListener {
             }
             PreferencesHelper.updatePreferences(flights, context);
             setFabUnsubscribed();
+            Toast.makeText(context, context.getResources().getString(R.string.unfollowing)+" "+flight.airline.getId()+"-"+flight.number, Toast.LENGTH_SHORT).show();
         }
         else {
 
@@ -69,6 +71,7 @@ public class AddFlightOnClickListener implements View.OnClickListener {
             flights.add(flight);
             PreferencesHelper.updatePreferences(flights, context);
             setFabSubscribed();
+            Toast.makeText(context, context.getResources().getString(R.string.following)+" "+flight.airline.getId()+"-"+flight.number, Toast.LENGTH_SHORT).show();
         }
     }
 }

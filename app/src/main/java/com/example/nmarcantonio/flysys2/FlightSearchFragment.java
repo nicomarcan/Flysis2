@@ -70,13 +70,15 @@ public class FlightSearchFragment extends Fragment {
             public void onClick(View view) {
 
                 String id = ((EditText)getActivity().findViewById(R.id.airline)).getText().toString().toUpperCase();
+                id=  id.replaceAll("^\\s+", "").replaceAll("\\s+$", "");
                 String number =  ((EditText)getActivity().findViewById(R.id.flight)).getText().toString();
+                number = number.replaceAll("^\\s+", "").replaceAll("\\s+$", "");
                 Intent intent = new Intent(getActivity(), FlightActivity.class);
                 if(id.equals("")) {
                     Toast.makeText(getActivity(), R.string.air_identifier_missing, Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if(id.length() != 2 ||id.matches(".*\\d+.*")){
+                if(id.length() != 2 ||!id.matches("[a-zA-Z0-9][a-zA-Z0-9]")){
                     Toast.makeText(getActivity(), R.string.air_identifier_error, Toast.LENGTH_SHORT).show();
                     return;
                 }

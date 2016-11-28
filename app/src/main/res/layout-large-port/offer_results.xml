@@ -32,7 +32,7 @@
             android:id="@+id/search_error"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_search_results"
+            android:src="@drawable/ic_search_big"
             android:tint="#263238"
             android:layout_centerHorizontal="true"/>
         <TextView

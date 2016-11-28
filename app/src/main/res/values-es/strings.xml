@@ -141,22 +141,14 @@
     <string name="flight">Vuelo</string>
     <string name="title_activity_map">Mapa</string>
     <string name="wrong_city_msg">Ingrese una ciudad válida</string>
-    <string name="air_identifier_error">El identificador de la aerolinea debe tener solo dos letras y ningún número</string>
+    <string name="air_identifier_error">El identificador de la aerolinea debe tener solo dos caracteres alfanuméricos</string>
     <string name="air_identifier_missing">Ingrese el identificador de la aerolinea</string>
     <string name="flight_missing">Ingrese el número de vuelo</string>
     <string name="flight_error">El número de vuelo solo debe contener números</string>
-    <string name="flight_info_more">Ver más información</string>
-    <string name="flight_comments_more">Ver más comentarios</string>
-    <string name="flight_info_status_flying">En vuelo</string>
-    <string name="flight_description_header_boarding">Despegando en %1$s.</string>
-    <string name="flight_description_header_scheduled">Abordando en %1$s.</string>
-    <string name="flight_description_header_flying">Aterrizando en %1$s.</string>
-    <string name="flight_description_header_landed"> Aterrizado hace %1$s.</string>
-    <string name="flight_descriptin_header_cancelled">El vuelo se canceló.</string>
-    <string name="day">día</string>
-    <string name="hour">hora</string>
-    <string name="minute">minuto</string>
-    <string name="flight_description_delay">(Hay un retraso de %1$s)</string>
     <string name="results_error">No se encontraron ofertas</string>
+    <string name="following">Siguiendo</string>
+    <string name="unfollowing">Dejando de seguir</string>
+    <string name="bin_empty">La papelera se encuentra vacía</string>
+    <string name="flights_empty">No estás siguiendo ningún vuelo</string>
     <string name="gate">Puerta</string>
 </resources>

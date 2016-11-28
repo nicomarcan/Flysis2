@@ -3,6 +3,32 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <RelativeLayout
+        android:id="@+id/flights_empty_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true">
+        <ImageView
+            android:id="@+id/flights_empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_flight_empty"
+            android:tint="#263238"
+            android:layout_centerHorizontal="true"/>
+        <TextView
+            android:id="@+id/results_not_found"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#263238"
+            android:layout_below="@id/flights_empty"
+            android:textSize="17sp"
+            android:layout_marginLeft="15dp"
+            android:gravity="center"
+            android:text="@string/flights_empty"
+            android:layout_marginRight="15dp"
+            android:layout_centerHorizontal="true"/>
+    </RelativeLayout>
 
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
