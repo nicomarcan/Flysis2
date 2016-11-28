@@ -26,6 +26,7 @@ public class OfferResults  extends AppCompatActivity{
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.offer_results);
+        findViewById(R.id.search_results_error).setVisibility(View.GONE);
         GetOfferInfo.values.clear();
         this.getSupportActionBar().setTitle(getResources().getString(R.string.offers_to)+" "+getIntent().getStringExtra("dest"));
         if(getIntent().getDoubleExtra("offerPrice",-1.0)==-1.0) {

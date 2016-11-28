@@ -117,12 +117,14 @@ public class OfferSearch extends AppCompatActivity {
                 destId = nameToId.get(query.toLowerCase());
                 if(destId == null){
                     Toast.makeText(context, R.string.wrong_city_msg, Toast.LENGTH_SHORT).show();
-                    return false;
+                    return true;
                 }
                 String [] aux = query.toLowerCase().split(" ");
                 String dest="";
                 for(int i = 0; i < aux.length;i++){
-                    dest +=" "+ aux[i].substring(0, 1).toUpperCase() + aux[i].substring(1);
+                    dest +=aux[i].substring(0, 1).toUpperCase() + aux[i].substring(1);
+                    if(i != aux.length-1)
+                        dest+=" ";
                 }
                 Intent intent = new Intent(context, OfferResults.class);
                 intent.putExtra("filter", filter.toString());

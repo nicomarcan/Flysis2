@@ -145,4 +145,5 @@
     <string name="air_identifier_missing">Ingrese el identificador de la aerolinea</string>
     <string name="flight_missing">Ingrese el número de vuelo</string>
     <string name="flight_error">El número de vuelo solo debe contener números</string>
+    <string name="results_error">No se encontraron ofertas</string>
 </resources>

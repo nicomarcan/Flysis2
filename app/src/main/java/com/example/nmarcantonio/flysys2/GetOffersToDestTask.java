@@ -2,6 +2,8 @@ package com.example.nmarcantonio.flysys2;
 
 import android.app.Activity;
 import android.os.AsyncTask;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -77,14 +79,20 @@ public class GetOffersToDestTask extends AsyncTask<String,Void, String> {
             }.getType();
 
             String jsonFragment = obj.getString(OffersFragment.DEALS_NAME);
-
+            Integer offers = 0;
 
             ArrayList<Deal> dealList = gson.fromJson(jsonFragment, listType);
             for(Deal d : dealList){
                 if(d.getId().equals(destCity)){
                     new GetOfferInfo(act,currentCity,destCity,d.getPrice()*ratio,ratio).execute(2+filter*30,8+(filter*30));
+                    offers++;
                     return;
                 }
+            }
+            if(offers == 0){
+                act.findViewById(R.id.results_progress_bar).setVisibility(View.GONE);
+                ( (TextView) act.findViewById(R.id.results_not_found)).setText(R.string.results_error);
+                act.findViewById(R.id.search_results_error).setVisibility(View.VISIBLE);
             }
 
 

@@ -123,10 +123,19 @@ public class AirportsFragment extends Fragment  {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-
-                if (!citiesMap.containsKey(query)) return true;
-                loc.setLongitude(citiesMap.get(query).getLongitude());
-                loc.setLatitude(citiesMap.get(query).getLatitude());
+                String[] split = query.split(" ");
+                String city = "";
+                for(int i = 0;i<split.length;i++){
+                    city+= split[i].substring(0,1).toUpperCase()+split[i].substring(1).toLowerCase();
+                    if(i != split.length -1)
+                        city+=" ";
+                }
+                if (!citiesMap.containsKey(city)){
+                    Toast.makeText(getActivity(), R.string.wrong_city_msg, Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                loc.setLongitude(citiesMap.get(city).getLongitude());
+                loc.setLatitude(citiesMap.get(city).getLatitude());
                 new GetNearbyAirportsAsync().execute();
                 return false;
             }

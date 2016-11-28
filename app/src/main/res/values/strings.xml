@@ -145,5 +145,6 @@
     <string name="air_identifier_error">The airline identifier must have only two letters and no numbers</string>
     <string name="flight_missing">Enter the flight number</string>
     <string name="flight_error">The flight number should only contain numbers</string>
->>>>>>> 7dcb4838b7c5a542bf5fdcd0bf74e41fbbf932c4
+    <string name="results_error">No offers found</string>
+
 </resources>
