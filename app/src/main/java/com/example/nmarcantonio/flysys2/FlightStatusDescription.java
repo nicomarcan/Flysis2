@@ -34,8 +34,7 @@ public class FlightStatusDescription implements Serializable {
                         /* Hay DELAY EN ABORDAJE*/
                         departureTime = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss", new Locale("es", "arg")).parse(fi.departure.actual_gate_time);
                         Date departureScheduled = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss", new Locale("es", "arg")).parse(fi.departure.scheduled_gate_time);
-                        posDateDescription = "(Hay un retraso de " + CustomDateInterval.longInterval(departureTime, departureTimeZone, departureScheduled, departureTimeZone, context) + ")";
-
+                        posDateDescription = String.format(context.getString(R.string.flight_description_delay), CustomDateInterval.longInterval(departureScheduled, departureTimeZone, departureTime, departureTimeZone,  context));
                     }
                     else {
                         /* NO Hay DELAY EN ABORDAJE */
@@ -51,7 +50,7 @@ public class FlightStatusDescription implements Serializable {
                         if (fi.departure.actual_time != null && !fi.departure.actual_time.equals(fi.departure.scheduled_time)) {
                             departureTime = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss", new Locale("es", "arg")).parse(fi.departure.actual_time);
                             Date departureScheduled = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss", new Locale("es", "arg")).parse(fi.departure.scheduled_time);
-                            posDateDescription = "(Hay un retraso de " + CustomDateInterval.longInterval(departureTime, departureTimeZone, departureScheduled, departureTimeZone, context) + ")";
+                            posDateDescription = String.format(context.getString(R.string.flight_description_delay), CustomDateInterval.longInterval(departureScheduled, departureTimeZone, departureTime, departureTimeZone,  context));
                         }
                         else {
                             departureTime = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss", new Locale("es", "arg")).parse(fi.departure.scheduled_time);
@@ -71,7 +70,7 @@ public class FlightStatusDescription implements Serializable {
                         /* Hay DELAY EN ABORDAJE*/
                         arrivalTime = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss", new Locale("es", "arg")).parse(fi.arrival.actual_time);
                         Date arrivalScheduled = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss", new Locale("es", "arg")).parse(fi.arrival.scheduled_time);
-                        posDateDescription = "(Hay un retraso de " + CustomDateInterval.longInterval(arrivalTime, arrivalTimeZone, arrivalScheduled, arrivalTimeZone, context) + ")";
+                        posDateDescription = String.format(context.getString(R.string.flight_description_delay), CustomDateInterval.longInterval(arrivalScheduled, arrivalTimeZone, arrivalTime, arrivalTimeZone,  context));
                     }
                     else {
                         /* NO Hay DELAY EN ABORDAJE */
@@ -90,7 +89,7 @@ public class FlightStatusDescription implements Serializable {
                         /* Hay DELAY EN ABORDAJE*/
                         atime = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss", new Locale("es", "arg")).parse(fi.arrival.actual_time);
                         Date arrivalScheduled = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss", new Locale("es", "arg")).parse(fi.arrival.scheduled_time);
-                        posDateDescription = String.format(context.getString(R.string.flight_description_delay), CustomDateInterval.longInterval(atime, arrivalTimeZone, arrivalScheduled, arrivalTimeZone, context));
+                        posDateDescription = String.format(context.getString(R.string.flight_description_delay), CustomDateInterval.longInterval(arrivalScheduled, arrivalTimeZone, atime, arrivalTimeZone,  context));
                     }
                     else {
                         /* NO Hay DELAY EN ABORDAJE */
