@@ -62,7 +62,6 @@ public class OfferSearch extends AppCompatActivity {
     private String srcId;
     private String destId;
     public static Integer filter=0;
-    public static int asd = 0;
 
 
 
@@ -116,6 +115,10 @@ public class OfferSearch extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 destId = nameToId.get(query.toLowerCase());
+                if(destId == null){
+                    Toast.makeText(context, R.string.wrong_city_msg, Toast.LENGTH_SHORT).show();
+                    return false;
+                }
                 String [] aux = query.toLowerCase().split(" ");
                 String dest="";
                 for(int i = 0; i < aux.length;i++){
@@ -127,7 +130,7 @@ public class OfferSearch extends AppCompatActivity {
                 intent.putExtra("destCity", destId);
                 intent.putExtra("ratio",ratio);
                 intent.putExtra("dest",dest);
-                //Toast.makeText(context, filter.toString()+" "+srcId+" "+destId+" "+ratio.toString(), Toast.LENGTH_SHORT).show();
+              //  Toast.makeText(context, filter.toString()+" "+srcId+" "+destId+" "+ratio.toString(), Toast.LENGTH_SHORT).show();
                 PendingIntent pendingIntent =
                         TaskStackBuilder.create(context)
                                 // add all of DetailsActivity's parents to the stack,

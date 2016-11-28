@@ -75,7 +75,7 @@ public class OffersMap extends AppCompatActivity  {
         context=this;
         srcId = getIntent().getStringExtra("srcId");
         if(getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("Mapa");
+            getSupportActionBar().setTitle(R.string.title_activity_map);
         }
         new HttpGetTask().execute();
 
@@ -151,41 +151,14 @@ public class OffersMap extends AppCompatActivity  {
                 aux = (fourthPrice+seventhPrice)/2;
                 fifthPrice = (aux+fourthPrice)/2;
                 sixthPrice = (aux + seventhPrice)/2;
-/*
-                    OfferAdapter adapter = new OfferAdapter(values,context);
-                    mLayoutManager= new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL, false);
-                    view.setLayoutManager(mLayoutManager);
-                   view.setAdapter(adapter);
-*/
+
 
                 new GetPhotosToCache(context,this,dealList,0,findViewById(android.R.id.content)).execute();
 
 
 
 
-/*
-                    view.addOnItemTouchListener(new OfferListener(getApplicationContext(), view, new ClickListener() {
 
-                        public void onClick(View view, int position) {
-
-                            //Toast.makeText(getApplicationContext(), product.getName() + " is selected!", Toast.LENGTH_LONG).show();
-                            Product p = values.get(position);
-                            float zoomLevel = (float)3.0; //This goes up to 21
-                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(p.getLatitude(),p.getLongitude()), zoomLevel));
-
-
-                        }
-
-
-                        public void onLongClick(View view, int position) {
-
-                        }
-                    }));
-
-
-
-                }*/
-                ;
 
 
             } catch (Exception exception) {

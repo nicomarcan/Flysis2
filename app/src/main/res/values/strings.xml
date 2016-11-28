@@ -114,4 +114,10 @@
     <string name="airline_identifier">Airline Identifier</string>
     <string name="no_internet_msg">Please check your internet connection</string>
     <string name="flight_info_not_found">No se encontro el vuelo</string>
+    <string name="title_activity_map">Map</string>
+    <string name="wrong_city_msg">Enter a valid city</string>
+    <string name="air_identifier_missing">Enter the airline identifier</string>
+    <string name="air_identifier_error">The airline identifier must have only two letters and no numbers</string>
+    <string name="flight_missing">Enter the flight number</string>
+    <string name="flight_error">The flight number should only contain numbers</string>
 </resources>
