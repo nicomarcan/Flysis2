@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity
     private Menu mMenu;
     private AirportsFragment af;
 
-    private OffersFragment of = new OffersFragment();
+    private OffersFragment of;
 
 
 
@@ -122,7 +122,8 @@ public class MainActivity extends AppCompatActivity
     public void onRequestPermissionsResult(int requestCode, String[] permissions,int[] grantResults){
         if(currentSect == R.id.nav_airports){
             af.afterLocationRequest();
-        }
+        }else if(currentSect == R.id.nav_offers)
+            of.afterLocationRequest();
     }
 
 
@@ -174,6 +175,7 @@ public class MainActivity extends AppCompatActivity
             fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             fragmentManager.beginTransaction().replace(R.id.content_frame,new FlightsFragment()).commit();
         } else if (id == R.id.nav_offers) {
+            of =  new OffersFragment();
             fragmentManager.beginTransaction().replace(R.id.content_frame,of).addToBackStack("HOLA").commit();
         } else if (id == R.id.nav_airports) {
             af = new AirportsFragment();
