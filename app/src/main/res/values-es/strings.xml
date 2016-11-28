@@ -150,4 +150,5 @@
     <string name="unfollowing">Dejando de seguir</string>
     <string name="bin_empty">La papelera se encuentra vacía</string>
     <string name="flights_empty">No estás siguiendo ningún vuelo</string>
+    <string name="gate">Puerta</string>
 </resources>

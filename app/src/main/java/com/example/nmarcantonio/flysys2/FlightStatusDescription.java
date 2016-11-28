@@ -61,7 +61,7 @@ public class FlightStatusDescription implements Serializable {
                     }
                     nextRelevantDate = departureTime;
                     nextTimeZone = departureTimeZone;
-                    timeInterval = CustomDateInterval.significantInterval(departureTime, departureTimeZone, currentTime, currentTimeZone);
+                    timeInterval = CustomDateInterval.significantInterval( currentTime, currentTimeZone, departureTime, departureTimeZone);
                     break;
                 case "A":
                     /* ACTIVO */
