@@ -54,6 +54,8 @@
         <item>Every 12 hours</item>
         <item>Once per day</item>
         <item>Never(Manual)</item>
+        <item>Every 5 minutes</item>
+        <item>Every 1 minute</item>
     </string-array>
     <string-array name="interval_values">
         <item>1h</item>
@@ -62,6 +64,7 @@
         <item>24h</item>
         <item>0h</item>
         <item>5m</item>
+        <item>1m</item>
     </string-array>
 
 
@@ -158,4 +161,5 @@
     <string name="minute">minute</string>
     <string name="flight_description_delay">(There is a %1$s delay)</string>
     <string name="results_error">No offers found</string>
+    <string name="gate">Gate</string>
 </resources>

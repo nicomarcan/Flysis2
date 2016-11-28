@@ -158,4 +158,5 @@
     <string name="minute">minuto</string>
     <string name="flight_description_delay">(Hay un retraso de %1$s)</string>
     <string name="results_error">No se encontraron ofertas</string>
+    <string name="gate">Puerta</string>
 </resources>

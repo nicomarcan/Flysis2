@@ -87,7 +87,6 @@ public class PreferencesHelper {
         int index = flightStatusArrayList.indexOf(flightStatus);
         if (index >= 0) {
             FlightStatus flight = flightStatusArrayList.get(index);
-            flight.setDescription(context);
             return flight;
         }
         return null;

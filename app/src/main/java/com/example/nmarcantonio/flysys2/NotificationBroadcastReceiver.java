@@ -91,16 +91,19 @@ public class NotificationBroadcastReceiver extends BroadcastReceiver {
                         break;
 
                 }
-                Notification notification = new Notification.Builder(context)
+                Notification.Builder builder = new Notification.Builder(context)
                         .setSmallIcon(R.drawable.ic_flight_black_24dp)
                         .setContentIntent(pendingIntent)
                         .setAutoCancel(true)
-                        .setContentTitle(context.getString(R.string.flight) + " " + flightStatus.airline.id)
-                        .setTicker(context.getString(R.string.flight) + " " + flightStatus.airline.id + " " + statusString)
+                        .setContentTitle(context.getString(R.string.flight) + " " + flightStatus.airline.id + " " + flightStatus.number)
+                        .setTicker(context.getString(R.string.flight) + " " + flightStatus.airline.id + " " + flightStatus.number)
                         .setColor(context.getResources().getColor(R.color.colorPrimaryDark))
                         .setContentText(statusString + " - " + flightStatus.flightStatusDescription.buildDescription(new Date(), context))
-                        .setSubText(gateString)
-                        .build();
+                        .setSubText(gateString);
+                if (gateString != "") {
+                    builder.setSubText(context.getString(R.string.gate) + " " + gateString);
+                }
+                Notification notification = builder.build();
                 NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
                 notification.contentIntent = pendingIntent;
                 notificationManager.notify("com.example.nmarcantonio.flysis2", flightKey.hashCode(), notification);
