@@ -114,7 +114,7 @@ public class GetCommentsTask extends AsyncTask<String, Void, String> {
                         ri.comments = "null";
                     }
                     comments.add(new Comment(
-                            Uri.decode(StringEscapeUtils.unescapeHtml4(ri.comments)),
+                            StringEscapeUtils.unescapeHtml4(Uri.decode(ri.comments)),
                             ri.yes_recommend,
                             ri.rating.overall,
                             ri.rating.friendliness,
