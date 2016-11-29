@@ -141,6 +141,11 @@ public class FlightsFragment extends Fragment {
         intentFilter.setPriority(2);
         context.registerReceiver(broadcastReceiver, intentFilter);
         refresh();
+        if(flights.size() == 0){
+            getActivity().findViewById(R.id.flights_empty_error).setVisibility(View.VISIBLE);
+        } else {
+            getActivity().findViewById(R.id.flights_empty_error).setVisibility(View.GONE);
+        }
         /* updateAllFlights(); */
     }
     @Override
