@@ -103,7 +103,7 @@ public class FlightInfoDetailActivity extends AppCompatActivity {
             Date date;
             date = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss", new Locale("es", "AR")).parse(og);
 
-            String language = Locale.getDefault().getDisplayLanguage();
+            String language = Locale.getDefault().getLanguage();
             if ("es".equals(language)) {
                 formated = new SimpleDateFormat(" dd 'de' MMMM 'de' yyyy", new Locale("es", "AR")).format(date);
             }
