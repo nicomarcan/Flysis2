@@ -170,7 +170,7 @@ public class CommentDialogFragment extends DialogFragment {
         }
     }
 
-    public void initView(View view) {
+    public void initView(final View view) {
         final ImageButton thumbsUpButton = (ImageButton) view.findViewById(R.id.flight_comments_dialog_thumbs_up);
         final ImageButton thumbsDownButton = (ImageButton) view.findViewById(R.id.flight_comments_dialog_thumbs_down);
         final CommentDialogFragment contextOuter = this;
@@ -226,7 +226,7 @@ public class CommentDialogFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 context.updateRatings();
-                new PutFlightCommentTask().execute(
+                new PutFlightCommentTask(view,(FlightActivity)getActivity()).execute(
                         airline,
                         number,
                         String.valueOf((int) (context.ratingsArray[0] * 2)),

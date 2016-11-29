@@ -2,8 +2,11 @@ package com.example.nmarcantonio.flysys2;
 
 import android.app.Activity;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Html;
 import android.util.Log;
@@ -47,6 +50,14 @@ public class GetCommentsTask extends AsyncTask<String, Void, String> {
         HttpURLConnection conn = null;
         String ret = null, order;
         try {
+
+            ConnectivityManager connMgr = (ConnectivityManager)
+                    context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
+            if (networkInfo == null || !networkInfo.isConnected()) {
+                return null;
+            }
             if (strings[3] == "0") {
                 order = "desc";
             }
@@ -84,6 +95,10 @@ public class GetCommentsTask extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String result) {
         try {
+            if(result ==null){
+                Snackbar.make(commentView, R.string.no_internet_msg, Snackbar.LENGTH_LONG).show();
+                return;
+            }
             JSONObject obj = new JSONObject(result);
             if (!obj.has("reviews")) {
                 return;

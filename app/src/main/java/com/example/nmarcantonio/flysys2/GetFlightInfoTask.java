@@ -1,5 +1,6 @@
 package com.example.nmarcantonio.flysys2;
 
+import android.app.Activity;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Context;
@@ -8,10 +9,13 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.icu.util.DateInterval;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.View;
@@ -45,6 +49,7 @@ import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -61,7 +66,23 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class GetFlightInfoTask extends AsyncTask<String, Void, String>{
     TaskCallback callback;
+    private boolean noInternet = false;
     private static final String TAG = "GetFlightInfoTask";
+    private Activity act;
+    private View myView;
+
+    GetFlightInfoTask(TaskCallback callback,Activity act,View myView) {
+        super();
+        this.callback = callback;
+        this.act = act;
+        this.myView = myView;
+    }
+
+    GetFlightInfoTask(TaskCallback callback,Activity act) {
+        super();
+        this.callback = callback;
+        this.act = act;
+    }
 
     GetFlightInfoTask(TaskCallback callback) {
         super();
@@ -78,6 +99,18 @@ public class GetFlightInfoTask extends AsyncTask<String, Void, String>{
         if (count != 2) {
             return null;
         }
+        if(act!= null) {
+            ConnectivityManager connMgr = (ConnectivityManager)
+                    act.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
+            if (networkInfo == null || !networkInfo.isConnected()) {
+                noInternet = true;
+                return null;
+            }
+        }
+
+
         HttpURLConnection conn = null;
 
         try {
@@ -92,9 +125,15 @@ public class GetFlightInfoTask extends AsyncTask<String, Void, String>{
                     .appendQueryParameter("flight_number", params[1])
                     .build();
             conn = (HttpURLConnection) new URL(uri.toString()).openConnection();
+            if (conn == null)
+                return null;
             InputStream in = new BufferedInputStream(conn.getInputStream());
             return readStream(in);
-        } catch (Exception e) {
+        }
+            catch(UnknownHostException e){
+
+            }
+         catch (Exception e) {
             /* connection failed */
             e.printStackTrace();
         } finally {
@@ -107,7 +146,13 @@ public class GetFlightInfoTask extends AsyncTask<String, Void, String>{
 
     @Override
     protected void onPostExecute(String result) {
-        callback.callback(result);
+
+        if(noInternet){
+            Snackbar.make(myView, R.string.no_internet_msg, Snackbar.LENGTH_LONG).show();
+            return;
+        }
+        else
+            callback.callback(result);
     }
 
     private String readStream(InputStream inputStream) {

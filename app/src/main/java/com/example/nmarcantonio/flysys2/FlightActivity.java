@@ -149,7 +149,7 @@ public class FlightActivity extends Activity{
                 flights = PreferencesHelper.getFlights(context);
 
                 new GetFlightInfoTask(
-                        new FlightInfoCallback(findViewById(R.id.flight_info_coordination), mapFragment, context, flights)
+                        new FlightInfoCallback(findViewById(R.id.flight_info_coordination), mapFragment, context, flights),context,findViewById(android.R.id.content)
                 ).execute(airline, number);
 
 

@@ -1,5 +1,6 @@
 package com.example.nmarcantonio.flysys2;
 
+import android.app.Activity;
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.Context;
@@ -11,6 +12,7 @@ import com.google.gson.reflect.TypeToken;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
+import java.net.UnknownHostException;
 
 
 public class FlightsIntentService extends IntentService {
@@ -22,9 +24,12 @@ public class FlightsIntentService extends IntentService {
     private static final String TAG = "FlightsIntentService";
     public static String ACTION_GET_FLIGHT = "com.example.nmarcantonio.flysis2.ACTION_GET_FLIGHT";
 
+
     public FlightsIntentService() {
         super("FlightsIntentService");
     }
+
+
 
 
     public static void startGetFlight(Context context, String airline, String flight) {
@@ -53,6 +58,8 @@ public class FlightsIntentService extends IntentService {
             @Override
             public void callback(String result) {
                 try {
+                    if(result == null)
+                        return;
                     JSONObject obj = new JSONObject(result);
                     if (!obj.has("status")) {
                         Log.d(TAG, "callback: failed");

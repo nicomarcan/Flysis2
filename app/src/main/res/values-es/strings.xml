@@ -164,4 +164,6 @@
      <string name="hour">hora</string>
      <string name="minute">minuto</string>
   <string name="flight_description_delay">(Hay un retraso de %1$s)</string>
+    <string name="correct_comment">Su comentario fue enviado</string>
+    <string name="no_internet_msg_comment">Su comentario no fue enviado. Por favor chequee su conexión a internet</string>
 </resources>
