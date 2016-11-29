@@ -88,8 +88,6 @@ public class BinPreferencesHelper {
                     break;
                 }
             }
-            if(shorts.size() == 0)
-                    ((Activity)context).findViewById(R.id.bin_empty_error).setVisibility(View.VISIBLE);
             updatePreferences(shorts,context);
             return true;
         }

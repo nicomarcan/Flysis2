@@ -1,5 +1,6 @@
 package com.example.nmarcantonio.flysys2;
 
+import android.app.Activity;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Context;
@@ -110,6 +111,9 @@ public class FlightBinArrayAdapter extends BaseSwipeAdapter {
                 BinPreferencesHelper.deleteFlight(flight,context);
                 Toast.makeText(context,s+" "+context.getString(R.string.eliminated), Toast.LENGTH_SHORT).show();
                 update();
+                if(flights.size()==0){
+                    ((Activity)context).findViewById(R.id.bin_empty_error).setVisibility(View.VISIBLE);
+                }
             }
         });
 
@@ -124,6 +128,9 @@ public class FlightBinArrayAdapter extends BaseSwipeAdapter {
                 PreferencesHelper.updatePreferences(statuses,context);
                 Toast.makeText(context,s+" "+context.getString(R.string.undo), Toast.LENGTH_SHORT).show();
                 update();
+                if(flights.size()==0){
+                    ((Activity)context).findViewById(R.id.bin_empty_error).setVisibility(View.VISIBLE);
+                }
             }
         });
 

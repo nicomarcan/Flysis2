@@ -151,6 +151,21 @@
     <string name="following">Siguiendo</string>
     <string name="unfollowing">Dejando de seguir</string>
     <string name="bin_empty">La papelera se encuentra vacía</string>
-    <string name="flights_empty">No estás siguiendo ningún vuelo</string>
+    <string name="flights_empty">No estás siguiendo ningún vuelo"\n"Usa la lupa para buscar cualquier vuelo</string>
     <string name="gate">Puerta</string>
+
+    <string name="flight_info_more">Ver más información</string>
+    <string name="flight_comments_more">Ver más comentarios</string>
+    <string name="flight_info_status_flying">En vuelo</string>
+    <string name="flight_description_header_boarding">Despegando en %1$s.</string>
+    <string name="flight_description_header_scheduled">Abordando en %1$s.</string>
+    <string name="flight_description_header_flying">Aterrizando en %1$s.</string>
+    <string name="flight_description_header_landed"> Aterrizado hace %1$s.</string>
+    <string name="flight_descriptin_header_cancelled">El vuelo se canceló.</string>
+    <string name="day">día</string>
+     <string name="hour">hora</string>
+     <string name="minute">minuto</string>
+  <string name="flight_description_delay">(Hay un retraso de %1$s)</string>
+    <string name="correct_comment">Su comentario fue enviado</string>
+    <string name="no_internet_msg_comment">Su comentario no fue enviado. Por favor chequee su conexión a internet</string>
 </resources>

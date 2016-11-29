@@ -1,9 +1,15 @@
 package com.example.nmarcantonio.flysys2;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.gson.JsonObject;
 
@@ -31,6 +37,11 @@ public class PutFlightCommentTask extends AsyncTask<String, Void, String> {
     View commentView;
     FlightActivity context;
 
+    public PutFlightCommentTask(View commentView,FlightActivity context){
+        this.commentView = commentView;
+        this.context=context;
+    }
+
     @Override
     protected String doInBackground(String... params) {
         HttpURLConnection conn = null;
@@ -39,6 +50,13 @@ public class PutFlightCommentTask extends AsyncTask<String, Void, String> {
             if (params.length != 10) {
                 throw new IllegalArgumentException();
             }
+
+            ConnectivityManager connMgr = (ConnectivityManager)
+                    context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
+            if (networkInfo == null || !networkInfo.isConnected())
+                return null;
 
             JSONObject ratingsJson = new JSONObject();
             ratingsJson.put("friendliness", Integer.valueOf(params[2]));
@@ -88,9 +106,15 @@ public class PutFlightCommentTask extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String result) {
         try {
+
+            if(result == null) {
+                Toast.makeText(context, R.string.no_internet_msg_comment, Toast.LENGTH_LONG).show();
+                return;
+            }
             JSONObject object = new JSONObject(result);
             if (object.has("review") && object.getBoolean("review")) {
                 Log.d(TAG, "onPostExecute: true");
+                Toast.makeText(context, R.string.correct_comment, Toast.LENGTH_LONG).show();
             }
             else {
                 Log.d(TAG, "onPostExecute: false");

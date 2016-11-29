@@ -1,8 +1,12 @@
 package com.example.nmarcantonio.flysys2;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.support.design.widget.Snackbar;
 import android.view.View;
 
 import com.google.gson.Gson;
@@ -39,6 +43,14 @@ public class GetAirlinesLogos extends AsyncTask<Void,Void,String> {
         HttpURLConnection urlConnection = null;
 
         try {
+
+            ConnectivityManager connMgr = (ConnectivityManager)
+                    act.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
+            if (networkInfo == null || !networkInfo.isConnected()) {
+                return null;
+            }
             URL url;
             url= new URL("http://hci.it.itba.edu.ar/v1/api/misc.groovy?method=getairlines&page_size=1000");
             urlConnection = (HttpURLConnection) url.openConnection();
@@ -57,6 +69,9 @@ public class GetAirlinesLogos extends AsyncTask<Void,Void,String> {
     @Override
     protected void onPostExecute(String result) {
         try {
+            if(result == null){
+                return;
+            }
             JSONObject obj = new JSONObject(result);
             if (!obj.has("airlines" )){
                 return;

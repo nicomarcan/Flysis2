@@ -5,8 +5,11 @@ import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
 import android.view.LayoutInflater;
@@ -88,6 +91,15 @@ public class FlightSearchFragment extends Fragment {
                 }
                 if(!NumberUtils.isNumber(number)){
                     Toast.makeText(getActivity(), R.string.flight_error, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                ConnectivityManager connMgr = (ConnectivityManager)
+                        getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
+                if (networkInfo == null || !networkInfo.isConnected()) {
+                    Toast.makeText(getActivity(), R.string.no_internet_msg, Snackbar.LENGTH_LONG).show();
                     return;
                 }
 
