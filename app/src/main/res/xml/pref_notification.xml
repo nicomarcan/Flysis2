@@ -8,7 +8,7 @@
         android:title="@string/notif_activ" />
 
     <ListPreference
-        android:defaultValue="1h"
+        android:defaultValue="1m"
         android:entries="@array/interval_titles"
         android:entryValues="@array/interval_values"
         android:key="interval_list"

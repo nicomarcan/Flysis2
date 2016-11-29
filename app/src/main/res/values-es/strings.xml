@@ -53,14 +53,16 @@
         <item>Cada 6 horas</item>
         <item>Cada 12 horas</item>
         <item>Una vez al día</item>
-        <item>Nunca(Manual)</item>
+        <item>Cada un minuto</item>
+        <item>Cada 5 minutos</item>
     </string-array>
+
     <string-array name="interval_values">
         <item>1h</item>
         <item>6h</item>
         <item>12h</item>
         <item>24h</item>
-        <item>0h</item>
+        <item>1m</item>
         <item>5m</item>
     </string-array>
 

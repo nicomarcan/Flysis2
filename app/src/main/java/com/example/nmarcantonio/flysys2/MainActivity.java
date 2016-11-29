@@ -207,7 +207,7 @@ public class MainActivity extends AppCompatActivity
 
         Boolean notifications_active = PreferencesHelper.notificationsActive(this);
         if (notifications_active) {
-            Long interval = PreferencesHelper.notificationsInterval(this);
+            long interval = PreferencesHelper.notificationsInterval(this);
             AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
             Intent i = new Intent(context, AlarmNotificationReceiver.class);
             PendingIntent pi = PendingIntent.getBroadcast(
@@ -220,6 +220,7 @@ public class MainActivity extends AppCompatActivity
                     pi
             );
         }
+
     }
 
 

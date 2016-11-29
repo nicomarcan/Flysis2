@@ -8,5 +8,4 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="map_head_height">250dp</dimen>
-    <dimen name="one_hour_milis"> 3600000L </dimen>
 </resources>

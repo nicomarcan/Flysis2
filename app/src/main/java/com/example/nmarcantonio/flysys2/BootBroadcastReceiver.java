@@ -18,17 +18,20 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent i = new Intent(context, AlarmNotificationReceiver.class);
-        PendingIntent pi = PendingIntent.getBroadcast(
-                context, 0, i, 0
-        );
-        alarmManager.setInexactRepeating(
-                AlarmManager.ELAPSED_REALTIME,
-                SystemClock.elapsedRealtime() + INTERVAL,
-                60000,
-                pi
-        );
-        Log.d(TAG, "onReceive: ");
+        Boolean notifications_active = PreferencesHelper.notificationsActive(context);
+        if (notifications_active) {
+            long interval = PreferencesHelper.notificationsInterval(context);
+            AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+            Intent i = new Intent(context, AlarmNotificationReceiver.class);
+            PendingIntent pi = PendingIntent.getBroadcast(
+                    context, 0, i, 0
+            );
+            alarmManager.setInexactRepeating(
+                    AlarmManager.ELAPSED_REALTIME,
+                    SystemClock.elapsedRealtime() + 10000,
+                    interval,
+                    pi
+            );
+        }
     }
 }

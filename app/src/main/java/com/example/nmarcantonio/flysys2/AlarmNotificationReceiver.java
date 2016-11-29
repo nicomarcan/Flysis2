@@ -16,6 +16,7 @@ public class AlarmNotificationReceiver extends BroadcastReceiver {
     String TAG = "AlarmNotification";
     @Override
     public void onReceive(Context context, Intent intent) {
+        Log.d(TAG, "onReceive: alarma");
         ArrayList<FlightStatus> flights = PreferencesHelper.getFlights(context);
         for (FlightStatus flight: flights) {
             Intent i = new Intent(context, FlightsIntentService.class);

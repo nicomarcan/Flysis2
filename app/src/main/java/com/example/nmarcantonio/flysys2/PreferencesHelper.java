@@ -101,6 +101,28 @@ public class PreferencesHelper {
 
     public static synchronized long notificationsInterval(Context context) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        return sharedPreferences.getLong("interval_list",3600000L);
+        String stringValue = sharedPreferences.getString("interval_list","1m");
+        long interval;
+        switch(stringValue) {
+            case "1h":
+                interval = 3600000;
+                break;
+            case "6h":
+                interval = 21600000;
+                break;
+            case "12h":
+                interval = 43200000;
+                break;
+            case "24h":
+                interval = 86400000;
+                break;
+            case "5m":
+                interval = 300000;
+                break;
+            default:
+                interval = 60000;
+                break;
+        }
+        return interval;
     }
 }

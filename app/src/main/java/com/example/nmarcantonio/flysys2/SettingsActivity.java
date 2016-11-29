@@ -2,6 +2,8 @@ package com.example.nmarcantonio.flysys2;
 
 
 import android.annotation.TargetApi;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,6 +13,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -244,29 +247,69 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
-            bindPreferenceSummaryToValue(findPreference("interval_list"));
-
+            //bindPreferenceSummaryToValue(findPreference("interval_list"));
+            final Context context = getActivity();
+            Preference notifications_active = findPreference("notifications_active");
+            if (notifications_active != null) {
+                notifications_active.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                    @Override
+                    public boolean onPreferenceChange(Preference preference, Object newValue) {
+                        Boolean b = (Boolean) newValue;
+                        if (b) {
+                            enableAlarm(context);
+                        }
+                        else {
+                            disableAlarm(context);
+                        }
+                        return true;
+                    }
+                });
+            }
             Preference preference = findPreference("interval_list");
+
             preference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
-                    String stringValue = value.toString();
+                    String stringValue = newValue.toString();
 
-                    if (preference instanceof ListPreference) {
-                        // For list preferences, look up the correct display value in
-                        // the preference's 'entries' list.
-                        ListPreference listPreference = (ListPreference) preference;
-                        int index = listPreference.findIndexOfValue(stringValue);
+                    ListPreference listPreference = (ListPreference) preference;
+                    int index = listPreference.findIndexOfValue(stringValue);
 
-                        // Set the summary to reflect the new value.
-                        preference.setSummary(
-                                index >= 0
-                                        ? listPreference.getEntries()[index]
-                                        : null);
+                    // Set the summary to reflect the new value.
+                    preference.setSummary(
+                            index >= 0
+                                    ? listPreference.getEntries()[index]
+                                    : null);
+
+
+                    long interval;
+                    switch(stringValue) {
+                        case "1h":
+                            interval = 3600000;
+                            break;
+                        case "6h":
+                            interval = 21600000;
+                            break;
+                        case "12h":
+                            interval = 43200000;
+                            break;
+                        case "24h":
+                            interval = 86400000;
+                            break;
+                        case "5m":
+                            interval = 300000;
+                            break;
+                        default:
+                            interval = 60000;
+                            break;
+                    }
+                    setAlarm(interval, context);
                     return true;
                 }
             });
         }
+
+
 
         @Override
         public boolean onOptionsItemSelected(MenuItem item) {
@@ -276,6 +319,47 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 return true;
             }
             return super.onOptionsItemSelected(item);
+        }
+
+        private void setAlarm(long interval, Context context) {
+
+            Boolean notifications_active = PreferencesHelper.notificationsActive(context);
+            if (notifications_active) {
+                AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+                Intent i = new Intent(context, AlarmNotificationReceiver.class);
+                PendingIntent pi = PendingIntent.getBroadcast(
+                        context, 0, i, 0
+                );
+                alarmManager.setInexactRepeating(
+                        AlarmManager.ELAPSED_REALTIME,
+                        SystemClock.elapsedRealtime() + 10000,
+                        interval,
+                        pi
+                );
+            }
+        }
+
+        private void disableAlarm(Context context) {
+            Intent i = new Intent(context, AlarmNotificationReceiver.class);
+            PendingIntent pi = PendingIntent.getBroadcast(context, 0, i, 0);
+            AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+            alarmManager.cancel(pi);
+        }
+
+        private void enableAlarm(Context context) {
+
+            long interval = PreferencesHelper.notificationsInterval(context);
+            AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+            Intent i = new Intent(context, AlarmNotificationReceiver.class);
+            PendingIntent pi = PendingIntent.getBroadcast(
+                    context, 0, i, 0
+            );
+            alarmManager.setInexactRepeating(
+                    AlarmManager.ELAPSED_REALTIME,
+                    SystemClock.elapsedRealtime() + 10000,
+                    interval,
+                    pi
+            );
         }
     }
 
